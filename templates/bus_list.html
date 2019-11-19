@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>bus list</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+</head>
+
+<body>
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">Transport Database &gt;&gt;&gt; Transport List
+				</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>Route No: <input name="txtRouteNo" type="text"
+									id="txtRouteNo" value="{txtRouteNo}" size="15" /></td>
+								<td>Type: <select name="ddlTypeId" id="ddlTypeId">
+										<option value="">----</option>
+										<!-- BEGIN TypeRow -->
+										<option value="{typeId}">{typeName}</option>
+										<!-- END TypeRow -->
+								</select></td>
+								<td>District: <select name="ddlDistCode" id="ddlDistCode">
+										<option value="">----</option>
+										<!-- BEGIN DistRow -->
+										<option value="{distCode}">{distEngName}</option>
+										<!-- END DistRow -->
+								</select></td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td height="20"></td>
+				<td align="center">Route No<br /> 路線號碼
+				</td>
+				<td align="center">Type<br /> 類型
+				</td>
+				<td align="center">Bounds<br /> 方向
+				</td>
+				<td align="center">Bus District</td>
+				<td align="center">S Of S Date</td>
+				<td align="center" style="">Input User</td>
+				<td colspan="3" align="center">Action</td>
+			</tr>
+			<tr bgcolor="#FFFFFF" class="{listStyle}">
+				<td>&nbsp;</td>
+				<td><div align="center">
+						<a href="{pageUrl}order=asc&na=routeNo"><img
+							src="./images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+							href="{pageUrl}order=desc&na=routeNo"><img
+							src="./images/down.gif" width="13" height="8" border="0" /></a>
+					</div></td>
+				<td><div align="center">
+						<a href="{pageUrl}order=asc&na=Sb.engName"><img
+							src="./images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+							href="{pageUrl}order=desc&na=Sb.engName"><img
+							src="./images/down.gif" width="13" height="8" border="0" /></a>
+					</div></td>
+				<td><div align="center">
+						<a href="{pageUrl}order=asc&na=bounds"><img
+							src="./images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+							href="{pageUrl}order=desc&na=bounds"><img
+							src="./images/down.gif" width="13" height="8" border="0" /></a>
+					</div></td>
+				<td><div align="center">
+						<a href="{pageUrl}order=asc&na=distCode"><img
+							src="./images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+							href="{pageUrl}order=desc&na=distCode"><img
+							src="./images/down.gif" width="13" height="8" border="0" /></a>
+					</div></td>
+				<td><div align="center">
+						<a href="{pageUrl}order=asc&na=sofsDate"><img
+							src="./images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+							href="{pageUrl}order=desc&na=sofsDate"><img
+							src="./images/down.gif" width="13" height="8" border="0" /></a>
+					</div></td>
+				<td style="">&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'"
+				onclick=" SelectRow(this);">
+				<td>{busId}</td>
+				<td>{routeNo}</td>
+				<td>{type}</td>
+				<td>{bounds}</td>
+				<td>{distCode}</td>
+				<td>{sofsDate}</td>
+				<td style="">{inputEngName}</td>
+				<td>{privew}</td>
+				<td>{modify}</td>
+				<td>{delete}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<table width="100%" border="0" cellspacing="3" cellpadding="0">
+			<tr>
+				<td align="right" style="font-size: 14px;">{pageSetting}</td>
+			</tr>
+		</table>
+	</form>
+	<script language="javascript" type="text/javascript">
+$('#ddlDistCode').val("{ddlDistCode}");
+$('#ddlTypeId').val("{ddlTypeId}");
+</script>
+</body>
+</html>

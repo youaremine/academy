@@ -1,0 +1,654 @@
+<?php
+/**
+ *
+ * @copyright 2007-2018 Xiaoqiang.Wu
+ * @author Xiaoqiang.Wu <jamblues@gmail.com>
+ * @version 1.01 , 2018-2-12
+ */
+include_once ("../includes/config.inc.php");
+
+$rawJson = file_get_contents('php://input','r');
+
+if(empty($rawJson)){
+	$data = $_REQUEST;
+	if(empty($data['channel'])){
+		$data['channel'] = 0;
+	}
+}else{
+	$data = json_decode($rawJson,TRUE);
+	if(empty($data['q'])){
+		$data['q'] = $_REQUEST ['q'];
+	}
+}
+
+switch ($data['q']) {
+	case 'saveJobs':
+		saveJobs($data);
+		break;
+	case 'getInfo':
+		getInfo($data);
+		break;
+	case 'deleteInfo':
+		deleteInfo($data);
+		break;
+	case 'getJobs':
+		getJobs($data);
+		break;
+	case 'getJobNoNewList':
+		getJobNoNewList($data);
+		break;
+	case 'setDataEntry':
+		setDataEntry($data);
+		break;
+	case 'getDataEntryList':
+		getDataEntryList($data);
+		break;
+	case 'setJobOpenStatus':
+		setJobOpenStatus($data);
+		break;
+	case 'assign':
+		assignSurveyor($data,'assign');
+		break;
+	case 'unassign':
+		assignSurveyor($data,'unassign');
+		break;
+	case 'openJob':
+		openJob($data);
+		break;
+	default:
+		break;
+}
+
+/**
+ * 保存工作
+ * @param $data
+ */
+function saveJobs($data){
+	global $conf,$db;
+	if(empty($data['sign'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$filename = $conf["path"]["sign"].$data['sign'];
+	$survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	if(empty($data['jobNoNew'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'The information is incomplete.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$sqlData = array();
+	$sqlData['weekNo'] = $data['weekNo'];
+	$sqlData['jobNoShort'] = $data['jobNoShort'];
+	$sqlData['jobNo'] = $data['jobNo'];
+	$sqlData['jobNoNew'] = $data['jobNoNew'];
+	$sqlData['plannedSurveyDate'] = $data['plannedSurveyDate'];
+	$sqlData['tdFileNo'] = $data['tdFileNo'];
+	$sqlData['receivedDate'] = $data['receivedDate'];
+	$sqlData['dueDate'] = $data['dueDate'];
+	$sqlData['fromTD'] = $data['fromTD'];
+	$sqlData['actualSurveyDate'] = $data['actualSurveyDate'];
+	$sqlData['startTime_1'] = $data['startTime_1'];
+	$sqlData['endTime_1'] = $data['endTime_1'];
+	$sqlData['startTime_2'] = $data['startTime_2'];
+	$sqlData['endTime_2'] = $data['endTime_2'];
+	$sqlData['startTime_3'] = $data['startTime_3'];
+	$sqlData['endTime_3'] = $data['endTime_3'];
+	$sqlData['startTime_4'] = $data['startTime_4'];
+	$sqlData['endTime_4'] = $data['endTime_4'];
+	$sqlData['totalHours'] = $data['totalHours'];
+	$sqlData['surveyTimeHours'] = $data['surveyTimeHours'];
+	$sqlData['stCode'] = $data['stCode'];
+	$sqlData['surveyType'] = $data['surveyType'];
+	$sqlData['vehCode'] = $data['vehCode'];
+	$sqlData['vehicle'] = $data['vehicle'];
+	$sqlData['isHoliday'] = $data['isHoliday'];
+	$sqlData['bonusHours'] = $data['bonusHours'];
+	$sqlData['surveyLocationDistrict'] = $data['surveyLocationDistrict'];
+	$sqlData['surveyLocation'] = $data['surveyLocation'];
+	$sqlData['routeItems'] = $data['routeItems'];
+	$sqlData['noOfSurveyors'] = $data['noOfSurveyors'];
+	$sqlData['estimatedManHour'] = $data['estimatedManHour'];
+	$sqlData['receiveDate'] = $data['receiveDate'];
+	$sqlData['dataInputNo'] = $data['dataInputNo'];
+	$sqlData['dataInputBy'] = $data['dataInputBy'];
+	$sqlData['entryFormTypeNo'] = $data['entryFormTypeNo'];
+	$sqlData['noOfPages'] = $data['noOfPages'];
+	$sqlData['report'] = $data['report'];
+	$sqlData['hourlyRate'] = $data['hourlyRate'];
+	$sqlData['surveyFinding'] = $data['surveyFinding'];
+	$sqlData['am'] = $data['am'];
+	$sqlData['periodHour_1'] = $data['periodHour_1'];
+	$sqlData['periodWagesHr_1'] = $data['periodWagesHr_1'];
+	$sqlData['periodHour_2'] = $data['periodHour_2'];
+	$sqlData['periodWagesHr_2'] = $data['periodWagesHr_2'];
+	$sqlData['totalWages'] = $data['totalWages'];
+	$sqlData['onBoardCostFare'] = $data['onBoardCostFare'];
+	$sqlData['noOfTrips'] = $data['noOfTrips'];
+	$sqlData['transportAllowanceAm'] = $data['transportAllowanceAm'];
+	$sqlData['transportAllowanceNoon'] = $data['transportAllowanceNoon'];
+	$sqlData['transportAllowancePm'] = $data['transportAllowancePm'];
+	$sqlData['transportAllowanceOvernight'] = $data['transportAllowanceOvernight'];
+	$sqlData['taTotal'] = $data['taTotal'];
+	$sqlData['wagesTaOnBoard'] = $data['wagesTaOnBoard'];
+	$sqlData['onBoardTranportAllowanceTotal'] = $data['onBoardTranportAllowanceTotal'];
+	$sqlData['surveyorCode'] = $data['surveyorCode'];
+	$sqlData['surveyorName'] = $data['surveyorName'];
+	$sqlData['surveyorTelephone'] = $data['surveyorTelephone'];
+	$sqlData['complateJobNo'] = $data['complateJobNo'];
+	$sqlData['distributedToLeader'] = $data['distributedToLeader'];
+	$sqlData['reportWeek'] = $data['reportWeek'];
+	$sqlData['surveyLocationCn'] = $data['surveyLocationCn'];
+	$sqlData['direction'] = $data['direction'];
+	$ja = new JobsAccess($db);
+	$mascId = intval($data['mascId']);
+	if($mascId > 0){
+		$rsData['mascId'] = $mascId;
+		$ja->update($sqlData,$mascId);
+	}else{
+		$searchData = array();
+		$searchData['jobNoNew'] = $data['jobNoNew'];
+		$info = $ja->getInfo($searchData);
+		if(!empty($info)){
+			$message = array (
+					'status' => 'failed',
+					'msg' => 'jobNoNew is already exist.',
+					'data' => array()
+			);
+			die(json_encode($message));
+		}
+		$rsData['mascId'] = $ja->save($sqlData);
+	}
+	$message = array (
+			'status' => 'success',
+			'msg' => '',
+			'data' => $rsData
+	);
+	die(json_encode($message));
+}
+
+/**
+ * 獲取单个工作的具体内容
+ * @param $data
+ */
+function getInfo($data){
+	global $conf,$db;
+	if(empty($data['sign'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$filename = $conf["path"]["sign"].$data['sign'];
+	$survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$ja = new JobsAccess($db);
+	$sqlData = array();
+	$sqlData['jobNoNew'] = $data['jobNoNew'];
+	$rs = $ja->getInfo($sqlData);
+	$message = array (
+			'status' => 'success',
+			'msg' => '',
+			'data' => $rs
+	);
+	die(json_encode($message));
+}
+
+/**
+ * 删除某个工作
+ * @param $data
+ */
+function deleteInfo($data){
+	global $conf,$db;
+	if(empty($data['sign'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$filename = $conf["path"]["sign"].$data['sign'];
+	$survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$ja = new JobsAccess($db);
+	$mascId = intval($data['mascId']);
+	$ja->delete($mascId);
+	$message = array (
+			'status' => 'success',
+			'msg' => '',
+			'data' => array()
+	);
+	die(json_encode($message));
+}
+
+/**
+ * 獲取所有工作列表
+ * @param $data
+ */
+function getJobs($data){
+	global $conf,$db;
+	if(empty($data['sign'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$filename = $conf["path"]["sign"].$data['sign'];
+	$survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$ja = new JobsAccess($db);
+	$rs = $ja->getList(array());
+	$message = array (
+			'status' => 'success',
+			'msg' => '',
+			'data' => $rs
+	);
+	die(json_encode($message));
+}
+
+/**
+ * 获取已报名的学员列表
+ * @param $data
+ */
+function getJobNoNewList($data){
+	global $conf,$db;
+	if(empty($data['sign'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$filename = $conf["path"]["sign"].$data['sign'];
+	$survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	if(empty($data['jobNo'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'JobNo is not allow null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$ja = new JobsAccess($db);
+	$filter = array();
+	$filter['jobNo'] = $data['jobNo'];
+	$other = '';
+	if($data['showType'] == 'all'){
+		$other = '';
+	}else if($data['showType'] == 'noAssign'){
+		$other = ' AND (surveyorCode <= 0 OR surveyorCode IS NULL)';
+	}else{
+		$other = ' AND surveyorCode > 0';
+	}
+//
+	$rs = $ja->getJobNoNewList($filter,$other);
+	$jobNoNews = "";
+	foreach ($rs as $k => $v) {
+		$jobNoNews .= ",'{$v['jobNoNew']}'";
+	}
+	$jobNoNews = substr($jobNoNews, 1);
+	//是否开放让用户自主选择
+	$msoa = new MainScheduleOpenAccess($db);
+	$openJobs = $msoa->GetOpenJobNoNews($jobNoNews);
+
+	foreach($rs as $k=>$v){
+		$openJob = $openJobs[$v['jobNoNew']];
+		if(!empty($openJob)){
+			$v['isOpen'] = '1';
+		}else{
+			$v['isOpen'] = '0';
+		}
+		if($v['surveyorCode'] > 0){
+			$v['assignStatus'] = 'assigned';
+		}else if($openJob['applySurvId'] > 0){
+			$v['assignStatus'] = 'pending';
+			$v['surveyorCode'] = $openJob['applySurvId'];
+			$v['surveyorName'] = $openJob['applyEngName'];
+			$v['surveyorChiName'] = $openJob['applyChiName'];
+			$v['surveyorTelephone'] = $openJob['applyContact'];
+			$v['surveyorProfilePhoto'] = $openJob['applyProfilePhoto'];
+		}else{
+			$v['assignStatus'] = 'waiting';
+		}
+		$rs[$k] = $v;
+	}
+	$message = array (
+			'status' => 'success',
+			'msg' => '',
+			'data' => $rs
+	);
+	die(json_encode($message));
+}
+
+/**
+ * 上传已点名学员
+ * @param $data
+ */
+function setDataEntry($data){
+	global $conf,$db;
+	if(empty($data['sign'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$filename = $conf["path"]["sign"].$data['sign'];
+	$survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$data['survId'] = $survId;
+	$s = new Surveyor();
+	$sa = new SurveyorAccess($db);
+	$s->survId = $survId;
+	$rsSurveyor = $sa->GetListSearch($s);
+	if(count($rsSurveyor) > 0){
+		$data['engName'] = $rsSurveyor[0]->engName;
+	}
+	$ja = new JobsAccess($db);
+	$result = $ja->setDataEntry($data);
+	if($result){
+		$message = array (
+				'status' => 'success',
+				'msg' => '',
+				'data' => ''
+		);
+	}else{
+		$message = array (
+				'status' => 'failed',
+				'msg' => '',
+				'data' => ''
+		);
+	}
+	die(json_encode($message));
+}
+
+/**
+ * 获取已报名的学员列表
+ * @param $data
+ */
+function getDataEntryList($data){
+	global $conf,$db;
+	if(empty($data['sign'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$filename = $conf["path"]["sign"].$data['sign'];
+	$survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	if(empty($data['jobNo'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'JobNo is not allow null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$ja = new JobsAccess($db);
+	$filter = array();
+	$filter['jobNo'] = $data['jobNo'];
+	$other = '';
+	$rs = $ja->getDataEntryList($filter,$other);
+
+	$sjoa = new SurveyJobOpenAccess($db);
+	$sjo = new SurveyJobOpen();
+	$sjo->delFlag = 'no';
+	$sjo->isOpen = '';
+	$sjo->jobNo = $data['jobNo'];
+	$result = $sjoa->GetListSearch($sjo);
+	$isOpen = 'no';
+	if (!empty($result[0])) {
+		$isOpen = $result[0]->isOpen;
+	}
+	$message = array (
+			'status' => 'success',
+			'msg' => '',
+			'isOpen' => $isOpen,
+			'data' => $rs
+	);
+	die(json_encode($message));
+}
+
+/**
+ * 设置某个课堂自行点名
+ * @param $data
+ */
+function setJobOpenStatus($data){
+	global $conf,$db;
+	if(empty($data['sign'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$filename = $conf["path"]["sign"].$data['sign'];
+	$survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	if(empty($data['jobNo'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'JobNo is not allow null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+
+	$sjoa = new SurveyJobOpenAccess($db);
+	$sjo = new SurveyJobOpen();
+	$sjo->inputTime = date("Y-m-d H:i:s");
+	$sjo->inputUserId = $survId;
+	$sjo->jobNo = $data['jobNo'];
+	$sjoa->DelByJobNo($sjo);
+	if($data['isOpen'] == 'yes'){
+		$sjo->isOpen = 'yes';
+		$sjoa->Add($sjo);
+	}
+	$message = array (
+			'status' => 'success',
+			'msg' => '',
+			'data' => array("jobNo"=>$sjo->jobNo,"isOpen"=>$sjo->isOpen)
+	);
+	die(json_encode($message));
+}
+
+
+/**
+ * 设置某个课堂自行点名
+ * @param $data
+ * @param $action
+ */
+function assignSurveyor($data,$action){
+	global $conf,$db;
+	if(empty($data['sign'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$filename = $conf["path"]["sign"].$data['sign'];
+	$survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	if(empty($data['jobNoNew'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'jobNoNew is not allow null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+
+	$survId = $data['assignSurvId'];
+	$jobNoNew = $data['jobNoNew'];
+
+	if ($action == 'unassign')
+	{
+		$ms = new MainSchedule();
+		$ms->jobNoNewSigle = $jobNoNew;
+		$msa = new MainScheduleAccess($db);
+		$rs = $msa->GetListSearch($ms);
+		$ms = $rs[0];
+		$survId = $ms->surveyorCode;
+	}
+
+	// 调查员基本信息
+	$sur = new Surveyor();
+	$sa = new SurveyorAccess($db);
+	$sur->survId = $survId;
+	$sur->company = '';
+	$rs = $sa->GetListSearch($sur);
+	if (!empty($rs))
+	{
+		$sur = $rs[0];
+	}
+	$msg = '';
+	if ($action == 'assign')
+	{
+		$sa->Assign($sur, $jobNoNew);
+		$msg = "Assign Success.";
+	}
+	else if ($action == 'unassign')
+	{
+		$sa->UnAssign($sur, $jobNoNew);
+		$msg = "UnAssign Success.";
+	}
+	$message = array (
+			'status' => 'success',
+			'msg' => $msg,
+			'data' => array()
+	);
+	die(json_encode($message));
+}
+
+/**
+ * 开放job
+ * @param $data
+ */
+function openJob($data){
+	global $conf,$db;
+	if(empty($data['sign'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$filename = $conf["path"]["sign"].$data['sign'];
+	$survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$mso = new MainScheduleOpen();
+	$msoa = new MainScheduleOpenAccess($db);
+	$mso->inputUserId = $survId;
+	$mso->inputTime = date("Y-m-d H:i:s");
+	$relationJobNoNews = $data['relationJobNoNews'];
+	$relationJobNoNewsArray = explode(",", $relationJobNoNews);
+	$jobNoNews = $data['jobNoNews'];
+	$jobNoNewsArray = explode(",", $jobNoNews);
+	foreach ($jobNoNewsArray as $k => $v) {
+		if (empty ($v)) continue;
+		//添加记录
+		$mso->batchNumber = uniqid();
+		$mso->jobNoNew = $v;
+		$msoa->Add($mso);
+		//如果有关联的job,以同一批号插入
+		foreach($relationJobNoNewsArray as $v2){
+			if (empty ($v2)) continue;
+			$mso->jobNoNew = $v2;
+			$msoa->Add($mso);
+		}
+	}
+	$message = array('success' => true, 'jobNoNew' => $mso->jobNoNew);
+	die(json_encode($message));
+}

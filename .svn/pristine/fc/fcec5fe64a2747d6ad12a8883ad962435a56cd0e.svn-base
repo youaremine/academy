@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Surveyor Time</title>
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/jquery-function.js"></script>
+<script type="text/javascript" src="../js/assign/surveyor_time.js"></script>
+</head>
+
+<body>
+	<table width="100%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Surveyor Manager &gt;&gt;&gt; Surveyor Time</td>
+		</tr>
+	</table>
+	<form id="form1" name="form1" method="get" action="surveyor_time.php">
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>Month:<input name="txtMonth" type="text" id="txtMonth"
+									class="Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM'})"
+									value="{txtMonth}" size="10" /> <input name="survId"
+									id="survId" type="hidden" value="{survId}" /> &nbsp;&nbsp;<input
+									class="ButtonIdea" type="submit" id="submit" value="更改(Update)" /></td>
+								<td>&nbsp;</td>
+								<td width="40%">&nbsp;</td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+	</form>
+	<table width="100%" border="0" align="center" cellpadding="0"
+		cellspacing="1" bgcolor="#000000">
+		<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+			<td width="13%" height="20" align="center">Code</td>
+			<td width="13%" align="center">Name of surveyor</td>
+			<td width="13%" align="center">Contact of surveyor</td>
+			<td width="13%" align="center">Home</td>
+			<td width="13%" align="center">District</td>
+			<td width="13%" align="center">Supervisor?</td>
+			<td align="center">VIP</td>
+			<td align="center">WhatsAPP</td>
+			<td align="center">Email</td>
+			<td align="center">Fax</td>
+			<td align="center">Remarks</td>
+		</tr>
+		<tr class="DgItemStyle"
+			onmouseover="this.className='DgSelectedItemStyle'"
+			onmouseout="this.className='DgItemStyle'" bgcolor="#FFFFFF">
+			<td>{survId}</td>
+			<td>{engName}</td>
+			<td>{contact}</td>
+			<td>{survHome}</td>
+			<td>{dipaCode}</td>
+			<td>{IsSupervisor}</td>
+			<td>{VIP}</td>
+			<td>{whatsAPP}</td>
+			<td><a href="mailto:{email}">{email}</a></td>
+			<td>{fax}</td>
+			<td>{remark}</td>
+		</tr>
+	</table>
+	<form id="form2" name="form2" method="post"
+		action="surveyor_time_press.php">
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Schedule Time </legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr id="trByDate">
+								<td>StartDate: <input name="txtStartDate" type="text"
+									id="txtStartDate" class="Wdate"
+									onclick="WdatePicker({minDate:'#F{\'{monthStartDate}\'}',maxDate:'#F{$dp.$D(\'txtEndDate\')||\'{monthEndDate}\'}',dateFmt:'yyyy-MM-dd'})"
+									size="10" /> &nbsp;&nbsp; EndDate: <input name="txtEndDate"
+									type="text" id="txtEndDate" class="Wdate"
+									onclick="WdatePicker({minDate:'#F{$dp.$D(\'txtStartDate\')||\'{monthStartDate}\'}',maxDate:'#F{\'{monthEndDate}\'}',dateFmt:'yyyy-MM-dd'})"
+									size="10" /> <span style="color: #666">For example:
+										2012-03-01 - 2012-03-31</span></td>
+								<td><a href="javascript:void(0);" id="aByWeek">By week</a></td>
+							</tr>
+							<tr id="trByWeek" style="display: none;">
+								<td><input type="checkbox" name="all" id="all" /><label
+									for="all">ALL</label> <input type="checkbox" name="mon"
+									id="mon" /><label for="mon">MON</label> <input type="checkbox"
+									name="tue" id="tue" /><label for="tue">TUE</label> <input
+									type="checkbox" name="wed" id="wed" /><label for="wed">WED</label>
+									<input type="checkbox" name="thu" id="thu" /><label for="thu">THU</label>
+									<input type="checkbox" name="fri" id="fri" /><label for="fri">FRI</label>
+									<input type="checkbox" name="sat" id="sat" /><label for="sat">SAT</label>
+									<input type="checkbox" name="sun" id="sun" /><label for="sun">SUN</label></td>
+								<td><a href="javascript:void(0);" id="aByDate">By date</a></td>
+							</tr>
+							<tr>
+								<td>Time1: <input name="txtStartTime1" type="text"
+									class="Wdate" id="txtStartTime1"
+									onclick="WdatePicker({dateFmt:'HH:mm'})" value="00:00" size="6" />
+									- <input name="txtEndTime1" type="text" class="Wdate"
+									id="txtEndTime1" onclick="WdatePicker({dateFmt:'HH:mm'})"
+									value="23:59" size="6" /> Time2: <input name="txtStartTime2"
+									type="text" id="txtStartTime2" class="Wdate"
+									onclick="WdatePicker({dateFmt:'HH:mm'})" size="6" /> - <input
+									name="txtEndTime2" type="text" id="txtEndTime2" class="Wdate"
+									onclick="WdatePicker({dateFmt:'HH:mm'})" size="6" /> Time3: <input
+									name="txtStartTime3" type="text" id="txtStartTime3"
+									class="Wdate" onclick="WdatePicker({dateFmt:'HH:mm'})" size="6" />
+									- <input name="txtEndTime3" type="text" id="txtEndTime3"
+									class="Wdate" onclick="WdatePicker({dateFmt:'HH:mm'})" size="6" />
+									<label> <input name="radIsFree" type="radio"
+										id="radIsFree" value="busy" checked="checked" /> Busy
+								</label> <label style="display: none;"> <input type="radio"
+										name="radIsFree" id="radIsFree2" value="free" /> Free
+								</label> <span style="color: #666">&nbsp;&nbsp;For example: 00:00
+										- 23:59</span> <input name="hidSurvId" id="hidSurvId" type="hidden"
+									value="{survId}" /> <input name="hidByType" id="hidByType"
+									type="hidden" value="date" /> <input name="hidMonth"
+									id="hidMonth" type="hidden" value="{txtMonth}" /></td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>Remarks: <input name="txtRemarks" type="text"
+									id="txtRemarks" size="32" />
+								</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><input class="ButtonIdea" type="submit" name="btnSave"
+									id="btnSave" value="保存(Save)" /></td>
+								<td>&nbsp;</td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+	</form>
+	<p>Schedule Time:</p>
+	<table width="100%" border="0" align="center" cellpadding="0"
+		cellspacing="1" bgcolor="#000000">
+		<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+			<td width="5%" height="20" align="center">Code</td>
+			<td width="13%" align="center">Name of surveyor</td>
+			<td width="13%" align="center">Contact of surveyor</td>
+			<td width="13%" align="center">Home</td>
+			<td width="13%" align="center">District</td>
+			<td align="center">Supervisor?</td>
+			<td align="center">Schedule Time</td>
+			<td align="center">Is Free</td>
+			<td align="center">Remarks</td>
+			<td align="center">&nbsp;</td>
+		</tr>
+		<!-- BEGIN Row -->
+		<tr id="row_{sftiId}" class="{listStyle}"
+			onmouseover="this.className='DgSelectedItemStyle'"
+			onmouseout="this.className='{listStyle}'" bgcolor="#FFFFFF">
+			<td>{survId}</td>
+			<td>{engName}</td>
+			<td>{contact}</td>
+			<td>{survHome}</td>
+			<td>{dipaCode}</td>
+			<td>{IsSupervisor}</td>
+			<td>{startTime} - {endTime}</td>
+			<td>{isFree}</td>
+			<td>{freeTimeRemarks}</td>
+			<td><a href="javascript:DelFreeTime('{sftiId}');"><img
+					src="../images/Delete.gif" border="0" /></a></td>
+		</tr>
+		<!-- END Row -->
+	</table>
+	<p>&nbsp;</p>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: James
+ * Date: 2015-12-13
+ * Time: 23:23
+ */
+
+include_once ("../includes/config.inc.php");
+
+// 检查是否登录
+if (SurveyorLogin::IsLogin())
+{
+    $surveyorCode = $_SESSION['surveyorId'];
+}
+else
+{
+    exit('Login timeout.');
+}
+
+$query = $_REQUEST ['q'];
+
+switch ($query)
+{
+    case "selectJob" :
+        //检测用户是否过期
+        $s = new Surveyor ();
+        $s->company = '';
+        $s->status = '';
+        $s->survId = $surveyorCode;
+        $sa = new SurveyorAccess ( $db );
+        $rs = $sa->GetListSearch ( $s );
+        $s = $rs [0];
+        if(strtotime($s->selfBefore) > time()){
+            $message = array (
+                'success' => false,
+                'message' => '抱歉,錯誤001,請聯繫工作人員。'
+            );
+            die(json_encode($message));
+        }
+
+        $jobNoNew = $_REQUEST['jobNoNew'];
+        $jobNoNew2 = $_REQUEST['jobNoNew2'];
+        $jobNoNew3 = $_REQUEST['jobNoNew3'];
+        $jobNoNew4 = $_REQUEST['jobNoNew4'];
+        $jobNoNewArr = array($jobNoNew,$jobNoNew2,$jobNoNew3,$jobNoNew4);
+        //检测是否有冲突
+        $isBusy = false;
+        $currJobNoNews = array();
+        foreach ($jobNoNewArr as $item) {
+            if (!empty($item)) {
+                $currJobNoNews[] = $item;
+                $_tmpIsBusy = _checkIsBusy($db,$surveyorCode,$item);
+                if($_tmpIsBusy) {
+                    $isBusy = $_tmpIsBusy;
+                    break;
+                }
+            }
+        }
+        if($isBusy) {
+            $message = array (
+                'success' => false,
+                'message' => '訪調查和您已安排的調查衝突，請聯繫工作人員。'
+            );
+            die(json_encode($message));
+        }
+        //檢查項目是否已經被人領取
+        $msoa = new MainScheduleOpenAccess($db);
+        $_tmpInJobNoNews = "'" . implode("','", $currJobNoNews) . "'";
+        $existJobNoNews = $msoa->GetOpenJobNoNews($_tmpInJobNoNews);
+        $isOtherSelectedJob = false;
+        foreach($existJobNoNews as $item){
+            if(!empty($item['applySurvId'])){
+                $isOtherSelectedJob = true;
+                break;
+            }
+        }
+        if($isOtherSelectedJob){
+            $message = array (
+                'success' => false,
+                'message' => '抱歉，該調查已經被其他調查員搶先一步。'
+            );
+            die(json_encode($message));
+        }
+        //檢查通過, 直接插入數據.
+        $mso = new MainScheduleOpen();
+        $mso->applySurvId =$surveyorCode;
+        $mso->applyTime = date("Y-m-d H:i:s");
+        $msoa = new MainScheduleOpenAccess($db);
+        foreach ($jobNoNewArr as $item) {
+            if (!empty($item)) {
+                $mso->jobNoNew = $item;
+                $msoa->Apply($mso);
+            }
+        }
+        $message = array (
+            'success' => true,
+            'message' => '恭喜您，申請成功!'
+        );
+        echo json_encode($message);
+        break;
+}
+
+function _checkIsBusy($db,$surveyorCode,$jobNoNew) {
+    //检测一下调查时间是否有冲突
+    $ms = new MainSchedule();
+    $msa = new MainScheduleAccess($db);
+    $ms->jobNoNewSigle = $jobNoNew;
+    $rs = $msa->GetListSearch($ms);
+    $v = $rs[0];
+    //檢測是否已經有同一時間段的Job
+    $isBusy = $msa->IsBusyTime($surveyorCode,$v->plannedSurveyDate,$v->startTime_1,$v->endTime_1);
+    return $isBusy;
+}

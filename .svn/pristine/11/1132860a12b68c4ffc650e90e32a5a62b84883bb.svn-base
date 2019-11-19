@@ -1,0 +1,249 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>User Update</title>
+<link href="css/css.css" rel="stylesheet" type="text/css">
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" src="js/language.js"></script>
+<script language="javascript" src="js/function.js"></script>
+<script language="javascript">
+function CheckForm()
+{
+	var isValid = true;
+	if($('userName').value == "")
+	{
+		alert(Lang_UserNameEmpty);
+		$('userName').focus();
+		isValid = false;
+		return;
+	}
+	if($('password').value == "")
+	{
+		alert(Lang_PasswordEmpty);
+		$('password').focus();
+		isValid = false;
+		return;
+	}
+	else
+	{
+		if($('password').value != $('confirmPassword').value)
+		{
+			alert(Lang_PasswordConfirm);
+			$('confirmPassword').focus();
+			isValid = false;
+			return;
+		}
+	}
+	if($F('dipaId') == "")
+	{
+		alert(Lang_UserDistrictEmpty);
+		$('dipaId').focus();
+		isValid = false;
+		return;
+	}
+	var roleValue = "";
+	var roleId = $('input').roleId;
+    for (i=0;i<roleId.length;i++)
+	{
+		if (roleId[i].checked == true)
+		{
+			roleValue = roleId[i].value;
+		}
+	}
+	if(roleValue == "")
+	{
+		alert(Lang_UserPermissionEmpty);
+		isValid = false;
+		return;
+	}
+	if(isValid)
+	{
+		$('input').submit();
+	}
+}
+
+</script>
+</head>
+
+<body>
+	<table width="98%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Bus Manage &gt;&gt;&gt; Modify User</td>
+		</tr>
+	</table>
+	<table width="98%" align="center">
+		<tr>
+			<td>
+				<table width="60%" align="center" class="TableNone">
+					<form action="user_update_press.php?userId={userId}" method="post"
+						name="input" id="input">
+						<tr bgcolor="#FFFFFF">
+							<td>login name:</td>
+							<td><input name="userName" type="text"
+								class="IdeaTextBoxOnBlur" id="userName" size="32" value="{Name}"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>password :</td>
+							<td><input name="password" type="password"
+								class="IdeaTextBoxOnBlur" id="password" size="32"
+								value="{password}"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>confirm password:</td>
+							<td><input name="confirmPassword" type="password"
+								class="IdeaTextBoxOnBlur" id="confirmPassword" size="32"
+								value="{password}"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>valid login time:</td>
+							<td><select name="validLoginTimeYear"
+								id="validLoginTimeYear">
+									<option value="{year}" selected="selected">{year}</option>
+									<!-- BEGIN Rowyear -->
+									<option value="{years}">{years}</option>
+									<!-- END Rowyear -->
+							</select> <select name="validLoginTimeMonth" id="validLoginTimeMonth">
+									<option value="{month}" selected="selected">{monthName}</option>
+									<!-- BEGIN Rowmonth -->
+									<option value="{months}">{monthsName}</option>
+									<!-- END Rowmonth -->
+							</select> <select name="validLoginTimeDay" id="validLoginTimeDay">
+									<option value="{day}" selected="selected">{day}</option>
+									<!-- BEGIN Rowday -->
+									<option value="{days}">{days}</option>
+									<!-- END Rowday -->
+							</select>&nbsp; <select name="validLoginTimeHour" id="validLoginTimeHour">
+									<option value="{hour}" selected="selected">{hour}</option>
+									<!-- BEGIN Rowhour -->
+									<option value="{hours}">{hours}</option>
+									<!-- END Rowhour -->
+							</select> <select name="validLoginTimeMinute" id="validLoginTimeMinute">
+									<option value="{min}" selected="selected">{min}</option>
+									<!-- BEGIN Rowmin -->
+									<option value="{mins}">{mins}</option>
+									<!-- END Rowmin -->
+							</select> <select name="validLoginTimeSecond" id="validLoginTimeSecond">
+									<option value="{second}" selected="selected">{second}</option>
+									<!-- BEGIN Rowsecond -->
+									<option value="{seconds}">{seconds}</option>
+									<!-- END Rowsecond -->
+							</select></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>english name:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="engName"
+								type="text" id="engName" size="32" value="{engName}"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>chinese name:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="chiName"
+								type="text" id="chiName" size="32" value="{chiName}"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>sex:</td>
+							<td><label> <select name="sex" id="sex">
+										<option value="{sexvalue}" selected="selected">{sex}</option>
+										<option value="{othersexvalue}">{othersex}</option>
+								</select>
+							</label></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>mobile:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="moblie"
+								type="text" id="moblie" size="32" value="{moblie}"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>telephone:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="telephone"
+								type="text" id="telephone" size="32" value="{telephone}"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>email:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="eMail"
+								type="text" id="eMail" size="32" value="{Email}"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>home:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="userHome"
+								type="text" id="userHome" size="32" value="{home}"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>district:</td>
+							<td><select name="dipaId" id="dipaId">
+									<option value="{distPartIdO}" selected="selected">{distPartEngNameO}</option>
+									<!-- BEGIN DistPartRow -->
+									<option value="{distPartId}">{distPartEngName}</option>
+									<!-- END DistPartRow -->
+							</select></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>Responsible District</td>
+							<td>
+								<!-- BEGIN DistrictRow -->
+								 <label> <input name="chkDoDistrict{DistrictCode}" type="checkbox" id="chkDoDistrict{DistrictCode}" value="{DistrictCode}">
+									{DistrictName}
+								 </label>
+								<!-- END DistrictRow -->
+							</td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>remark:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="userRemark"
+								type="text" id="userRemark" size="32" value="{remark}"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>role:</td>
+							<td>
+								<!-- BEGIN RoleRow -->
+								<input type="radio" name="roleId" id="roleId" value="{RoleId}">{RoleName}
+								<!-- END RoleRow -->
+							</td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>Contractor:</td>
+							<td><select id="company" name="company">
+									<option value="">--</option>
+									<!-- BEGIN CompanyRow -->
+									<option value="{companyCode}">{companyName}</option>
+									<!-- END CompanyRow -->
+							</select></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+
+
+						<tr bgcolor="#FFFFFF">
+							<td>&nbsp;</td>
+							<td><input class="ButtonIdea" type="button"
+								onClick="CheckForm();" name="Submit" id="Submit"
+								value="更新(Update)"></td>
+						</tr>
+					</form>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<table width="98%" border="0" align="center" cellpadding="0"
+		cellspacing="0">
+		<tr>
+			<td bgcolor="#FFB263" height="2"></td>
+		</tr>
+	</table>
+	<script language="javascript" type="text/javascript">
+{chkDoDistrict}
+//role
+var roleIds = $('input').roleId;
+for (i=0;i<roleIds.length;i++)
+{
+	roleId = roleIds[i];
+	if(roleId.value=='{currRoleId}')
+		roleId.checked = true;
+}
+//do company
+$('company').value = '{doCompany}';
+
+</script>
+</body>
+</html>

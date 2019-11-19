@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>學員日程</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery-1.6.js"></script>
+</head>
+
+<body>
+	<table width="100%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">學員管理 &gt;&gt;&gt; 學員日程</td>
+		</tr>
+	</table>
+	<table width="100%" align="center">
+		<tr>
+			<td height="20"><fieldset>
+					<legend>Search</legend>
+					<form id="searchForm" name="searchForm" method="get" action="">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>編號</td>
+								<td><label> <input name="txtSurvId" type="text"
+										id="txtSurvId" value="{txtSurvId}" size="12" />
+								</label></td>
+								<td>姓名</td>
+								<td><label> <input name="txtEngName" type="text"
+										id="txtEngName" value="{txtEngName}" size="12" />
+								</label></td>
+								<td>手提</td>
+								<td><input name="txtContact" type="text" id="txtContact"
+									value="{txtContact}" size="12" /></td>
+								<td><select name="ddlDipaCode" id="ddlDipaCode">
+										<option value="">----</option>
+										<!-- BEGIN DistPartRow -->
+										<option value="{distPartCode}">{distPartEngName}</option>
+										<!-- END DistPartRow -->
+								</select></td>
+								<td><select name="ddlStatus" id="ddlStatus">
+										<!-- BEGIN StatusRow -->
+										<option value="{statusCode}">{statusName}</option>
+										<!-- END StatusRow -->
+								</select></td>
+								<td><input class="ButtonIdea" type="submit" id="submit"
+									value="搜索(Search)" /></td>
+							</tr>
+						</table>
+					</form>
+				</fieldset></td>
+		</tr>
+	</table>
+	<table width="100%" border="0" align="center" cellpadding="0"
+		cellspacing="1" bgcolor="#000000">
+		<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+			<td width="0%" height="20"></td>
+			<td align="center">編號</td>
+			<td align="center" nowrap="nowrap">中文名</td>
+			<td align="center">英文名</td>
+			<td align="center">手提</td>
+			<td align="center">住址</td>
+			<td align="center">地區</td>
+			<td align="center">{nextDay0}</td>
+			<td align="center">{nextDay1}</td>
+			<td align="center">{nextDay2}</td>
+			<td align="center">{nextDay3}</td>
+			<td align="center">{nextDay4}</td>
+			<td align="center">{nextDay5}</td>
+			<td align="center">{nextDay6}</td>
+			<td align="center">{nextDay7}</td>
+			<td align="center">{nextDay8}</td>
+			<td align="center">{nextDay9}</td>
+			<td align="center">{nextDay10}</td>
+			<td align="center">{nextDay11}</td>
+			<td align="center">{nextDay12}</td>
+			<td align="center">{nextDay13}</td>
+			<td colspan="5" align="center">&nbsp;</td>
+		</tr>
+		<tr class="{listStyle}"
+			onmouseover="this.className='DgSelectedItemStyle'"
+			onmouseout="this.className='{listStyle}'" bgcolor="#FFFFFF">
+			<td>&nbsp;</td>
+			<td><a href="{pageUrl}na=survId&order=asc"><img
+					src="./images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+				href="{pageUrl}na=survId&order=desc"><img
+					src="./images/down.gif" width="13" height="8" border="0" /></a></td>
+			<td>&nbsp;</td>
+			<td><a href="{pageUrl}na=engName&order=asc"><img
+					src="./images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+				href="{pageUrl}na=engName&order=desc"><img
+					src="./images/down.gif" width="13" height="8" border="0" /></a></td>
+			<td><a href="{pageUrl}na=contact&order=asc"><img
+					src="./images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+				href="{pageUrl}na=contact&order=desc"><img
+					src="./images/down.gif" width="13" height="8" border="0" /></a></td>
+			<td><a href="{pageUrl}na=survHome&order=asc"><img
+					src="./images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+				href="{pageUrl}na=survHome&order=desc"><img
+					src="./images/down.gif" width="13" height="8" border="0" /></a></td>
+			<td><a href="{pageUrl}na=dipaCode&order=asc"><img
+					src="./images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+				href="{pageUrl}na=dipaCode&order=desc"><img
+					src="./images/down.gif" width="13" height="8" border="0" /></a></td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td colspan="5" nowrap="nowrap"><a
+				href="{pageUrl}na=(lastTotalWorkHour-totalWorkHour)&order=desc">Default
+					Sort</a></td>
+		</tr>
+
+		<!-- BEGIN Row -->
+		<tr class="{listStyle}"
+			onmouseover="this.className='DgSelectedItemStyle'"
+			onmouseout="this.className='{listStyle}'" bgcolor="#FFFFFF">
+			<td>&nbsp;</td>
+			<td>{survId}</td>
+			<td>{chiName}</td>
+			<td>{engName}</td>
+			<td>{contact}{whatsAPPICO}{emailICO}</td>
+			<td>{survHome}</td>
+			<td>{dipaCode}</td>
+			<td>{nextDaySchedule0}</td>
+			<td>{nextDaySchedule1}</td>
+			<td>{nextDaySchedule2}</td>
+			<td>{nextDaySchedule3}</td>
+			<td>{nextDaySchedule4}</td>
+			<td>{nextDaySchedule5}</td>
+			<td>{nextDaySchedule6}</td>
+			<td>{nextDaySchedule7}</td>
+			<td>{nextDaySchedule8}</td>
+			<td>{nextDaySchedule9}</td>
+			<td>{nextDaySchedule10}</td>
+			<td>{nextDaySchedule11}</td>
+			<td>{nextDaySchedule12}</td>
+			<td>{nextDaySchedule13}</td>
+			<td>{assign}</td>
+			<td>{time}</td>
+			<td>&nbsp;</td>
+			<td>{preview}</td>
+			<td>{resetPassword}</td>
+		</tr>
+		<!-- END Row -->
+	</table>
+	<table width="100%" border="0" cellspacing="0" cellpadding="2">
+		<tr>
+			<td align="right">{pageSetting}</td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+$(document).ready(function(){
+	$('#ddlDipaCode').val('{ddlDipaCode}');
+	$('#ddlStatus').val('{ddlStatus}');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Update Transport</title>
+<link href="css/css.css" rel="stylesheet" type="text/css">
+<link href="./css/jquery.leanModal.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="./js/jquery.leanModal.min.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="js/language.js"></script>
+<script type="text/javascript" src="js/function.js"></script>
+<script type="text/javascript" src="js/bus_entry.js"></script>
+</head>
+
+<body>
+	<table width="98%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Transport Database &gt;&gt;&gt; Update Transport</td>
+		</tr>
+	</table>
+	<table width="98%" align="center">
+		<tr>
+			<td>
+				<table width="90%" align="center" class="TableNone">
+					<form action="bus_update_press.php" method="post"
+						enctype="multipart/form-data" name="input" id="input">
+						<tr align="center" bgcolor="#FFFFFF" class="DgHeaderStyle">
+							<td height="20" colspan="7">&nbsp;</td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td colspan="7"><table width="100%" border="0"
+									cellspacing="0" cellpadding="0">
+									<tr bgcolor="#FFFFFF" class="TableNone">
+										<td width="10%">District: <input name="busId"
+											type="hidden" id="busId" value="{busId}"></td>
+										<td width="8%"><select name="distCode" id="distCode">
+												<option value="">----</option>
+												<!-- BEGIN DistRow -->
+												<option value="{distCode}">{distEngName}</option>
+												<!-- END DistRow -->
+										</select></td>
+										<td width="12%">Day of this bus:</td>
+										<td width="70%"><label> <input name="mon"
+												type="checkbox" id="mon" value="checkbox"> Mon <input
+												name="tue" type="checkbox" id="tue" value="checkbox">
+												Tue <input name="wed" type="checkbox" id="wed"
+												value="checkbox"> Wed <input name="thu"
+												type="checkbox" id="thu" value="checkbox"> Thu <input
+												name="fri" type="checkbox" id="fri" value="checkbox">
+												Fri <input name="sat" type="checkbox" id="sat"
+												value="checkbox"> Sat <input name="sun"
+												type="checkbox" id="sun" value="checkbox"> Sun <input
+												name="holiday" type="checkbox" id="holiday" value="checkbox">
+												Holiday &nbsp; &nbsp;|&nbsp;&nbsp;<a
+												href="javascript:SelectAll();"><strong>A</strong></a>&nbsp;&nbsp;<a
+												href="javascript:SelectNone();"><strong>N</strong></a></label></td>
+									</tr>
+								</table></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td width="9%">Route No:</td>
+							<td colspan="2"><input name="routeNo" type="text"
+								class="IdeaTextBoxOnBlur" id="routeNo" value="{routeNo}"
+								size="20" maxlength="40"></td>
+							<td>交通工具 Transport Mode</td>
+							<td><label> <select name="typeId" id="typeId">
+										<option value="">----</option>
+										<!-- BEGIN TypeRow -->
+										<option value="{typeId}">{typeName}</option>
+										<!-- END TypeRow -->
+								</select>
+							</label></td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td rowspan="2">Direction:</td>
+							<td colspan="2" rowspan="2"><input name="bounds" type="text"
+								class="IdeaTextBoxOnBlur" id="bounds" value="{bounds}" size="20"
+								maxlength="40"></td>
+							<td width="10%" rowspan="3">Schedule No:</td>
+							<td width="22%" rowspan="3"><table width="100%" border="0"
+									cellspacing="0" cellpadding="0">
+							  <tr>
+							    <td width="67%">All Day Schedule No.</td>
+							    <td width="33%"><input name="allSchNo" type="text"
+											class="IdeaTextBoxOnBlur" id="allSchNo" size="5"
+											maxlength="3" value="{allSchNo}"></td>
+						      </tr>
+							  <tr>
+							    <td>AM Schedule No.</td>
+							    <td><input name="amSchNo" type="text"
+											class="IdeaTextBoxOnBlur" id="amSchNo" size="5" maxlength="3"
+											value="{amSchNo}"></td>
+						      </tr>
+							  <tr>
+							    <td>PM Schedule No.</td>
+							    <td><input name="pmSchNo" type="text"
+											class="IdeaTextBoxOnBlur" id="pmSchNo" size="5" maxlength="3"
+											value="{pmSchNo}"></td>
+						      </tr>
+						    </table></td>
+							<td align="right">Total Journey Time(mins):</td>
+							<td><input name="totalJourneyTime" type="text" id="totalJourneyTime" value="{totalJourneyTime}" size="8" /></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+						  <td align="right">Total Journey Distance(KM.):</td>
+						  <td><input name="totalJourneyDistance" type="text" id="totalJourneyDistance" value="{totalJourneyDistance}" size="8" /></td>
+					  </tr>
+						<tr bgcolor="#FFFFFF">
+							<td>S Of S Date:</td>
+							<td colspan="2"><input name="sofsDate" type="text"
+								id="sofsDate" class="Wdate" onClick="WdatePicker({})" size="10"
+								value="{sofsDate}" /></td>
+							<td width="17%">&nbsp;</td>
+							<td width="14%">&nbsp;</td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td colspan="7" align="center"><table width="100%"
+									align="center" class="TableNone">
+							  <tr bgcolor="#FFFFFF">
+							    <td width="11%" align="center">Bus<br>
+							      Times </td>
+							    <td width="22%" valign="top"><label>
+							      <textarea name="busList"
+													cols="35" rows="78" id="busList">{busList}</textarea>
+							      </label></td>
+							    <td width="17%" valign="top">&nbsp;</td>
+							    <td width="8%" align="center">Bus<br>
+							      Distance</td>
+							    <td width="27%"><table width="100%" class="TableNone" border="0" cellspacing="0" cellpadding="0">
+							      <tr>
+							        <td>&nbsp;</td>
+							        <td width="80"><a id="btnImport" href="#signup" rel="leanModal"><b>Import</b></a></td>
+							        <td width="50"><a id="btnExport" href="#signup" rel="leanModal"><b>Export</b></a></td>
+						          </tr>
+							      </table>
+							      <table width="100%" border="0" cellspacing="2" cellpadding="0">
+							      <tr>
+							        <td align="center">Stop No. </td>
+							        <td align="center">Stop Description</td>
+							        <td align="center">Distance</td>
+						          </tr>
+							      <!-- BEGIN DistanceRow -->
+							      <tr>
+							        <td><input type="text" id="stopNo_{i}" name="stopNo[{i}]" size="6" value="{stopNo}" /></td>
+							        <td><input type="text" id="stopDescription_{i}" name="stopDescription[{i}]" size="30" value="{stopDescription}" /></td>
+							        <td><input type="text" id="distance_{i}" name="distance[{i}]" size="10" value="{distance}" /></td>
+						          </tr>
+							      <!-- END DistanceRow -->
+							      <tr>
+							        <td>&nbsp;</td>
+							        <td>&nbsp;</td>
+							        <td>&nbsp;</td>
+						          </tr>
+							      </table></td>
+							    <td width="27%">&nbsp;</td>
+						      </tr>
+						    </table></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>&nbsp;</td>
+							<td colspan="2">&nbsp;</td>
+							<td><input class="ButtonIdea" type="button"
+								name="Submit" onClick="Checkinfo()" value="更新(Update)"></td>
+							<td colspan="3">&nbsp;</td>
+						</tr>
+					</form>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<table width="98%" border="0" align="center" cellpadding="0"
+		cellspacing="0">
+		<tr>
+			<td bgcolor="#FFB263" height="2"></td>
+		</tr>
+	</table>
+	<div id="signup">
+		<div id="signup-ct">
+			<div id="signup-header">
+				<h2>Bus Distance</h2>
+				<a class="modal_close" href="#"></a>
+			</div>
+			<div class="txt-fld">
+				<textarea id="txtBusDistance" style="width:364px; height:300px;"></textarea>
+			</div>
+			<div class="btn-fld">
+				<span id='error-message' class="txt-error"></span>
+				<button type="button" id="btnSubmit">Submit &raquo;</button>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+$().ready(function(e) {
+	//星期部分
+	busDay = Array({busDay});
+	for(i=0;i<busDay.length;i++)
+	{
+		$('#'+busDay[i]).attr('checked',true);
+	}
+	//所属区域
+	$('#distCode').val('{busDistCode}');
+	//类型
+	$('#typeId').val('{busTypeId}');
+});
+</script>
+</body>
+</html>

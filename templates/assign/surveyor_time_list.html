@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Surveyor Time</title>
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+	<table width="100%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Surveyor Manager &gt;&gt;&gt; Surveyor Time</td>
+		</tr>
+	</table>
+	<table width="100%" align="center">
+		<tr>
+			<td height="20">
+				<form id="searchForm" name="searchForm" method="get" action="">
+					<fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>Date:</td>
+								<td><input name="txtStartTime" type="text"
+									id="txtStartTime" class="Wdate"
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+									value="{txtStartTime}" size="20" /> - <input name="txtEndTime"
+									type="text" id="txtEndTime" class="Wdate"
+									onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+									value="{txtEndTime}" size="20" /></td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+							</tr>
+						</table>
+					</fieldset>
+				</form>
+			</td>
+		</tr>
+	</table>
+	<table width="100%" border="0" align="center" cellpadding="0"
+		cellspacing="1" bgcolor="#000000">
+		<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+			<td width="5%" height="20" align="center">Code</td>
+			<td width="13%" align="center">Name of surveyor</td>
+			<td width="13%" align="center">Contact of surveyor</td>
+			<td width="13%" align="center">Home</td>
+			<td width="13%" align="center">District</td>
+			<td width="13%" align="center">Supervisor?</td>
+			<td align="center">Time</td>
+			<td align="center">Is Free</td>
+			<td align="center">&nbsp;</td>
+		</tr>
+
+		<!-- BEGIN Row -->
+		<tr class="{listStyle}"
+			onmouseover="this.className='DgSelectedItemStyle'"
+			onmouseout="this.className='{listStyle}'" bgcolor="#FFFFFF">
+			<td>{survId}</td>
+			<td>{engName}</td>
+			<td>{contact}</td>
+			<td>{survHome}</td>
+			<td>{dipaCode}</td>
+			<td>{IsSupervisor}</td>
+			<td>{startTime} - {endTime}</td>
+			<td>{isFree}</td>
+			<td>{preview}</td>
+		</tr>
+		<!-- END Row -->
+	</table>
+</body>
+</html>

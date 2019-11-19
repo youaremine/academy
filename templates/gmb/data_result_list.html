@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>list</title>
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css"
+	href="/extjs/resources/css/ext-all.css" />
+<script type="text/javascript" src="/extjs/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="/extjs/ext-all.js"></script>
+<script type="text/javascript" src="../js/product_list.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script language="javascript" type="text/javascript">
+//全选
+function SelectAll()
+{
+	for (var i=0; i<$('listForm').elements.length; i++) 
+	{
+		if($('listForm').elements[i].type == 'checkbox')
+			$('listForm').elements[i].checked = $('chkSelectAll').checked;
+	}
+}
+
+//选中行的颜色
+var tr_1 = "";
+var class_1 = "";
+function SelectRow(tr)
+{
+	if(tr_1 != "")
+	{
+		tr_1.style.backgroundColor = "";
+	}
+	tr_1 = tr;
+	class_1 = tr.className;
+	tr.style.backgroundColor = "#C90";
+}
+</script>
+</head>
+
+<body>
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">KLN-GMB &gt;&gt;&gt; Result List</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>Survey Date</td>
+								<td colspan="3"><table width="200" border="0"
+										cellspacing="0" cellpadding="0">
+										<tr>
+											<td><input name="txtSurveyDateStart" type="text"
+												id="txtSurveyDateStart" value="{txtSurveyDateStart}"
+												class="Wdate" onclick="WdatePicker({})" size="10" /></td>
+											<td>&nbsp;-&nbsp;</td>
+											<td><input name="txtSurveyDateEnd" type="text"
+												id="txtSurveyDateEnd" value="{txtSurveyDateEnd}"
+												class="Wdate" onclick="WdatePicker({})" size="10" /></td>
+										</tr>
+									</table></td>
+								<td><span style="">District</span></td>
+								<td><span style="">{ddlDistIdSelect}</span></td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>REF No</td>
+								<td><label> <input name="txtRefNo" type="text"
+										id="txtRefNo" value="{txtRefNo}" size="10" />
+								</label></td>
+								<td>Route No</td>
+								<td><input name="txtRouteNo" type="text" id="txtRouteNo"
+									value="{txtRouteNo}" size="10" /></td>
+								<td><span style="">Status</span></td>
+								<td><span style=""> <select name="ddlIsRelease"
+										id="ddlIsRelease">
+											<option value="no" selected="selected">Not Submit</option>
+											<option value="yes">Submitted</option>
+									</select>
+								</span></td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+	</form>
+	<form id="listForm" name="listForm" method="post"
+		action="product_list_state.php">
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td height="20" style="">&nbsp;</td>
+				<td align="center">REF NO.<br /> 編號
+				</td>
+				<td align="center">Route No<br /> 路線號碼
+				</td>
+				<td align="center">S of S Date</td>
+				<td align="center">Type<br /> 類型
+				</td>
+				<td align="center">Survey Date<br /> 調查日期
+				</td>
+				<td align="center">Survey Period <br /> 調查時間:
+				</td>
+				<td align="center">Location<br /> 地點
+				</td>
+				<td align="center">Bounds<br /> 方向
+				</td>
+				<td align="center" style="">輸入員</td>
+				<td colspan="5" align="center">操作</td>
+			</tr>
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td height="10" style=""></td>
+				<td align="center"><a href="{pageUrl}order=asc&na=refNo"><img
+						src="../images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+					href="{pageUrl}order=desc&na=refNo"><img
+						src="../images/down.gif" width="13" height="8" border="0" /></a></td>
+				<td align="center"><a href="{pageUrl}order=asc&na=routeNo"><img
+						src="../images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+					href="{pageUrl}order=desc&na=routeNo"><img
+						src="../images/down.gif" width="13" height="8" border="0" /></a></td>
+				<td align="center">&nbsp;</td>
+				<td align="center"><a href="{pageUrl}order=asc&na=engName"><img
+						src="../images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+					href="{pageUrl}order=desc&na=engName"><img
+						src="../images/down.gif" width="13" height="8" border="0" /></a></td>
+				<td align="center"><a href="{pageUrl}order=asc&na=surDate"><img
+						src="../images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+					href="{pageUrl}order=desc&na=surDate"><img
+						src="../images/down.gif" width="13" height="8" border="0" /></a></td>
+				<td align="center">&nbsp;</td>
+				<td align="center"></td>
+				<td align="center"></td>
+				<td align="center" style=""></td>
+				<td colspan="5" align="center"></td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'"
+				onclick=" SelectRow(this);">
+				<td style="">&nbsp;</td>
+				<td>{refNo}</td>
+				<td>{routeNo}</td>
+				<td>{sofsDate}</td>
+				<td>{type}</td>
+				<td>{surveyDate}</td>
+				<td>{surveyPeriod}</td>
+				<td>{location}</td>
+				<td>{bounds}</td>
+				<td style="">{userName}</td>
+				<td><a href="survey_product.php?supaId={supaId}"
+					target="_blank"><img src="../images/Preview.jpg" width="15"
+						height="17" border="0" title="預覽" /></a></td>
+				<td><a href="survey_product_download.php?supaId={supaId}"><img
+						src="../images/excel.jpg" width="15" height="17" border="0"
+						title="下載Excel" /></a></td>
+				<td><a href="data_update.php?supaId={supaId}"><img
+						src="../images/Modify.gif" width="15" height="17" border="0"
+						title="編輯" /></a></td>
+				<td><a href="data_del_press.php?supaId={supaId}"
+					onclick="return confirm('確認要刪除嗎?')"><img
+						src="../images/Delete.gif" width="11" height="11" border="0"
+						alt="Delete" title="刪除該記錄?"></a></td>
+				<td>&nbsp;</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="2">
+			<tr>
+				<td align="right">{pageSetting}</td>
+			</tr>
+		</table>
+		<label> <br />
+		</label>
+	</form>
+	<script type="text/javascript">
+Ext.onReady(function(){
+	Ext.get('ddlDistId').dom.value = "{ddlDistId}";
+	Ext.get('ddlIsRelease').dom.value = "{ddlIsRelease}";
+});
+</script>
+</body>
+</html>

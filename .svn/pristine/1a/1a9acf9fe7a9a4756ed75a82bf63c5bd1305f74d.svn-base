@@ -1,0 +1,87 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: James
+ * Date: 2016-05-07
+ * Time: 22:18
+ */
+
+include_once ("../includes/config.inc.php");
+
+$query = $_REQUEST ['q'];
+if(empty($query)){
+    $query = 'uploadForm';
+}
+
+switch ($query) {
+    case "uploadForm" :
+        $jobNoNew = $_REQUEST ['jobNoNew'];
+        $shortOneLetter = substr($jobNoNew,0,1);
+        $prefix = 1;
+        if(!empty($conf['shortDistrictName'][$shortOneLetter])){
+            $districtName = $conf['shortDistrictName'][$shortOneLetter];
+            $prefix = 1;
+        }else{
+            $shortTwoLetter = substr($jobNoNew,0,2);
+            if(!empty($conf['shortDistrictName'][$shortTwoLetter])){
+                $districtName = $conf['shortDistrictName'][$shortTwoLetter];
+                $prefix = 2;
+            }else{
+                $json = array (
+                    'success' => false,
+                    'msg' => '没有找到对应的项目.'
+                );
+                die(json_encode($json));
+            }
+        }
+        //获取该job相关的信息.
+        $apiUrl = "http://www.ozzotec.com/".PROJECTNAME."/api/main.php?q=Info&jobNoNew={$jobNoNew}";
+//        $apiUrl = "http://localphp.com/".PROJECTNAME."/api/main.php?q=Info&jobNoNew={$jobNoNew}";
+        $json = get_httpfile ( $apiUrl );
+        if (function_exists ( "json_decode" )) {
+            $data = json_decode ( $json );
+        } else {
+            $jsonService = new Services_JSON ();
+            $data = $jsonService->decode ( $json );
+        }
+        if(!empty($data)){
+            $json = array (
+                'success' => true,
+                'msg' => '成功獲取數據.'
+            );
+            $m = $data[0];
+            $path = "/{$districtName}/{$m->jobNo}/";
+            $path = $conf["path"]["root"].'cache/'.$path;
+            if(!is_readable($path))
+            {
+                is_file($path) or mkdir($path,0755);
+            }
+
+//            var_dump($_FILES['formFile']['name']);exit();
+            if(!is_array($_FILES['formFile']['name'])){
+                $json = array (
+                    'success' => false,
+                    'msg' => '沒有檢測到上傳文件.'
+                );
+                die(json_encode($json));
+            }
+            foreach($_FILES['formFile']['name'] as $k=>$v){
+                $fileExt = fileext($v);
+                $fileExt = strtolower($fileExt);
+                if($fileExt == 'pdf'){
+                    $fileName = $path.$jobNoNew.fileext($v);
+                }else{
+                    $fileName = $path.$jobNoNew.'-'.date('YmdHis').$k.'.'.fileext($v);
+                }
+                move_uploaded_file($_FILES['formFile']['tmp_name'][$k],$fileName);
+            }
+            die(json_encode($json));
+        }else{
+            $json = array (
+                'success' => false,
+                'msg' => '沒有找到對應的調查資料.'
+            );
+            die(json_encode($json));
+        }
+        break;
+}

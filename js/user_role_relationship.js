@@ -1,0 +1,9 @@
+$(function(){
+	$("#chkAll").on("click",function(){
+		if($("#chkAll").attr("checked")){
+			$("input[name='permId\[\]']").attr("checked",true);
+		}else{
+			$("input[name='permId\[\]']").attr("checked",false);
+		}
+	});
+});

@@ -1,0 +1,122 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>學員列表</title>
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/function.js"></script>
+<script type="text/javascript">
+var selValue = null;
+if(window.opener){window.opener.returnValue = selValue;}
+window.returnValue=selValue;
+
+function SetHidValue(values)
+{
+	$('#hidValue').val(values);
+}
+function ShowOtherSurveyor(company)
+{
+	$('#surveyor_'+company).show();
+	$('#btnShow_'+company).hide();
+	$('#btnHide_'+company).show();	
+}
+function HideOtherSurveyor(company)
+{
+	$('#surveyor_'+company).hide();
+	$('#btnShow_'+company).show();
+	$('#btnHide_'+company).hide();	
+}
+</script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+</head>
+<base target="_self" />
+<body>
+	<form id="searchForm" name="searchForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>{jobNoNew}</legend>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>編號</td>
+								<td><label> <input name="txtSurvId" type="text"
+										id="txtSurvId" value="{txtSurvId}" size="12" />
+								</label></td>
+								<td>姓名</td>
+								<td><label> <input name="txtEngName" type="text"
+										id="txtEngName" value="{txtEngName}" size="12" />
+								</label><input type="hidden" id="jobNoNew" name="jobNoNew"
+									value="{jobNoNew}" /></td>
+								<td>手提</td>
+								<td><input name="txtContact" type="text" id="txtContact"
+									value="{txtContact}" size="12" /></td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<!-- BEGIN Row -->
+			<tr class="DgHeaderStyle">
+				<td width="5"></td>
+				<td>{companyName}:(<a id="btnShow_{companyCode}" style=""
+					href="javascript:ShowOtherSurveyor('{companyCode}');">顯示</a><a
+					id="btnHide_{companyCode}" style=""
+					href="javascript:HideOtherSurveyor('{companyCode}');">隱藏</a>)
+				</td>
+			</tr>
+			<tr>
+				<td colspan="8">
+					<table id="surveyor_{companyCode}" width="100%" border="0"
+						align="center" cellpadding="0" cellspacing="1" bgcolor="#000000"
+						style="">
+						<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+							<td width="5" height="20"></td>
+							<td width="13%" align="center">編號</td>
+							<td width="13%" align="center">中文名</td>
+							<td width="13%" align="center">英文名</td>
+							<td width="13%" align="center">手提</td>
+							<td width="13%" align="center">住址</td>
+							<td width="13%" align="center">地區</td>
+							<td width="22%" align="center">備註</td>
+						</tr>
+						<!-- BEGIN SecondRow -->
+						<tr class="{listStyle}"
+							onMouseOver="this.className='DgSelectedItemStyle'"
+							onMouseOut="this.className='{listStyle}'" bgcolor="#FFFFFF"
+							onClick=" SelectRow(this);" onDblClick="{dbClickEvent}"
+							style="cursor: pointer;">
+							<td>&nbsp;</td>
+							<td><a
+								href="surveyor_assign.php?txtMonth={txtMonth}&survId={survId}"
+								target="_new">{survId}</a></td>
+							<td>{chiName}</td>
+							<td>{engName}</td>
+							<td>{contact}</td>
+							<td>{survHome}</td>
+							<td>{dipaCode}</td>
+							<td>{remark}</td>
+						</tr>
+						<!-- END SecondRow -->
+					</table>
+				</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+
+		<input name="hidValue" type="hidden" id="hidValue" />
+	</form>
+</body>
+</html>

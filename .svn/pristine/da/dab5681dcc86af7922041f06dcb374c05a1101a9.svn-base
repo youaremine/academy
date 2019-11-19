@@ -1,0 +1,175 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Detail Entry</title>
+<link href="css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="./js/jquery.js"></script>
+</head>
+
+<body>
+	<table width="98%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Traffic Flow &gt;&gt;&gt; Detail Entry</td>
+		</tr>
+	</table>
+	<table width="98%" align="center">
+		<tr>
+			<td><form action="flow_data_detail_entry_press.php"
+					method="post" name="input" id="input">
+					<table width="100%" border="0" cellpadding="0" cellspacing="1"
+						bgcolor="#000000">
+						<tr class="DgHeaderStyle">
+							<td colspan="27"><input name="joinId" type="hidden"
+								id="joinId" value="{joinId}" style="heght: 0px; width: 0px;">
+								<input name="moveId" type="hidden" id="moveId" value="{moveId}"
+								style="heght: 0px; width: 0px;"> MOVEMENT: <input
+								name="movementChiName" type="text" id="movementChiName"
+								size="15" value="{movementChiName}"> ROAD TYPE: <select
+								id="movementPcfaId" name="movementPcfaId">
+									<option value="">--</option>
+									<!-- BEGIN PcfaIdRow -->
+									<option value="{pcfaId}">{pcfaId}.{PCUFactor}</option>
+									<!-- END PcfaIdRow -->
+							</select></td>
+						</tr>
+					</table>
+					<table width="100%" border="0" cellpadding="0" cellspacing="1"
+						bgcolor="#000000">
+						<tr class="DgHeaderStyle">
+							<td colspan="2" align="center">Time</td>
+							<td class="{classType_1}">TYPE 1 VEH</td class="{classType_1}">
+							<td class="{classType_2}">TYPE 2 VEH</td class="{classType_1}">
+							<td class="{classType_3}">TYPE 3 VEH</td class="{classType_1}">
+							<td class="{classType_4}">TYPE 4 VEH</td class="{classType_1}">
+							<td class="{classType_5}">TYPE 5 VEH</td class="{classType_1}">
+							<td class="{classType_6}">TYPE 6 VEH</td class="{classType_1}">
+							<td class="{classType_7}">TYPE 7 VEH</td class="{classType_1}">
+							<td class="{classType_8}">TYPE 8 VEH</td class="{classType_1}">
+							<td class="{classType_9}">TYPE 9 VEH</td class="{classType_1}">
+							<td class="{classType_10}">TYPE 10 VEH</td class="{classType_1}">
+							<td class="{classType_11}">TYPE 11 VEH</td class="{classType_1}">
+							<td class="{classType_12}">TYPE 12 VEH</td class="{classType_1}">
+							<td class="{classType_13}">TYPE 13 VEH</td class="{classType_1}">
+							<td class="{classType_14}">TYPE 14 VEH</td class="{classType_1}">
+							<td class="{classType_15}">TYPE 15 VEH</td class="{classType_1}">
+							<td class="{classType_16}">TYPE 16 VEH</td class="{classType_1}">
+							<td class="{classType_17}">TYPE 17 VEH</td class="{classType_1}">
+							<td class="{classType_18}">TYPE 18 VEH</td class="{classType_1}">
+							<td class="{classType_19}">TYPE 19 VEH</td class="{classType_1}">
+							<td class="{classType_20}">TYPE 20 VEH</td class="{classType_1}">
+							<td class="{classType_21}">TYPE 21 VEH</td class="{classType_1}">
+							<td class="{classType_22}">TYPE 22 VEH</td class="{classType_1}">
+							<td class="{classType_23}">TYPE 23 VEH</td class="{classType_1}">
+							<td class="{classType_24}">TYPE 24 VEH</td class="{classType_1}">
+							<td class="{classType_25}">TYPE 25 VEH</td class="{classType_1}">
+						</tr>
+						<!-- BEGIN VEHRow -->
+						<tr class="{classRow}">
+							<td><input name="modeId[{i}]" type="hidden" id="modeId[{i}]"
+								value="{modeId}" style="heght: 0px; width: 0px;"><input
+								name="startTime[{i}]" type="text" class="shortTimeView"
+								id="startTime[{i}]" value="{startTime}" tabindex="-1" readonly></td>
+							<td><input name="endTime[{i}]" type="text"
+								class="shortTimeView" id="endTime[{i}]" value="{endTime}"
+								tabindex="-1" readonly></td>
+							<td class="{classType_1}" align="right"><input
+								name="type1VEH[{i}]" type="text" class="numberThree"
+								id="type1VEH[{i}]" value="{type1VEH}"></td>
+							<td class="{classType_2}" align="right"><input
+								name="type2VEH[{i}]" type="text" class="numberThree"
+								id="type2VEH[{i}]" value="{type2VEH}"></td>
+							<td class="{classType_3}" align="right"><input
+								name="type3VEH[{i}]" type="text" class="numberThree"
+								id="type3VEH[{i}]" value="{type3VEH}"></td>
+							<td class="{classType_4}" align="right"><input
+								name="type4VEH[{i}]" type="text" class="numberThree"
+								id="type4VEH[{i}]" value="{type4VEH}"></td>
+							<td class="{classType_5}" align="right"><input
+								name="type5VEH[{i}]" type="text" class="numberThree"
+								id="type5VEH[{i}]" value="{type5VEH}"></td>
+							<td class="{classType_6}" align="right"><input
+								name="type6VEH[{i}]" type="text" class="numberThree"
+								id="type6VEH[{i}]" value="{type6VEH}"></td>
+							<td class="{classType_7}" align="right"><input
+								name="type7VEH[{i}]" type="text" class="numberThree"
+								id="type7VEH[{i}]" value="{type7VEH}"></td>
+							<td class="{classType_8}" align="right"><input
+								name="type8VEH[{i}]" type="text" class="numberThree"
+								id="type1VEH_7" value="{type8VEH}"></td>
+							<td class="{classType_9}" align="right"><input
+								name="type9VEH[{i}]" type="text" class="numberThree"
+								id="type9VEH[{i}]" value="{type9VEH}"></td>
+							<td class="{classType_10}" align="right"><input
+								name="type10VEH[{i}]" type="text" class="numberThree"
+								id="type10VEH[{i}]" value="{type10VEH}"></td>
+							<td class="{classType_11}" align="right"><input
+								name="type11VEH[{i}]" type="text" class="numberThree"
+								id="type11VEH[{i}]" value="{type11VEH}"></td>
+							<td class="{classType_12}" align="right"><input
+								name="type12VEH[{i}]" type="text" class="numberThree"
+								id="type12VEH[{i}]" value="{type12VEH}"></td>
+							<td class="{classType_13}" align="right"><input
+								name="type13VEH[{i}]" type="text" class="numberThree"
+								id="type13VEH[{i}]" value="{type13VEH}"></td>
+							<td class="{classType_14}" align="right"><input
+								name="type14VEH[{i}]" type="text" class="numberThree"
+								id="type14VEH[{i}]" value="{type14VEH}"></td>
+							<td class="{classType_15}" align="right"><input
+								name="type15VEH[{i}]" type="text" class="numberThree"
+								id="type15VEH[{i}]" value="{type15VEH}"></td>
+							<td class="{classType_16}" align="right"><input
+								name="type16VEH[{i}]" type="text" class="numberThree"
+								id="type16VEH[{i}]" value="{type16VEH}"></td>
+							<td class="{classType_17}" align="right"><input
+								name="type17VEH[{i}]" type="text" class="numberThree"
+								id="type17VEH[{i}]" value="{type17VEH}"></td>
+							<td class="{classType_18}" align="right"><input
+								name="type18VEH[{i}]" type="text" class="numberThree"
+								id="type18VEH[{i}]" value="{type18VEH}"></td>
+							<td class="{classType_19}" align="right"><input
+								name="type19VEH[{i}]" type="text" class="numberThree"
+								id="type19VEH[{i}]" value="{type19VEH}"></td>
+							<td class="{classType_20}" align="right"><input
+								name="type20VEH[{i}]" type="text" class="numberThree"
+								id="type20VEH[{i}]" value="{type20VEH}"></td>
+							<td class="{classType_21}" align="right"><input
+								name="type21VEH[{i}]" type="text" class="numberThree"
+								id="type21VEH[{i}]" value="{type21VEH}"></td>
+							<td class="{classType_22}" align="right"><input
+								name="type22VEH[{i}]" type="text" class="numberThree"
+								id="type22VEH[{i}]" value="{type22VEH}"></td>
+							<td class="{classType_23}" align="right"><input
+								name="type23VEH[{i}]" type="text" class="numberThree"
+								id="type23VEH[{i}]" value="{type23VEH}"></td>
+							<td class="{classType_24}" align="right"><input
+								name="type24VEH[{i}]" type="text" class="numberThree"
+								id="type24VEH[{i}]" value="{type24VEH}"></td>
+							<td class="{classType_25}" align="right"><input
+								name="type25VEH[{i}]" type="text" class="numberThree"
+								id="type25VEH[{i}]" value="{type25VEH}"></td>
+						</tr>
+						<!-- END VEHRow -->
+					</table>
+					<div style="text-align: right;">
+						<input type="submit" name="btnMovementSave" id="btnMovementSave"
+							value="提交(Submit)">
+					</div>
+				</form></td>
+		</tr>
+	</table>
+	<table width="98%" border="0" align="center" cellpadding="0"
+		cellspacing="0">
+		<tr>
+			<td style="height: 10px;"></td>
+		</tr>
+		<tr>
+			<td bgcolor="#FFB263"></td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+$(document).ready(function(){
+	$('#movementPcfaId').val("{movementPcfaId}");
+});
+</script>
+</body>
+</html>

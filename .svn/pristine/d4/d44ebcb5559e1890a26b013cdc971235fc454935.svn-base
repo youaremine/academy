@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Login</title>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #FF00FF
+}
+-->
+</style>
+</head>
+
+<body>
+	<table width="960" height="768" border="0" align="center"
+		cellpadding="0" cellspacing="0" background="images/login.png">
+		<tr>
+			<td valign="top"><form id="form1" name="form1" method="post"
+					action="">
+					<table width="450" border="0" align="center" cellpadding="0"
+						cellspacing="0">
+						<tr>
+							<td height="350" colspan="3" style="color: #FF0000">&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="3" style="color: #FF0000">{Error}</td>
+						</tr>
+						<tr>
+							<td width="85" height="30">Username:</td>
+							<td width="179"><input name="userName" type="text"
+								id="userName" value="{userName}" style="width: 160px" /></td>
+							<script language="javascript" type="text/javascript">
+			document.getElementById('userName').focus();
+			</script>
+							<td width="186">&nbsp;</td>
+						</tr>
+						<tr>
+							<td height="30">Password:</td>
+							<td><input name="passWord" type="password" id="passWord"
+								style="width: 160px" /></td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td height="30">&nbsp;</td>
+							<td valign="middle"><input name="antispam" type="text"
+								id="antispam" style="width: 160px" /></td>
+							<td valign="middle"><img src="antispam.php" /></td>
+						</tr>
+						<tr>
+							<td height="30">&nbsp;</td>
+							<td colspan="2"><div align="left">
+									<div class="STYLE1" id="errormsg_0_logincaptcha">Enter
+										the numbers as they are shown in the image above.</div>
+								</div></td>
+						</tr>
+						<tr>
+							<td height="30">&nbsp;</td>
+							<td><label> <input type="submit" name="login"
+									value="Login" />
+							</label></td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="3"
+								style="color: #FF0000; font-size: 25px; height: 30px;"></td>
+						</tr>
+						<tr>
+							<td colspan="3" style="color: #FF0000; font-size: 30px;">{forUser}</td>
+						</tr>
+					</table>
+				</form></td>
+		</tr>
+	</table>
+</body>
+</html>

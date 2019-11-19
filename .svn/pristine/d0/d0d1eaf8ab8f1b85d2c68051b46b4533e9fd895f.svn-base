@@ -1,0 +1,73 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Bus System</title>
+<link href="css/css.css" rel="stylesheet" type="text/css">
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" src="js/language.js"></script>
+<script language="javascript" src="js/function.js"></script>
+<script language="javascript" type="text/javascript">
+function CheckForm()
+{
+	var isValid = true;
+	if($('fileSchedule').value == "")
+	{
+		alert(Lang_UploadFileEmpty);
+		$('fileSchedule').focus();
+		isValid = false;
+		return;
+	}
+	//全部条件成立提交	
+	if(isValid)
+	{
+		$('input').submit();
+	}
+}
+</script>
+</head>
+
+<body>
+	<table width="98%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Bus Manage &gt;&gt;&gt; Schedule Upload</td>
+		</tr>
+	</table>
+	<table width="98%" align="center">
+		<tr>
+			<td><form action="schedule_upload_press.php" method="post"
+					enctype="multipart/form-data" name="input" id="input">
+					<table width="768" border="0" align="center" cellpadding="0"
+						cellspacing="0">
+						<tr>
+							<td><label> <input name="radDistrict" type="radio"
+									id="radDistrict" value="H" checked> HK
+							</label> <label> <input name="radDistrict" type="radio"
+									id="radDistrict" value="K"> KLN
+							</label> <label> <input name="radDistrict" type="radio"
+									id="radDistrict" value="N"> NT
+							</label></td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td><label> <input name="fileSchedule" type="file"
+									id="fileSchedule" size="60">
+							</label></td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td><input type="button" onClick="CheckForm()" name="Submit"
+								id="Submit" value="提交(Submit)"></td>
+						</tr>
+					</table>
+				</form></td>
+		</tr>
+	</table>
+	<table width="98%" border="0" align="center" cellpadding="0"
+		cellspacing="0">
+		<tr>
+			<td bgcolor="#FFB263"></td>
+		</tr>
+	</table>
+</body>
+</html>

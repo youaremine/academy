@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>新增其它費用</title>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="/extjs/adapter/jquery/jquery.js"></script>
+<script type="text/javascript" src="/extjs/adapter/jquery/ext-jquery-adapter.js"></script>
+<script type="text/javascript" src="/extjs/ext-all-debug.js"></script>
+<script type="text/javascript" src="../js/function.js"></script>
+<script type="text/javascript">
+<!--
+var allRowNo = '{allRowNo}';
+-->
+</script>
+<script type="text/javascript" src="../js/salary/other-salary-entry.js"></script>
+<link rel="stylesheet" type="text/css" href="../css/css.css" />
+<link rel="stylesheet" type="text/css" href="/extjs/resources/css/ext-all.css"/>
+<style type="text/css">
+.PrintTable {
+	width: 100%;
+	border: 0px solid #000000;
+	background: #FFFFFF;
+	border-bottom: 1px solid #000000;
+	border-right: 1px solid #000000;
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-collapse: collapse;
+}
+</style>
+</head>
+
+<body>
+	<form id="myForm" name="myForm" method="post"
+		action="other-salary-entry-press.php">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">學費管理 &gt;&gt;&gt; 新增其它費用</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Default</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>課程日期</td>
+								<td><table width="200" border="0" cellspacing="0"
+										cellpadding="0">
+										<tr>
+											<td><input name="sSurveyDate" type="text" id="sSurveyDate" class="Wdate" onclick="WdatePicker({})" size="11" /></td>
+											<td>&nbsp;&nbsp;</td>
+											<td>&nbsp;</td>
+										</tr>
+									</table></td>
+								<td>其他項目</td>
+								<td><input class="ButtonIdea" name="OpenSubmit2"
+									type="button" id="OpenSubmit2" value="Select"
+									onclick="openModalDialog('../other-project-search-list.php',640,480,'sProjectCode|sProjectName')" />
+									<input name="sProjectCode" type="text" id="sProjectCode"
+									value="{sProjectCode}" size="6" readonly="readonly"
+									style="background-color: #E4E4E4" /> <input
+									name="sProjectName" type="text" id="sProjectName"
+									value="{sProjectName}" readonly="readonly"
+									style="background-color: #E4E4E4" /><a
+									href="javascript:Clear('sProjectCode|sProjectName');">
+										清空</a></td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>學員</td>
+								<td colspan="3"><table width="530" border="0"
+										cellspacing="0" cellpadding="0">
+										<tr>
+											<td><input class="ButtonIdea" name="OpenSubmit3"
+												type="button" id="OpenSubmit3" value="Select"
+												onclick="openModalDialog('../surveyor_search_list.php?survType={salaryType}',640,480,'sSurveyorId|sSurveyorEngName|sSurveyorContanct|sSurveyorHome')" /></td>
+											<td>&nbsp;</td>
+											<td><input name="sSurveyorId" type="text"
+												id="sSurveyorId" size="4" readonly="readonly"
+												style="background-color: #E4E4E4" value="{sSurveyorId}" /></td>
+											<td><input name="sSurveyorEngName" type="text"
+												id="sSurveyorEngName" size="20" readonly="readonly"
+												style="background-color: #E4E4E4" value="{sSurveyorEngName}" /></td>
+											<td><input name="sSurveyorContanct" type="text"
+												id="sSurveyorContanct" size="10" readonly="readonly"
+												style="background-color: #E4E4E4"
+												value="{sSurveyorContanct}" /></td>
+											<td><input name="sSurveyorHome" type="text"
+												id="sSurveyorHome" size="10" readonly="readonly"
+												style="background-color: #E4E4E4" value="{sSurveyorHome}" /></td>
+											<td><a
+												href="javascript:Clear('sSurveyorId|sSurveyorEngName|sSurveyorContanct|sSurveyorHome');">
+												清空</a></td>
+										</tr>
+									</table></td>
+								<td><a href="javascript:AllAsThis();">全部更新</a></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000" id="inputTable">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td height="20"></td>
+				<td align="center">學員</td>
+				<td align="center">課程</td>
+				<td align="center">Type</td>
+				<td align="center">課程日期</td>
+				<td align="center">開始時間</td>
+				<td align="center">結束時間</td>
+				<td align="center">Rest<br />
+Hour</td>
+				<td align="center">Hour</td>
+				<td align="center">Hourly<br />
+			    Rate</td>
+				<td align="center">Wages</td>
+				<td align="center">TE</td>
+				<td align="center">Total</td>
+				<td align="center">Remarks</td>
+				<td align="center"><span class="short_text" id="result_box"
+					lang="en" xml:lang="en"><span title="点击可显示其他翻译" class="hps">Attachment</span></span></td>
+				<td align="center">Del?</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr id="tr[{i}]" name="tr[{i}]" class="AlternatingItemStyle">
+				<td>&nbsp;</td>
+				<td nowrap="nowrap"><input type="hidden" id="otId[{i}]" name="otId[{i}]" value="{otId}" />
+                <input name="isUpdate[{i}]" type="hidden" id="isUpdate[{i}]" value="0" size="1">
+                <input class="ButtonIdea" {readonlyStyle}
+					name="OpenSubmit" type="button" id="OpenSubmit" value=" ... "
+					onclick="ChangeUpdate({i});openModalDialog('../surveyor_search_list.php?survType={salaryType}',640,480,'surveyorId[{i}]|surveyorEngName[{i}]')" /><input
+					name="surveyorId[{i}]" type="text" id="surveyorId[{i}]"
+					value="{surveyorId}" size="4" readonly="readonly" onchange="ChangeUpdate({i});" style="background-color: #E4E4E4" />
+                    <input name="surveyorEngName[{i}]" type="text" id="surveyorEngName[{i}]" value="{surveyorEngName}" size="12" readonly="readonly" style="background-color: #E4E4E4"></td>
+				<td nowrap="nowrap"><input class="ButtonIdea" {readonlyStyle} name="OpenSubmit" type="button" id="OpenSubmit" value=" ... "
+					onclick="ChangeUpdate({i});openModalDialog('../other-project-search-list.php',640,480,'projectCode[{i}]|projectName[{i}]')" />
+                    <input name="projectCode[{i}]" type="text" onchange="ChangeUpdate({i});" id="projectCode[{i}]" value="{projectCode}" size="6" readonly="readonly" style="background-color: #E4E4E4">
+                    <input name="projectName[{i}]" type="text" id="projectName[{i}]" style="background-color: #E4E4E4" value="{projectName}" size="25" readonly="readonly"></td>
+				<td><input type="text" name="salaryType[{i}]" id="salaryType[{i}]" size="6" value="{salaryType}" readonly="readonly" /></td>
+				<td><input name="surveyDate[{i}]" type="text" {readonlyStyle}
+					id="surveyDate[{i}]" value="{surveyDate}" class="Wdate"
+					onclick="WdatePicker({})" size="11" onchange="ChangeUpdate({i});"></td>
+				<td><input name="startTime[{i}]" type="text" id="startTime[{i}]"
+					onchange="FixTime(this);CalcHours({i});ChangeUpdate({i});" value="{startTime}" size="4" maxlength="5" {readonlyStyle} /></td>
+				<td><input name="endTime[{i}]" type="text" id="endTime[{i}]"
+					onchange="FixTime(this);CalcHours({i});ChangeUpdate({i});" value="{endTime}" size="4" maxlength="5" {readonlyStyle} /></td>
+			  <td><input name="restHour[{i}]" type="text" {readonlyStyle}
+					id="restHour[{i}]" value="{restHour}" size="4"
+					onchange="CalcHours({i});ChangeUpdate({i});"></td>
+				<td><input name="surveyHour[{i}]" type="text" {readonlyStyle}
+					id="surveyHour[{i}]" value="{surveyHour}" size="4"
+					onchange="CalcWages({i});ChangeUpdate({i});"></td>
+				<td><input name="hourlyRate[{i}]" type="text" {readonlyStyle}
+					id="hourlyRate[{i}]" value="{hourlyRate}" size="5"
+					onchange="CalcWages({i});CalcTotal({i});ChangeUpdate({i});"></td>
+				<td><input name="wages[{i}]" type="text" {readonlyStyle} id="wages[{i}]"
+					value="{wages}" size="6" onchange="CalcTotal({i});ChangeUpdate({i});"></td>
+				<td><input name="transportExpenses[{i}]" type="text" {readonlyStyle}
+					id="transportExpenses[{i}]" value="{transportExpenses}" size="6"
+					onchange="CalcTotal({i});ChangeUpdate({i});"></td>
+				<td><input name="total[{i}]" type="text" {readonlyStyle} id="total[{i}]"
+					value="{total}" size="6" onchange="ChangeUpdate({i});"></td>
+				<td><input name="remarks[{i}]" type="text" {readonlyStyle} id="remarks[{i}]"
+					value="{remarks}" size="20" onchange="ChangeUpdate({i});">
+                    <input type="hidden" id="delFlag[{i}]" name="delFlag[{i}]" value="{delFlag}" /></td>
+				<td>{attachment}</td>
+				<td><input name="isDelete[{i}]" {readonlyStyle} type="checkbox" value="yes"
+					id="isDelete[{i}]" tabindex="-1" onclick="ChangeDelete({i});ChangeUpdate({i});" /></td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<table width="100%" height="30" border="0" cellpadding="0"
+			cellspacing="0" class="PrintTable">
+			<tr class="PrintTable" height="0">
+				<td width="153"><input style="display: none;" name="addRow"
+					onclick="AddRow();" type="button" id="addRow"
+					value="添加一行(Add a row)" /></td>
+				<td width="400"></td>
+				<td><input style="display: none;" name="addRow"
+					onclick="AddRowByNo(10);" type="button" id="addRow2"
+					value="添加十行(Add ten row)" /></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>&nbsp;</td>
+				<td width="119">&nbsp;</td>
+		  </tr>
+			<tr class="PrintTable">
+				<td colspan="7" style="color:red;font-size:14px;">*所有課程日期和學員為空的數據都<b>不會</b>被保存.</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><input type="button" onclick="CheckForm()" name="btnSubmit" id="btnSubmit" value="提交(Submit)" /></td>
+			</tr>
+	  </table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="2">
+			<tr>
+				<td align="right">&nbsp;</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

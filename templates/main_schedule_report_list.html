@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Main Schedule Report List</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css"
+	href="/extjs/resources/css/ext-all.css" />
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<!-- <script type="text/javascript" src="/extjs/adapter/ext/ext-base.js"></script> -->
+<script type="text/javascript" src="/extjs/adapter/jquery/jquery.js"></script>
+<script type="text/javascript"
+	src="/extjs/adapter/jquery/ext-jquery-adapter.js"></script>
+<script type="text/javascript" src="/extjs/ext-all-debug.js"></script>
+<script type="text/javascript" src="js/main_schedule_report_list.js"></script>
+<script type="text/javascript" src="js/function.js"></script>
+</head>
+<body bgcolor="#FFFFFF">
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">Main Schedule &gt;&gt;&gt; Report List</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>Survey Date:</td>
+								<td><input name="txtPlannedSurveyDateStart" type="text"
+									id="txtPlannedSurveyDateStart"
+									value="{txtPlannedSurveyDateStart}" size="10" class="Wdate"
+									onclick="WdatePicker({})" /> - <input
+									name="txtPlannedSurveyDateEnd" type="text"
+									id="txtPlannedSurveyDateEnd" value="{txtPlannedSurveyDateEnd}"
+									size="10" class="Wdate" onclick="WdatePicker({})" /></td>
+								<td>Report Date:</td>
+								<td><input name="txtReportDateStart" type="text"
+									id="txtReportDateStart" value="{txtReportDateStart}" size="10"
+									class="Wdate" onclick="WdatePicker({})" /> - <input
+									name="txtReportDateEnd" type="text" id="txtReportDateEnd"
+									value="{txtReportDateEnd}" size="10" class="Wdate"
+									onclick="WdatePicker({})" /></td>
+								<td>Request No:</td>
+								<td><input name="txtJobNoNew" type="text" id="txtJobNoNew"
+									value="{txtJobNoNew}" size="8" /></td>
+								<td>Route No:</td>
+								<td><input name="txtRouteNo" type="text" id="txtRouteNo"
+									value="{txtRouteNo}" size="8" /></td>
+								<td style="">Sender:</td>
+								<td style=""><select name="ddlFirstSender"
+									id="ddlFirstSender">
+										<option value="">----</option>
+										<option value="all">All</option>
+										<!-- BEGIN FirstSenderRow -->
+										<option value="{firstSenderId}">{firstSenderName}</option>
+										<!-- END FirstSenderRow -->
+										<option value="NULL">None</option>
+								</select></td>
+								<td style="">District:</td>
+								<td style="">{ddlDistIdSelect}</td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" cellpadding="0" cellspacing="1">
+			<tr class="DgHeaderStyle">
+				<td style="" nowrap="nowrap">&nbsp;</td>
+				<td style="" nowrap="nowrap">Request No.</td>
+				<td>Due Date</td>
+				<td>Nos of Form</td>
+				<td>On Board Cost Hours</td>
+				<td>Man Hours</td>
+				<td>Total Hours</td>
+				<td>Planned Survey Date</td>
+				<td>Report Date</td>
+				<td>First<br /> Sender
+				</td>
+				<td>Raw Data</td>
+				<td>Request Form</td>
+				<td>Report</td>
+				<td>Summary Table</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'"
+				onclick=" SelectRow(this);">
+				<td>&nbsp;</td>
+				<td><span style="white-space: nowrap;"><a
+						href="{pageUrl}?sort=order by jobNo asc"><img
+							src="./images/up.gif" width="13" height="8" border="0" /></a>&nbsp;<a
+						href="{pageUrl}?sort=order by jobNo desc"><img
+							src="./images/down.gif" width="13" height="8" border="0" /></a></span></td>
+				<td style="white-space: nowrap;">&nbsp;</td>
+				<td style="white-space: nowrap;">&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td style="white-space: nowrap;">&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td style="white-space: nowrap;">&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'"
+				onclick=" SelectRow(this);">
+				<td>&nbsp;</td>
+				<td>{jobNo}</td>
+				<td style="white-space: nowrap;">{dueDate}</td>
+				<td style="white-space: nowrap;">{nosOfForm}</td>
+				<td>{onBoardCostFareHours}</td>
+				<td>{manHours}</td>
+				<td>{totalHours}</td>
+				<td style="white-space: nowrap;">{plannedSurveyDates}</td>
+				<td style="white-space: nowrap;">{report}</td>
+				<td>{firstSender}</td>
+				<td>{rawDataAction}{rawDataState}</td>
+				<td>{requestFormAction}{requestFormState}</td>
+				<td style="white-space: nowrap;">{reportAction} {reportState}</td>
+				<td>{summaryTableAction}{summaryTableState}</td>
+				<td>{sendMailState}</td>
+				<td>{divisionWorkUser}</td>
+			</tr>
+			<!-- END Row -->
+			<tr class="DgHeaderStyle" style="color: #000;">
+				<td>&nbsp;</td>
+				<td style="text-align: right;"><strong>Total:</strong></td>
+				<td style="white-space: nowrap;">&nbsp;</td>
+				<td style="white-space: nowrap;">{totalNosOfForm}</td>
+				<td>{totalOnBoardCostFareHours}</td>
+				<td>{totalManHours}</td>
+				<td>{totalTotalHours}</td>
+				<td style="white-space: nowrap;">&nbsp;</td>
+				<td style="white-space: nowrap;">&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td style="white-space: nowrap;">&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="2">
+			<tr>
+				<td align="right">{pageSetting}</td>
+			</tr>
+		</table>
+		<br />
+	</form>
+	<table width="100%" border="0" cellspacing="10">
+		<tr>
+			<td width="40" style="background-color: red;">&nbsp;</td>
+			<td><span> 整行变红色表示原始数据离站车上人数大于车的容量,明显不合理,请检查数据.</span></td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+$('#ddlDistId').val("{ddlDistId}");
+$('#ddlFirstSender').val("{ddlFirstSender}");
+</script>
+</body>
+</html>

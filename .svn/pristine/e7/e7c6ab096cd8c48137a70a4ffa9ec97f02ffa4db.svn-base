@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>{jobNoNew}的聊天記錄</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../js/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="../js/bootstrap-3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Css -->
+
+    <link href="../js/bootstrap-3.3.5/plugin/ekko-lightbox/ekko-lightbox.css" rel="stylesheet">
+    <link href="../css/post.css?t={SITEVESION}" rel="stylesheet">
+    <link href="../css/post-single.css?t={SITEVESION}" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">{jobNoNew}的聊天記錄</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="./">消息中心</a></li>
+                <li><a href="./unreply.php">未回覆消息</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<nav class="navbar navbar-inverse navbar-fixed-bottom">
+    <div class="container">
+            <form id="formPost" class="form-search">
+                <select name="categoryId" id="categoryId">
+                    <option value="1" selected="selected">数据</option>
+                    <option value="2">工资</option>
+                </select>
+                <input type="hidden" name="jobNoNew" value="{jobNoNew}" />
+                <input name="content" id="content" style="width: 180px;" placeholder="請輸入回覆內容" class="input-xlarge" type="text" />
+                <button id="btnSend" type="button" class="btn btn-success">發送</button>
+            </form>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row" id="chat_history_list">
+    </div>
+    <div style="clear:both;"></div>
+    <div class="row">
+
+    </div>
+    <div class="footer">
+        © Ozzo Technology (HK) Ltd
+    </div>
+
+</div><!-- /.container -->
+<script type="text/html" id="tpl_chat_history">
+    <ol>
+        <% for (var i=0;i<data.length;i++) { %>
+        <% var item = data[i] %>
+            <% if(item.userId>0) { %>
+            <li class="comment-right">
+                <div class="comment-meta-right">
+                    <h3><%=item.userName%></h3>
+                    <h4><%=item.userId%></h4>
+                    <span><%=item.shortInputTime%></span>
+                </div>
+                <blockquote>
+                    <p><%=item.content%></p>
+                </blockquote>
+            </li>
+            <%}else{%>
+            <li class="comment">
+                <div class="comment-meta">
+                    <h3><%=item.survName%></h3>
+                    <h4><%=item.survId%></h4>
+                    <span><%=item.shortInputTime%></span>
+                </div>
+                <blockquote>
+                    <% if(item.format=='image') { %>
+					<p><a href="<%=item.content%>" data-toggle="lightbox">
+					<img src="<%=item.content%>" width="50" class="img-responsive">
+					</a></p>
+                    <% }else{ %>
+                    <p><%=item.content%></p>
+                    <% } %>
+                </blockquote>
+            </li>
+            <%}%>
+        <%}%>
+    </ol>
+	<script type="text/javascript">
+		$(document).ready(function ($) {
+			$(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function(event) {
+					event.preventDefault();
+					return $(this).ekkoLightbox({
+						onShown: function() {
+							if (window.console) {
+								return console.log('Checking our the events huh?');
+							}
+						},
+						onNavigate: function(direction, itemIndex) {
+							if (window.console) {
+								return console.log('Navigating '+direction+'. Current item: '+itemIndex);
+							}
+						}
+					});
+				});
+
+		});
+	</script>
+</script>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../js/bootstrap-3.3.5/js/jquery.min.js"></script>
+<script src="../js/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-3.3.5/plugin/ekko-lightbox/ekko-lightbox.js"></script>
+<script src="../js/template-native.js"></script>
+<script src="../js/post/single.js?t={SITEVESION}"></script>
+<script type="text/javascript">
+    var jobNoNew = '{jobNoNew}';
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<HTML>
+<HEAD>
+<title>Update Password</title>
+<meta content="JavaScript" name="vs_defaultClientScript">
+<meta content="http://schemas.microsoft.com/intellisense/ie5"
+	name="vs_targetSchema">
+<LINK href="css/css.css" type="text/css" rel="stylesheet">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</HEAD>
+<body bottomMargin="0" leftMargin="0" topMargin="0" rightMargin="0"
+	MS_POSITIONING="GridLayout">
+	<table width="100%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Update Password</td>
+		</tr>
+	</table>
+	<br>
+	<table width="100%" align="center">
+		<tr>
+			<td height="20"><fieldset>
+					<legend>Update {userName}'s Password</legend>
+					<table width="400" border="0" cellspacing="10" cellpadding="0">
+						<form id="form1" name="form1" method="post"
+							action="update-password-press.php">
+							<tr style="display: none;">
+								<td>Old Password:</td>
+								<td><input name="txtOldPassword" type="text"
+									id="txtOldPassword" size="25" /> <input name="oldPassword"
+									id="oldPassword" type="hidden" value="{passWord}"></td>
+							</tr>
+							<tr>
+								<td>New Password:</td>
+								<td><input name="txtNewPassword" type="password"
+									id="txtNewPassword" size="25" autocomplete="off" /></td>
+							</tr>
+							<tr style="display: none;">
+								<td>Confirm New Password:</td>
+								<td><input name="txtConfirmNewPassword" type="text"
+									id="txtConfirmNewPassword" size="25" /></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="修改(Update)" /> &nbsp;&nbsp;&nbsp;&nbsp;<a
+									href="index.php" style="">skip</a></td>
+							</tr>
+							<tr>
+								<td colspan="2" align="center" style="color: red;">{message}</td>
+							</tr>
+						</form>
+					</table>
+				</fieldset></td>
+		</tr>
+	</table>
+</body>
+</HTML>

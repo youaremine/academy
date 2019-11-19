@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Questionairn Taxi Entry</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" src="js/language.js"></script>
+<script language="javascript" src="js/function.js"></script>
+<script language="javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+function CheckForm()
+{
+	var isValid = true;
+	if($('surveyDate').value=="")
+	{
+		alert(Lang_surveyDayEmpty);
+		$('surveyDate').focus();
+		isValid = false;
+		return;
+	}
+	//全部条件成立提交	
+	if(isValid)
+	{
+		$('input').submit();
+	}
+}
+
+
+function patternOfExcel(objName,number)
+{
+	var nameDown = objName.replace('?',number+1);
+	var nameUp = objName.replace('?',number-1);
+	var objDown = document.getElementById(nameDown);
+	var objUp = document.getElementById(nameUp);
+	if(event.keyCode==13 && objDown!=null)
+	{
+		objDown.focus();
+	}
+	else if(event.keyCode==40 && objDown!=null)
+	{
+		objDown.focus();
+	}
+	else if(event.keyCode==38 && objUp!=null)
+	{
+		objUp.focus();
+	}
+}
+
+var allRowNo = {allRowNo};
+function AddRow()
+{ 
+	allRowNo = allRowNo + 1;
+	var tb = $('PrintTable');
+	var tr = tb.insertRow(tb.rows.length);
+	tr.style.backgroundColor =  "White";  
+	var tdHtml = "<input name=\"surveyTime["+allRowNo+"]\" type=\"text\" id=\"surveyTime["+allRowNo+"]\" size=\"8\" onkeydown=\"patternOfExcel('surveyTime[?]',"+allRowNo+");\" />";
+	td = tr.insertCell(0);
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"taxiFare["+allRowNo+"]\" type=\"text\" id=\"taxiFare["+allRowNo+"]\" size=\"8\" onkeydown=\"patternOfExcel('taxiFare[?]',"+allRowNo+");\" />" ; 
+	td = tr.insertCell(1);
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"tips\" type=\"text\" id=\"tips\" size=\"8\" />";
+	td = tr.insertCell(2);
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"chargeableLuggage["+allRowNo+"]\" type=\"text\" id=\"chargeableLuggage["+allRowNo+"]\" size=\"8\" />";
+	td = tr.insertCell(3);
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"radioCallSurcharge["+allRowNo+"]\" type=\"checkbox\" id=\"radioCallSurcharge["+allRowNo+"]\" value=\"yes\" />";
+	td = tr.insertCell(4);
+	td.align = 'center';
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"tunnelFee["+allRowNo+"]\" type=\"text\" id=\"tunnelFee["+allRowNo+"]\" size=\"8\" />";
+	td = tr.insertCell(5);
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"tunnelSurcharge["+allRowNo+"]\" type=\"text\" id=\"tunnelSurcharge["+allRowNo+"]\" size=\"8\" />"; 
+	td = tr.insertCell(6);
+	td.innerHTML = tdHtml;
+	tdHtml = "<select name=\"taxiType["+allRowNo+"]\" id=\"taxiType["+allRowNo+"]\">";
+    tdHtml += "            <option value=\"\">--</option>";
+    tdHtml += "            <option value=\"U\">U</option>";
+    tdHtml += "            <option value=\"NT\">NT</option>";
+    tdHtml += "            <option value=\"L\">L</option>";
+    tdHtml += "            </select>";
+	td = tr.insertCell(7);
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"interceptInterview["+allRowNo+"]\" type=\"checkbox\" id=\"interceptInterview["+allRowNo+"]\" value=\"yes\" />";
+	td = tr.insertCell(8);
+	td.align = 'center';
+	td.innerHTML = tdHtml;
+}
+
+function AddRowByNo(addNo)
+{
+	for($i=0;$i<addNo;$i++)
+	{
+		AddRow();
+	}
+}
+
+</script>
+</head>
+
+<body>
+	<form id="input" name="input" method="post"
+		action="questionairn_taxi_entry_press.php">
+		<table width="776" border="0" align="center" cellpadding="0"
+			cellspacing="10">
+			<tr>
+				<td align="center"><strong> Taxi Sundry Income Survey
+						2007<br /> <u> Interview Survey on Alighting Taxi Passenger</u>
+				</strong></td>
+			</tr>
+			<tr>
+				<td><table width="100%" border="0" cellspacing="0"
+						cellpadding="0">
+						<tr>
+							<td height="25">Survey Taken by(調查員):</td>
+							<td colspan="3"><table width="110" border="0"
+									cellspacing="0" cellpadding="0">
+									<tr>
+										<td><input class="ButtonIdea" name="OpenSubmit"
+											type="button" id="OpenSubmit" value="Select"
+											onclick="openModalDialog('surveyor_search_list.php',640,480,'survId|surveyorEngName|surveyorContanct|surveyorHome')" /></td>
+										<td>&nbsp;</td>
+										<td><input name="survId" type="text" id="survId" size="4"
+											readonly="true" style="background-color: #E4E4E4" /></td>
+										<td><input name="surveyorEngName" type="text"
+											id="surveyorEngName" size="20" readonly="true"
+											style="background-color: #E4E4E4" /></td>
+										<td><input name="surveyorContanct" type="text"
+											id="surveyorContanct" size="10" readonly="true"
+											style="background-color: #E4E4E4" /></td>
+										<td><input name="surveyorHome" type="text"
+											id="surveyorHome" size="10" readonly="true"
+											style="background-color: #E4E4E4" /></td>
+									</tr>
+								</table> <label></label></td>
+						</tr>
+						<tr>
+							<td height="25">Location(位置):</td>
+							<td><label> <input name="location" type="text"
+									id="location" size="20" />
+							</label></td>
+							<td><label>District(地区):</label></td>
+							<td><input type="radio" name="district" id="radio" value="U" />
+								Urban(市區)/ <input type="radio" name="district" id="radio"
+								value="NT" /> N.T(新界)/ <input type="radio" name="district"
+								id="radio" value="L" /> Lantau(大嶼山) <label></label></td>
+						</tr>
+						<tr>
+							<td height="25">Lantau(日期):</td>
+							<td><label> <input name="surveyDate" type="text"
+									id="surveyDate" size="20" class="Wdate"
+									onclick="WdatePicker({})" />
+							</label></td>
+							<td>Weather(天氣):</td>
+							<td><label> <input name="weather" type="text"
+									id="weather" size="20" />
+							</label></td>
+						</tr>
+					</table></td>
+			</tr>
+			<tr>
+				<td><strong>Remark</strong>: <strong>* </strong>Taxi fare which
+					excludes (不包括) tips ,the radio surcharge ,tunnel fee, tunnel
+					surcharge and luggage surcharge.<br /> <strong>        #</strong>
+					Taxi Type: <strong>U</strong> – Urban taxi (市區的士),<strong>
+						NT</strong> –- NT taxi (新界的士),<strong> L</strong> – Lantau Taxi (大嶼山的士)</td>
+			</tr>
+			<tr>
+				<td><table id="PrintTable" width="100%" border="0"
+						cellpadding="0" cellspacing="1" bgcolor="#000000">
+						<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+							<td width="56"><p align="center">Time時間</p></td>
+							<td width="56"><p align="center">
+									Taxi Fare<strong>*</strong><br /> 車資<br /> $
+								</p></td>
+							<td width="56"><p align="center">
+									Tips <br /> (if any)<br /> 小費<br /> $
+								</p></td>
+							<td width="90" valign="top"><p align="center">
+									No. of <br /> chargeable luggage<br /> (if any)<br /> 繳費行李數目
+								</p></td>
+							<td width="88"><p align="center">
+									Radio-call<br /> surcharge<br /> 電召附加費<br /> (Y or N)<br />
+									(是/否)
+								</p></td>
+							<td width="61"><p align="center">
+									Tunnel <br /> fee<br /> (if any)<br /> 隧道費
+								</p></td>
+							<td width="82"><p align="center">
+									Tunnel<br /> surcharge<br /> 隧道<br /> 回程費
+								</p></td>
+							<td width="82"><p align="center">
+									Taxi Type<strong>#</strong><br /> 的士類別<br /> (U/NT/L)
+								</p></td>
+							<td width="80" valign="top"><p align="center">
+									Refuse the intercept interview<br /> (Y/N)<br /> 拒絕訪問 (是/否)
+								</p></td>
+						</tr>
+						<!-- BEGIN EntryRow -->
+						<tr bgcolor="#FFFFFF">
+							<td width="56" height="25" valign="middle"><input
+								name="surveyTime[{i}]" type="text" id="surveyTime[{i}]" size="8"
+								onkeydown="patternOfExcel('surveyTime[?]',{i});" /></td>
+							<td width="56" valign="middle"><p>
+									<input name="taxiFare[{i}]" type="text" id="taxiFare[{i}]"
+										size="8" onkeydown="patternOfExcel('taxiFare[?]',{i});" />
+								</p></td>
+							<td width="56" valign="middle"><p>
+									<input name="tips" type="text" id="tips" size="8" />
+								</p></td>
+							<td width="90" valign="middle"><p>
+									<input name="chargeableLuggage[{i}]" type="text"
+										id="chargeableLuggage[{i}]" size="8" />
+								</p></td>
+							<td width="88" align="center" valign="middle"><p>
+									<label> <input name="radioCallSurcharge[{i}]"
+										type="checkbox" id="radioCallSurcharge[{i}]" value="yes" />
+									</label>
+								</p></td>
+							<td width="61" valign="middle"><p>
+									<input name="tunnelFee[{i}]" type="text" id="tunnelFee[{i}]"
+										size="8" />
+								</p></td>
+							<td width="82" valign="middle"><p>
+									<input name="tunnelSurcharge[{i}]" type="text"
+										id="tunnelSurcharge[{i}]" size="8" />
+								</p></td>
+							<td width="82" valign="middle"><p>
+									<label> <select name="taxiType[{i}]" id="taxiType[{i}]">
+											<option value="">--</option>
+											<option value="U">U</option>
+											<option value="NT">NT</option>
+											<option value="L">L</option>
+									</select>
+									</label>
+								</p></td>
+							<td width="80" align="center" valign="middle" bgcolor="#FFFFFF"><p>
+									<label> <input name="interceptInterview[{i}]"
+										type="checkbox" id="interceptInterview[{i}]" value="yes" />
+									</label>
+								</p></td>
+						</tr>
+						<!-- END EntryRow -->
+
+					</table>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						<tr>
+							<td width="20%"><input name="addRow" onclick="AddRow();"
+								type="button" id="addRow" value="添加一行(Add a row)" />&nbsp;</td>
+							<td width="20%"><input name="addRow2"
+								onclick="AddRowByNo(10);" type="button" id="addRow2"
+								value="添加十行(Add ten row)" /></td>
+							<td>&nbsp;</td>
+							<td width="15%"><input type="button" onclick="CheckForm()"
+								name="Submit" id="Submit" value="提交(Submit)" /></td>
+						</tr>
+					</table></td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

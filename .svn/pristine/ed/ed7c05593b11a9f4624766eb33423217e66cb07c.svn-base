@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Notification</title>
+</head>
+
+<body
+	style="background-color: #E5F8DF; font-size: 12px; margin: 0 0 0 0; color: #000000;">
+	<p>&nbsp;</p>
+	<table width="98%" border="5" align="center" cellpadding="0"
+		cellspacing="0"
+		style="background-color: #82A178; border-color: #82A178;">
+		<tr
+			style="background-color: #82A178; font-family: Arial, Helvetica, sans-serif; color: #ffffff; font-size: 14px; height: 25px; padding-left: 5px;">
+			<td align="center"><strong>通知(Notification)!</strong></td>
+		</tr>
+		<tr>
+			<td bgcolor="#FFFFFF">
+				<p style="padding-left: 20px;">
+					<img src="http://{siteUrl}/images/error.png" width="28" height="28" /><span
+						style="color: red; font-weight: bold; font-size: 16px;">調查已經超過
+						{urgentDay} 個工作日仍未交報告的.</span><br />
+					....................................................................................
+					<!-- BEGIN UrgentFirstRow -->
+					<ul style="float: left; list-style-type: decimal;">
+						<!-- BEGIN UrgentRow -->
+						<li
+							title="{jobNo}調查日期:{plannedSurveyDate}&#10;未收回的表:{unreceiveJobNoCode}&#10;負責人{divisionWorkUser}."><b><a
+								style="text-decoration: none; color: #000;"
+								href="main_schedule_unfinished_list.php?txtJobNoNew={jobNo}">{jobNo}</a></b>:{plannedSurveyDate}{unreceiveJobNo}
+							- {divisionWorkUser}</li>
+						<!-- END UrgentRow -->
+					</ul>
+					<!-- END UrgentFirstRow -->
+					<ul style="float: left;{noUrgentStyle}">
+						<li>恭喜你,沒有找到超過 {urgentDay} 個工作日的.</li>
+					</ul>
+				</p>
+
+				<p style="padding-left: 20px; float: left; width: 100%;">
+					<img src="http://{siteUrl}/images/warning.png" width="28"
+						height="28" /><span
+						style="color: #F90; font-weight: bold; font-size: 16px;">調查已經超過
+						{warningDay} 個工作日仍未交報告的!</span><br />
+					....................................................................................
+					<!-- BEGIN WarningFirstRow -->
+					<ul style="float: left; list-style-type: decimal;">
+						<!-- BEGIN WarningRow -->
+						<li
+							title="{jobNo}調查日期:{plannedSurveyDate}&#10;未收回的表:{unreceiveJobNoCode}&#10;負責人{divisionWorkUser}"><b><a
+								style="text-decoration: none; color: #000;"
+								href="main_schedule_unfinished_list.php?txtJobNoNew={jobNo}">{jobNo}</a></b>:{plannedSurveyDate}{unreceiveJobNo}
+							- {divisionWorkUser}</li>
+						<!-- END WarningRow -->
+					</ul>
+					<!-- END WarningFirstRow -->
+					<ul style="float: left;{noWarningStyle}">
+						<li>喔,大家厲害了,連超過 {warningDay} 個工作日的都沒有!</li>
+					</ul>
+				</p>
+
+				<p style="padding-left: 20px; float: left; width: 100%;">
+					<img src="http://{siteUrl}/images/error.png" width="28" height="28" /><span
+						style="color: red; font-weight: bold; font-size: 16px;">過了或者{dueDateDay}日內就到截止日期仍未交報告的.</span><br />
+					....................................................................................
+					<!-- BEGIN DueDateFirstRow -->
+					<ul style="float: left; list-style-type: decimal;">
+						<!-- BEGIN DueDateRow -->
+						<li
+							title="{jobNo}調查日期:{plannedSurveyDate}&#10;未收回的表:{unreceiveJobNoCode}&#10;負責人{divisionWorkUser}"><b><a
+								style="text-decoration: none; color: #000;"
+								href="main_schedule_unfinished_list.php?txtJobNoNew={jobNo}">{jobNo}</a></b>:{plannedSurveyDate}{unreceiveJobNo}
+							- {divisionWorkUser}<span style="color: red">(截止日期:{dueDate})</span></li>
+						<!-- END DueDateRow -->
+					</ul>
+					<!-- END DueDateFirstRow -->
+					<ul style="float: left;{noDueDateStyle}">
+						<li>恭喜你,沒有就快到截止日期的.</li>
+					</ul>
+				</p>
+
+				<p>&nbsp;</p>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

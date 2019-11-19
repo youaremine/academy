@@ -1,0 +1,230 @@
+.Calendar {
+	width: 100%;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 5px;
+}
+
+.NavMenu {
+	margin-left: 0px;
+	width: 100%;
+}
+
+.NavMenu #header {
+	margin: 0px;
+	margin-left: 15px;
+	padding-left: 0px;
+	width: 100%;
+	width: 100%;
+}
+
+.NavMenu #header ul {
+	margin-left: 0px;
+}
+
+.Canvas {
+	width: 97%;
+	page-break-after: always;
+	margin-right: 5px;
+	margin-right: auto;
+	margin-left: auto;
+	text-align: center;
+}
+
+.bpop, .bpopleft, .bpopupright, .bpopupleft {
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+.itr:hover .bpop {
+	background-color: #FCFFE0;
+	border-color: #E0E0E0;
+	border-width: 5px
+}
+
+.itr:hover .bpopleft {
+	background-color: #FCFFE0;
+	border-color: #E0E0E0;
+	border-width: 5px
+}
+
+.itr:hover .bpopupright {
+	background-color: #FCFFE0;
+	border-color: #E0E0E0;
+	border-width: 5px
+}
+
+.itr:hover .bpopupleft {
+	background-color: #FCFFE0;
+	border-color: #E0E0E0;
+	border-width: 5px
+}
+
+.Holidays {
+	color: #000000;
+}
+
+td.events a:link {
+	font-family: Arial;
+	font-weight: Normal;
+	color: #000000;
+	font-size: 8pt;
+	text-decoration: none;
+}
+
+td.events a:visited {
+	font-family: Arial;
+	font-weight: Normal;
+	color: #000000;
+	font-size: 8pt;
+	text-decoration: none;
+}
+
+td.events a:hover {
+	font-family: Arial;
+	font-weight: Normal;
+	color: #000000;
+	font-size: 8pt;
+	text-decoration: none;
+}
+
+td.events a:active {
+	font-family: Arial;
+	font-weight: Normal;
+	color: #000000;
+	font-size: 8pt;
+	text-decoration: none;
+}
+
+td.events {
+	font-family: Arial;
+	font-weight: Normal;
+	color: #000000;
+	font-size: 8pt;
+	text-decoration: none;
+}
+
+td.events .dt {
+	font-family: Arial;
+	font-weight: Normal;
+	color: #000000;
+	font-size: 7pt;
+	font-style: Normal;
+}
+
+.NavMenu a:link {
+	color: #F88017;
+	font-size: 9pt;
+	padding-left: 2px;
+	padding-right: 10px;
+}
+
+.NavMenu a:visited {
+	color: #F88017;
+	font-size: 9pt;
+	padding-left: 2px;
+	padding-right: 10px;
+}
+
+.NavMenu a:hover {
+	color: #F88017;
+	font-size: 9pt;
+	padding-left: 2px;
+	padding-right: 10px;
+}
+
+.NavMenu a:active {
+	color: #F88017;
+	font-size: 9pt;
+	padding-left: 2px;
+	padding-right: 10px;
+}
+
+.NavMenu #header a:link {
+	font-size: 9pt;
+	padding-left: 2px;
+	padding-right: 10px;
+}
+
+.NavMenu #header a:visited {
+	font-size: 9pt;
+	padding-left: 2px;
+	padding-right: 10px;
+}
+
+.NavMenu #header a:hover {
+	font-size: 9pt;
+	padding-left: 2px;
+	padding-right: 10px;
+}
+
+.NavMenu #header a:active {
+	font-size: 9pt;
+	padding-left: 2px;
+	padding-right: 10px;
+}
+
+.ActionBar a {
+	font-family: Arial;
+}
+
+.ActionBar a:link {
+	font-family: Arial;
+	font-size: 10pt;
+	color: #CCCCCC;
+}
+
+.ActionBar a:visited {
+	font-family: Arial;
+	font-size: 10pt;
+	color: #CCCCCC;
+}
+
+.ActionBar a:hover {
+	font-family: Arial;
+	font-size: 10pt;
+	color: #CCCCCC;
+}
+
+.ActionBar a:active {
+	font-family: Arial;
+	font-size: 10pt;
+	color: #CCCCCC;
+}
+
+.PageTitle {
+	text-align: center;
+	margin: 10px;
+	font-weight: bold;
+	font-Family: Arial;
+	font-size: 12pt;
+	color: #808080;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.header {
+	color: #FFFFFF;
+}
+
+.updated {
+	text-align: center;
+	font-size: 9pt;
+}
+
+.catname {
+	text-align: center;
+	font-family: Arial;
+	font-weight: Normal;
+	color: #000000;
+	font-size: 9pt;
+	text-style: Normal;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}

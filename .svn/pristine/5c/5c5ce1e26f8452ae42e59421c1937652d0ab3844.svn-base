@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>認領自己的Job</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script language="javascript" type="text/javascript">
+function CheckForm()
+{
+	var isValid = false;
+
+	var someNodeList = document.getElementsByName("chkJobNoNew[]");
+	var nodes = $A(someNodeList);
+	nodes.each(function(node){
+		if(node.type=='checkbox' || node.type=='radio')
+		{
+			if(node.checked == true && node.value != "")
+				isValid = true;
+		}
+	})
+	
+	//全部条件成立提交	
+	if(isValid)
+	{
+		$('claimForm').submit();
+	}
+	else
+	{
+		alert("請選擇要認領的Job.");
+	}
+}
+</script>
+</head>
+<body bgcolor="#FFFFFF">
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20"><table width="100%" align="center">
+						<tr>
+							<td height="20">&gt;&gt;認領自己的Job:</td>
+							<td width="120"><a href="surveyor_profile.php">帳單查詢</a></td>
+							<td width="120">認領自己的Job</td>
+							<td width="120" style=""><a
+								href="surveyor_change_password.php"><img
+									src="images/change_passowrd.gif" alt="change password"
+									width="27" height="25" border="0" />更改密碼</a></td>
+							<td width="100" style=""><a href="surveyor_login.php"><img
+									src="images/logout.gif" alt="logout" width="15" height="15"
+									border="0" />登出</a></td>
+						</tr>
+					</table></td>
+			</tr>
+		</table>
+		<table width="100%" height="35" border="0" align="center"
+			cellpadding="0" cellspacing="1">
+			<tr style="background-color: #CDE7E7">
+				<td width="13%" align="center">Code : {survId} <input
+					name="surveyorId" id="surveyorId" type="hidden" value="{survId}"
+					style="width: 0px; height: 0px;" /></td>
+				<td width="13%" align="center">Name : <strong>{engName}</strong></td>
+				<td width="13%" align="center">Contact : {contact}</td>
+				<td width="13%" align="center">Home : {survHome}</td>
+				<td width="13%" align="center">District : {dipaCode}</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>Planned Survey Date:</td>
+								<td><input name="txtPlannedSurveyDateStart" type="text"
+									id="txtPlannedSurveyDateStart" class="Wdate"
+									onclick="WdatePicker({})" value="{txtPlannedSurveyDateStart}"
+									size="10" /> - <input name="txtPlannedSurveyDateEnd"
+									type="text" id="txtPlannedSurveyDateEnd" class="Wdate"
+									onclick="WdatePicker({})" value="{txtPlannedSurveyDateEnd}"
+									size="10" /></td>
+								<td>Job No:</td>
+								<td><input name="txtJobNoNew" type="text" id="txtJobNoNew"
+									value="{txtJobNoNew}" size="10" /></td>
+								<td>Route No:</td>
+								<td><input name="txtRouteNo" type="text" id="txtRouteNo"
+									value="{txtRouteNo}" size="10" /></td>
+								<td style="">District:</td>
+								<td style=""><select name="ddlDistrict" id="ddlDistrict">
+										<option value="">All</option>
+										<option value="H">HK</option>
+										<option value="K">KLN</option>
+										<option value="N">NT</option>
+								</select></td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+	</form>
+	<form id="claimForm" name="claimForm" method="post"
+		action="main_schedule_claim_press.php">
+		<table width="100%" cellpadding="0" cellspacing="1">
+			<tr class="DgHeaderStyle">
+				<td style="" nowrap="nowrap">Week No</td>
+				<td style="" nowrap="nowrap">Job No.</td>
+				<td style="" nowrap="nowrap">Job No.</td>
+				<td width="70">Planned Survey Date</td>
+				<td>TD File No</td>
+				<td>Received Date</td>
+				<td>Due Date</td>
+				<td>From (TD)</td>
+				<td>Survey Time (Hours)</td>
+				<td>Survey Type</td>
+				<td>Vehicle</td>
+				<td>&nbsp;</td>
+				<td>Survey Location</td>
+				<td>Route / Items</td>
+				<td>Estimated Man-hour</td>
+				<td>Receive Date</td>
+				<td>Report</td>
+				<td align="center">Surveyor</td>
+				<td align="center">&nbsp;</td>
+				<td align="center">&nbsp;</td>
+				<td align="center">&nbsp;</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'">
+				<td>{weekNo}</td>
+				<td>{jobNo}</td>
+				<td>{jobNoNew}</td>
+				<td>{plannedSurveyDate}</td>
+				<td>{tdFileNo}</td>
+				<td>{receivedDate}</td>
+				<td>{dueDate}</td>
+				<td>{fromTD}</td>
+				<td>{surveyTimeHours}</td>
+				<td>{surveyType}</td>
+				<td>{vehicle}</td>
+				<td>{isHoliday}</td>
+				<td>{surveyLocation}</td>
+				<td>{routeItems}</td>
+				<td>{estimatedManHour}</td>
+				<td>{receiveDate}</td>
+				<td>{report}</td>
+				<td>{surveyorCode}</td>
+				<td>{surveyorName}</td>
+				<td>{surveyorTelephone}</td>
+				<td align="center">{chkJobNoNew}</td>
+			</tr>
+			<!-- END Row -->
+			<tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td align="center"><input class="ButtonIdea" type="button"
+					name="submitClaim" id="submitClaim" onclick="CheckForm()"
+					value="認領(Claim)" /></td>
+			</tr>
+		</table>
+	</form>
+	<script language="javascript" type="text/javascript">
+$('ddlDistrict').value = "{ddlDistrict}";
+</script>
+</body>
+</html>

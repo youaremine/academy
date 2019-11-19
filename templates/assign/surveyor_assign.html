@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Surveyor Assign</title>
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../js/function.js"></script>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/jquery-function.js"></script>
+<script type="text/javascript" src="../js/assign/surveyor-assign.js"></script>
+</head>
+
+<body onload="">
+	<table width="100%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Surveyor Manager &gt;&gt;&gt; Surveyor Assign</td>
+		</tr>
+	</table>
+	<form id="form1" name="form1" method="get" action="">
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>Month:<input name="txtMonth" type="text" id="txtMonth"
+									class="Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM'})"
+									value="{txtMonth}" size="10" /> <input name="survId"
+									id="survId" type="hidden" value="{survId}" /> &nbsp;&nbsp;<input
+									class="ButtonIdea" type="submit" id="submit" value="更改(Update)" /></td>
+								<td>&nbsp;</td>
+								<td>Can Assign Hour: {surveyorPreHour}</td>
+								<td>No Assign Total Hour:
+									{currMonthNoAssignEstimatedManHour}</td>
+								<td width="20%"><a href="javascript:location.reload();">刷新頁面</a></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+	</form>
+	<table width="100%" border="0" align="center" cellpadding="0"
+		cellspacing="1" bgcolor="#000000">
+		<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+			<td width="13%" height="20" align="center">Code</td>
+			<td width="13%" align="center">Name of surveyor</td>
+			<td width="13%" align="center">Contact of surveyor</td>
+			<td width="13%" align="center">Home</td>
+			<td width="13%" align="center">District</td>
+			<td width="13%" align="center">Supervisor?</td>
+			<td align="center">VIP</td>
+			<td align="center">WhatsAPP</td>
+			<td align="center">Email</td>
+			<td align="center">Fax</td>
+			<td align="center">Remarks</td>
+		</tr>
+		<tr class="DgItemStyle"
+			onmouseover="this.className='DgSelectedItemStyle'"
+			onmouseout="this.className='DgItemStyle'" bgcolor="#FFFFFF">
+			<td><a href="surveyor_time.php?survId={survId}" target="_blank">{survId}</a></td>
+			<td><a href="surveyor_time.php?survId={survId}" target="_blank">{engName}</a></td>
+			<td>{contact}</td>
+			<td>{survHome}</td>
+			<td>{dipaCode}</td>
+			<td>{IsSupervisor}</td>
+			<td>{VIP}</td>
+			<td>{whatsAPP}</td>
+			<td><a href="mailto:{email}">{email}</a></td>
+			<td>{fax}</td>
+			<td>{remark}</td>
+		</tr>
+	</table>
+
+	<fieldset>
+		<legend>Assign</legend>
+		<table width="100%" cellpadding="0" cellspacing="1" style="">
+			<tr>
+				<td
+					style="color: red; font-weight: bold; font-size: 14px; text-align: center;">警告:
+					該調查員今天已經給他委派過一次了.</td>
+			</tr>
+		</table>
+		<form id="form2" name="form2" method="post"
+			action="surveyor_assign_press.php?action=assign&survId={survId}&txtMonth={txtMonth}">
+			<table width="100%" cellpadding="0" cellspacing="1" style="">
+				<tr class="DgHeaderStyle">
+					<td style="font-size: 9pt;" nowrap="nowrap">&nbsp;</td>
+					<td width="30" nowrap="nowrap" style="">&nbsp;</td>
+					<td style="" nowrap="nowrap">&nbsp;</td>
+					<td style="" nowrap="nowrap">Request No.</td>
+					<td>Planned Survey Date</td>
+					<td>Survey Time (Hours)</td>
+					<td>TD File No</td>
+					<td>Received Date</td>
+					<td>Due Date</td>
+					<td>From (TD)</td>
+					<td>Survey Type</td>
+					<td>Vehicle</td>
+					<td>Holiday?</td>
+					<td>Survey <br /> District
+					</td>
+					<td>Survey Location</td>
+					<td>Route / Items</td>
+					<td>Man-hour</td>
+				</tr>
+				<!-- BEGIN Row -->
+				<tr id="row_{jobNoNew}" class="{listStyle}"
+					onmouseover="this.className='DgSelectedItemStyle'"
+					onmouseout="this.className='{listStyle}'"
+					onclick=" SelectRow(this);">
+					<td style="color: #666">{source}<br /> <label> <input
+							type="checkbox" name="jobNoNew[]" id="jobNoNew[]"
+							value="{jobNoNew}" />
+					</label></td>
+					<td>&nbsp;</td>
+					<td><a href="javascript:RejectJob('{jobNoNew}','{survId}');"><img
+							src="../images/reject.png" alt="Reject" width="24" height="24"
+							border="0" /></a></td>
+					<td>{jobNoNew}</td>
+					<td style="white-space: nowrap;">{plannedSurveyDate}</td>
+					<td>{surveyTimeHours}</td>
+					<td>{tdFileNo}</td>
+					<td style="white-space: nowrap;">{receivedDate}</td>
+					<td style="white-space: nowrap;">{dueDate}</td>
+					<td>{fromTD}</td>
+					<td>{surveyType}</td>
+					<td>{vehicle}</td>
+					<td>{isHoliday}</td>
+					<td>{surveyLocationDistrict}</td>
+					<td>{surveyLocation}</td>
+					<td>{routeItems}</td>
+					<td>{estimatedManHour}</td>
+				</tr>
+				<!-- END Row -->
+				<tr>
+					<td height="30" colspan="4" valign="bottom" style="color: #666"><input
+						class="ButtonIdea" type="submit" id="submit2" value="委派(Assign)" /></td>
+					<td style="white-space: nowrap;">&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td style="white-space: nowrap;">&nbsp;</td>
+					<td style="white-space: nowrap;">&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
+		</form>
+	</fieldset>
+	<br />
+	<br />
+	<fieldset>
+		<legend>Assigned</legend>
+		<table width="100%" cellpadding="0" cellspacing="1">
+			<tr class="DgHeaderStyle">
+				<td style="" nowrap="nowrap">Week <br /> No
+				</td>
+				<td style="" nowrap="nowrap">Request No.</td>
+				<td>Planned Survey Date</td>
+				<td>TD File No</td>
+				<td>Received Date</td>
+				<td>Due Date</td>
+				<td>From (TD)</td>
+				<td>Survey Time (Hours)</td>
+				<td>Survey Type</td>
+				<td>Vehicle</td>
+				<td>&nbsp;</td>
+				<td>Survey Location</td>
+				<td>Route / Items</td>
+				<td>Man-hour</td>
+				<td>Receive Date</td>
+				<td>Report</td>
+				<td>Surveyor</td>
+				<td>&nbsp;</td>
+			</tr>
+			<!-- BEGIN AssignedRow -->
+			<tr class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'"
+				onclick=" SelectRow(this);">
+				<td>{weekNo}</td>
+				<td>{jobNoNew}</td>
+				<td style="white-space: nowrap;">{plannedSurveyDate}</td>
+				<td>{tdFileNo}</td>
+				<td style="white-space: nowrap;">{receivedDate}</td>
+				<td style="white-space: nowrap;">{dueDate}</td>
+				<td>{fromTD}</td>
+				<td>{surveyTimeHours}</td>
+				<td>{surveyType}</td>
+				<td>{vehicle}</td>
+				<td>{isHoliday}</td>
+				<td>{surveyLocation}</td>
+				<td>{routeItems}</td>
+				<td>{estimatedManHour}</td>
+				<td style="white-space: nowrap;">{receiveDate}</td>
+				<td>{report}</td>
+				<td>{surveyorName}</td>
+				<td>{unAssignButton}</td>
+			</tr>
+			<!-- END AssignedRow -->
+		</table>
+	</fieldset>
+
+	<p>&nbsp;</p>
+</body>
+</html>

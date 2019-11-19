@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Data List</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#FFFFFF">
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">Traffic Flow &gt;&gt;&gt; Data List</td>
+			</tr>
+		</table>
+		<table width="100%" cellpadding="0" cellspacing="1">
+			<tr class="DgHeaderStyle">
+				<td style="" nowrap="nowrap">&nbsp;</td>
+				<td style="" nowrap="nowrap">JOB TITLE</td>
+				<td>JOB NO</td>
+				<td>DATE</td>
+				<td>Survey Period</td>
+				<td colspan="3" align="center" style="">Surveyor</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'">
+				<td>{joinId}</td>
+				<td>{jobTitle}</td>
+				<td style="white-space: nowrap;">{jobNo}</td>
+				<td>{surveyDate}</td>
+				<td style="white-space: nowrap;">{periodStartTime} -
+					{periodEndTime}</td>
+				<td style="">{privew}</td>
+				<td style="">{modify}</td>
+				<td style="">{excleDown}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<br />
+	</form>
+</body>
+</html>

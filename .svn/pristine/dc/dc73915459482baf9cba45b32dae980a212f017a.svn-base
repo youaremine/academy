@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>我的日曆</title>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery-function.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="js/surveyor_calendar.js"></script>
+<script type="text/javascript" src="./js/jquery.leanModal.min.js"></script>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<link href="./css/style-calendar.css" rel="stylesheet" type="text/css" />
+<link href="./css/calendar.css" rel="stylesheet" type="text/css" />
+<link href="./css/jquery.leanModal.css" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#FFFFFF">
+	<table width="100%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20"><table width="100%" align="center">
+					<tr>
+						<td height="20">&gt;&gt;我的日曆:</td>
+						<td width="120"><a href="surveyor_profile.php">帳單查詢</a></td>
+						<td width="120">我的日曆</td>
+						<td width="120"><a href="./account/jobs.php">選取工作</a></td>
+						<td width="120" style=""><a
+							href="surveyor_change_password.php"><img
+								src="images/change_passowrd.gif" alt="change password"
+								width="27" height="25" border="0" />更改密碼</a></td>
+						<td width="100" style=""><a href="surveyor_login.php"><img
+								src="images/logout.gif" alt="logout" width="15" height="15"
+								border="0" />登出</a></td>
+					</tr>
+				</table></td>
+		</tr>
+	</table>
+	<form action="surveyor_calendar_press.php" method="post">
+		<table width="100%" border="0" cellspacing="10" cellpadding="0">
+			<tr>
+				<td><table class="Calendar" cellspacing="0">
+						<input type="hidden" id="currMonth" name="currMonth"
+							value="{currMonth}" />
+						<input type="hidden" id="surveyorCode" name="surveyorCode"
+							value="{surveyorCode}" />
+						<caption class="MonthCaption">
+							<strong>{engName}</strong>&nbsp;&nbsp;&nbsp;&nbsp;{currMonth}
+						</caption>
+						<tbody>
+							<tr style="padding: 0px;">
+								<th width="14%" style="height: 30px; padding: 0px;"
+									class="Weekdays">星期日</th>
+								<th style="padding: 0px;" width="14%" class="Weekdays">星期一</th>
+								<th style="padding: 0px;" width="14%" class="Weekdays">星期二</th>
+								<th style="padding: 0px;" width="14%" class="Weekdays">星期三</th>
+								<th style="padding: 0px;" width="14%" class="Weekdays">星期四</th>
+								<th style="padding: 0px;" width="14%" class="Weekdays">星期五</th>
+								<th style="padding: 0px;" width="14%" class="Weekdays">星期六</th>
+							</tr>
+							<!-- BEGIN CalendarRow -->
+							<tr class="Events">
+								<!-- BEGIN CalendarCol -->
+								<td valign="top" class="Events" style="" id="this">{colContent}</td>
+								<!-- END CalendarCol -->
+								<!-- END CalendarRow -->
+						</tbody>
+					</table></td>
+			</tr>
+			<tr>
+				<td align="center"><input type="submit" class="ButtonIdea"
+					name="btnSubmit" id="btnSubmit" value="提交(Submit)" /></td>
+			</tr>
+		</table>
+	</form>
+	<!--add freeTime start-->
+	<div id="freeTimeDialog">
+		<div id="signup-ct">
+			<div id="signup-header">
+				<h2>Change Planned Survey Date</h2>
+				<a class="modal_close" href="#"></a>
+			</div>
+			<div class="txt-fld">
+				<input type="hidden" id="currDay" name="currDay" /> <label>Free
+					Time:</label> <input name="startTime" type="text" class="Wdate"
+					id="startTime"
+					onfocus="WdatePicker({skin:'whyGreen',dateFmt:'HH:mm'})"
+					maxlength="8" /> - <input name="endTime" type="text" class="Wdate"
+					id="endTime"
+					onfocus="WdatePicker({skin:'whyGreen',dateFmt:'HH:mm'})"
+					maxlength="8" />
+			</div>
+			<div class="btn-fld">
+				<span id='error-message' class="txt-error"></span>
+				<button type="button" id="btnfreeTimeSubmit">Submit &raquo;</button>
+			</div>
+		</div>
+	</div>
+	<!--add freeTime end-->
+</body>
+</html>

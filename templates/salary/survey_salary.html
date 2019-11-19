@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>學員學費</title>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/jquery-function.js"></script>
+<script type="text/javascript" src="../js/jquery.leanModal.min.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../js/survey_salary.js"></script>
+<link href="../css/jquery.leanModal.css" rel="stylesheet"
+	type="text/css" />
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">學費管理 &gt;&gt;&gt; 學員學費</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td style="width: 120px;">課程日期</td>
+								<td style="width: 220px;"><select name="ddlMonth" id="ddlMonth">
+										<!-- BEGIN MonthRow -->
+										<option value="{rowMonth}">{rowMonth}</option>
+										<!-- END MonthRow -->
+								</select><span style="font-weight: bold; color: #FF0000;{historyStyle}">History<span id="historyDate">({historyDate})</span></span></td>
+								<td style="width: 120px;"><input class="ButtonIdea"
+									type="submit" name="submit" id="submit" value="搜索(Search)" /></td>
+								<td>&nbsp;</td>
+								<td style="width: 120px;"><a href='#signup' rel='leanModal'
+									title='下載調查員糧單(Excel)'><img src="../images/excel.png"
+										width="24" border="0" />下載</a></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td height="20"></td>
+				<td align="center">&nbsp;</td>
+				<td align="center">&nbsp;</td>
+				<td align="center">&nbsp;</td> {projectNames}
+				<td colspan="2" align="center">學費匯總</td>
+			</tr>
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td height="20"></td>
+				<td align="center">編號</td>
+				<td align="center">英文名</td>
+				<td align="center">手提</td>
+				{projectTitles}
+				<td align="center">系統</td>
+				<td align="center">Main Schedule</td>
+			</tr>
+
+			<!-- BEGIN Row -->
+			<tr bgcolor="#FFFFFF" class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'">
+				<td>&nbsp;</td>
+				<td>{surveyorCode}</td>
+				<td>{engName}</td>
+				<td>{contact}</td> {projectValues}
+				<td>{salaryTotalAll}</td>
+				<td>{mainScheduleTotalAll}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<p>&nbsp;</p>
+	</form>
+
+	<!--download excel start-->
+	<div id="signup">
+		<div id="signup-ct">
+			<div id="signup-header">
+				<h2>下載{ddlMonth}學員糧單</h2>
+				<a class="modal_close" href="#"></a>
+			</div>
+			<div class="txt-fld">
+				<input type="hidden" id="mshlId" name="mshlId" value="{mshlId}" />
+				<label for="">下載查看:</label><a
+					href="survey_salary_to_excel.php?ddlMonth={ddlMonth}"
+					style="padding-right: 120px;"><img src="../images/excel.png"
+					width="24" border="0" />下載</a>
+			</div>
+			<div class="txt-fld">
+				<label style="width: 180px;" for="">下載並鎖定:</label>
+                <a id="lock" href="#" style="padding-right: 100px;{lockStyle}">
+                <img src="../images/excel.png" width="24" border="0" />下載/鎖定</a>
+                <a id="approval" href="#" style="padding-right: 40px; width: 80px;{approvalStyle}">審核通過</a>
+                <a id="unlock" href="#" style="padding-right: 30px;{unlockStyle}">解除鎖定</a>
+				<a id="unapproval" href="#" style="padding-right: 120px;{unapprovalStyle}">撤銷審核</a>
+				{saveExcelLink}&nbsp;
+			</div>
+			<div>
+				<label
+					style="padding-left: 20px; width: 100%; font-size: small; color: #999;">備註:下載後系統會保留一份當前的Main
+					Schedule.</label> <br />
+				<label style="width: 100%; padding-left: 50px; font-size: small; color: #999;">學員,Student Salary都以保留的為准.</label>
+			</div>
+			<div class="btn-fld">
+				<span id='error-message' class="txt-error"></span>
+			</div>
+		</div>
+	</div>
+	<!--download excel end-->
+
+	<script type="text/javascript">
+	$('#ddlMonth').val('{ddlMonth}');
+</script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Other Porject List</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="./js/jquery.js"></script>
+<script type="text/javascript" src="./js/jquery.leanModal.min.js"></script>
+<link href="./css/jquery.leanModal.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+$(function() {
+	$('a[rel*=leanModal]').leanModal({ top : 200, closeButton: ".modal_close" });		
+});
+function addCheck()
+{
+	$('#error-message').html('');
+	if($('#projectCode').val()=='')
+	{
+		$('#error-message').html('Project code not allow null.');
+	}
+	else if($('#projectName').val()=='')
+	{
+		$('#error-message').html('Project name not allow null.');
+	}
+	else
+	{
+		$('#addForm').submit();
+	}
+}
+</script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+</head>
+<base target="_self" />
+<body>
+	<form id="searchForm" name="searchForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>Project Code</td>
+								<td><label> <input name="txtProjectCode"
+										type="text" id="txtProjectCode" value="{txtProjectCode}"
+										size="12" />
+								</label></td>
+								<td>Porject Name</td>
+								<td><input name="txtProjectName" type="text"
+									id="txtProjectName" value="{txtProjectName}" size="12" /></td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+								<td><a id="go" rel="leanModal" name="signup" href="#signup">Add</a></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td width="0%" height="20"></td>
+				<td align="center">Project Code</td>
+				<td align="center">Project Name</td>
+			</tr>
+
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onMouseOver="this.className='DgSelectedItemStyle'"
+				onMouseOut="this.className='{listStyle}'" bgcolor="#FFFFFF">
+				<td>&nbsp;</td>
+				<td>{projectCode}</td>
+				<td>{projectName}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+	</form>
+	<div id="signup">
+		<div id="signup-ct">
+			<div id="signup-header">
+				<h2>Create a new project</h2>
+				<a class="modal_close" href="#"></a>
+			</div>
+
+			<form id='addForm' action="?q=add" method="post">
+
+				<div class="txt-fld">
+					<label for="">Project Code</label> <input id="projectCode"
+						class="good_input" name="projectCode" type="text" />
+
+				</div>
+				<div class="txt-fld">
+					<label for="">Project Name</label> <input id="projectName"
+						name="projectName" type="text" />
+				</div>
+				<div class="btn-fld">
+					<span id='error-message' class="txt-error"></span>
+					<button type="button" onClick="addCheck();">Submit &raquo;</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="tipsClass" id="tips"
+		style="top: 35px; left: 384.5px; {showMessageStyle}">{message}</div>
+</body>
+</html>

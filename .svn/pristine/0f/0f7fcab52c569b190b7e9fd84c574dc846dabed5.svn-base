@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>List Unfinished Jobs</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="js/function.js"></script>
+<script type="text/javascript" src="js/assign/surveyor-assign.js"></script>
+</head>
+<body bgcolor="#FFFFFF">
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">Main Schedule &gt;&gt;&gt; List Unfinished Jobs</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Type</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>{typeLink}</td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>Planned Survey Date:</td>
+								<td><input name="txtPlannedSurveyDateStart" type="text"
+									id="txtPlannedSurveyDateStart" class="Wdate"
+									onclick="WdatePicker({})" value="{txtPlannedSurveyDateStart}"
+									size="10" /> - <input name="txtPlannedSurveyDateEnd"
+									type="text" id="txtPlannedSurveyDateEnd" class="Wdate"
+									onclick="WdatePicker({})" value="{txtPlannedSurveyDateEnd}"
+									size="10" /><input type="hidden" id="type" name="type"
+									value="{type}" /></td>
+								<td>Request No:</td>
+								<td><input name="txtJobNoNew" type="text" id="txtJobNoNew"
+									value="{txtJobNoNew}" size="8" /></td>
+								<td>Route No:</td>
+								<td><input name="txtRouteNo" type="text" id="txtRouteNo"
+									value="{txtRouteNo}" size="8" /></td>
+								<td style="">District:</td>
+								<td style="">{ddlDistIdSelect}</td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		Total hour(only current page): {totalEstimatedManHour}
+		<table width="100%" cellpadding="0" cellspacing="1">
+			<tr class="DgHeaderStyle">
+				<td style="" nowrap="nowrap">Contractor</td>
+				<td style="" nowrap="nowrap">Week <br /> No
+				</td>
+				<td style="" nowrap="nowrap">Request No.</td>
+				<td>Planned Survey Date</td>
+				<td>Received Date</td>
+				<td>Receive Date</td>
+				<td>Entry Date</td>
+				<td>Due Date</td>
+				<td>Survey Time (Hours)</td>
+				<td>Survey Type</td>
+				<td>Vehicle</td>
+				<td>Survey Location</td>
+				<td>Route / Items</td>
+				<td>Man-hour</td>
+				<td colspan="3" align="center" style="">Surveyor</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'"
+				onclick=" SelectRow(this);">
+				<td>{companyName}</td>
+				<td>{weekNo}</td>
+				<td>{jobNoNew}</td>
+				<td style="white-space: nowrap;">{plannedSurveyDate}</td>
+				<td style="white-space: nowrap;">{receivedDate}</td>
+				<td style="white-space: nowrap;">{receiveDate}</td>
+				<td style="white-space: nowrap;">{entryDate}</td>
+				<td style="white-space: nowrap;">{dueDate}</td>
+				<td>{surveyTimeHours}</td>
+				<td>{surveyType}</td>
+				<td>{vehicle}</td>
+				<td>{surveyLocation}</td>
+				<td>{routeItems}</td>
+				<td>{estimatedManHour}</td>
+				<td id="surveyorCode_{jobNoNew}" style="">{surveyorCode}</td>
+				<td id="surveyorName_{jobNoNew}" style="">{surveyorName}</td>
+				<td id="surveyorTelephone_{jobNoNew}" style="">{surveyorTelephone}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="2">
+			<tr>
+				<td align="right">{pageSetting}</td>
+			</tr>
+			<tr>
+				<td align="left">列表僅顯示未提交報告的JobNo.</td>
+			</tr>
+		</table>
+		<br />
+	</form>
+	<script language="javascript" type="text/javascript">
+$('#ddlDistId').val("{ddlDistId}");
+</script>
+</body>
+</html>

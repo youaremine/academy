@@ -1,0 +1,572 @@
+/*F8F9F4 */
+body {
+	background-color: #E5F8DF;
+	font-size: 12px;
+	margin: 0 0 0 0;
+	color: #000000;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.bodybak {
+	background-color: #f7f7f7;
+	font-size: 9pt;
+	margin: 0 0 0 0;
+	color: #000000;
+	SCROLLBAR-FACE-COLOR: #F8F9F4;
+	SCROLLBAR-HIGHLIGHT-COLOR: #F8F9F4;
+	SCROLLBAR-SHADOW-COLOR: #F8F9F4;
+	SCROLLBAR-3DLIGHT-COLOR: #999999;
+	SCROLLBAR-ARROW-COLOR: #999999;
+	SCROLLBAR-TRACK-COLOR: #F8F9F4;
+	SCROLLBAR-DARKSHADOW-COLOR: #999999;
+}
+
+.BodyDefautlLeft {
+	margin: 6 0 0 0
+}
+
+.TextBoxLikeLabel {
+	border-bottom: solid 0px #F8F9F4;
+	border-left: solid 0px #F8F9F4;
+	border-right: solid 0px #F8F9F4;
+	border-top: solid 0px #F8F9F4;
+	background-color: #fff7e7;
+}
+
+.FieldSet {
+	font-size: 9pt;
+	color: #000000;
+	width: 98%;
+}
+
+.FieldSetInSide {
+	font-size: 9pt;
+	color: #000000;
+	width: 100%;
+}
+
+.FieldSetFlow {
+	color: #000000;
+	width: 98%;
+	left: 10px;
+}
+
+.TableRightTop {
+	background-color: #FFE8D0;
+	color: #000000;
+	font-size: 9pt;
+	left: 0px;
+	top: 0px;
+	border: 0;
+	width: 100%;
+	height: 16px;
+	padding-left: 5px;
+}
+
+.TableControl {
+	background-color: #cccccc;
+}
+
+.TableNone {
+	width: 98%;
+	border: 0;
+	font-size: 9pt;
+	color: #000000;
+}
+
+.TableNoWidth {
+	border: 0;
+	font-size: 9pt;
+	color: #000000;
+}
+
+.TableContain {
+	border: 0;
+	color: #000000;
+	text-align: center;
+	width: 100%;
+}
+
+.TableDgHeaderTop {
+	border-top: solid 1px #DEDFDE;
+	border-left: solid 1px #DEDFDE;
+	border-right: solid 1px #DEDFDE;
+	background-color: #deba84;
+	font-size: 9pt;
+	height: 20px;
+	color: #ffffff;
+}
+
+.TdContain {
+	text-align: center;
+	color: #000000;
+	font-size: 9pt;
+}
+
+.TdHeader {
+	background-color: #994d00;
+	color: #ffffff;
+	font-size: 14px;
+	height: 23px;
+}
+
+.TdTitle {
+	background-color: #e1e7e0;
+	color: #000000;
+	font-size: 9pt;
+	height: 23px;
+	padding-left: 5px;
+}
+
+.TdTitleNone {
+	height: 23px;
+}
+
+.TdContent {
+	background-color: #fffaf4;
+	color: #ffffff;
+	font-size: 9pt;
+	height: 23px;
+}
+
+.TdContentNone {
+	height: 22px;
+}
+
+.TdFoot {
+	background-color: #ededdc;
+	color: #000000;
+	font-size: 9pt;
+	height: 25px;
+	text-align: center;
+}
+
+.TdFootNone {
+	text-align: center;
+	height: 22px;
+}
+
+.TdButtonF {
+	position: relative;
+	text-align: left;
+	top: 0;
+	z-index: 1;
+	cursor: pointer;
+	border: 2 outset buttonhighlight;
+	text-decoration: none;
+	width: 184px;
+	height: 31px;
+	background-image: url(../images/image002.png);
+	background-repeat: no-repeat;
+}
+
+.TdButtonFText {
+	cursor: pointer;
+	padding-left: 12px;
+	text-decoration: none;
+	font-size: 14px;
+	color: #009194;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.TdButtonC {
+	position: relative;
+	top: 0;
+	z-index: 1;
+	border: 2 outset buttonhighlight;
+	text-decoration: none;
+	width: 179px;
+	height: 27px;
+	background-image: url(../images/image004.png);
+	background-repeat: no-repeat;
+}
+
+.TdButtonCText {
+	cursor: pointer;
+	padding-left: 12px;
+	text-decoration: none;
+	font-size: 14px;
+	color: #009194;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.IdeaTextBoxOnFoucs {
+	background-color: #DFEFFF;
+	color: #000000;
+	border-style: solid;
+	border-width: 1;
+	height: 20px;
+}
+
+.IdeaTextBoxOnBlur {
+	background-color: #ffffff;
+	color: #000000;
+	border-style: solid;
+	border-width: 1;
+	height: 20px;
+}
+
+.IdeaTextBoxOnError {
+	background-color: #ff6600;
+	color: #000000;
+	border-style: solid;
+	border-width: 1;
+	height: 20px;
+}
+
+.IdeaContainerLabelHeaderSelect {
+	background-color: #FFE8D0;
+	border-bottom: solid 0px #000000;
+	border-top: outset 2px buttonhighlight;
+	border-left: outset 2px buttonhighlight;
+	border-right: outset 2px buttonhighlight;
+	cursor: pointer;
+	font-size: 9pt;
+	color: Black;
+	height: 22px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.IdeaContainerLabelHeader {
+	border-top: outset 2px buttonhighlight;
+	border-left: outset 2px buttonhighlight;
+	border-right: outset 1px buttonhighlight;
+	border-bottom: inset 2px buttonhighlight;
+	cursor: pointer;
+	font-size: 9pt;
+	color: Gray;
+	height: 22px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.IdeaContainerLabelHeaderNone {
+	border-left: solid 1px gray;
+	border-bottom: inset 2px buttonhighlight;
+	padding-left: 5px;
+	width: 100%;
+	height: 22px;
+}
+
+.IdeaContainerLabelBodySelect {
+	visibility: visible;
+	display: block;
+	background-color: #FFE8D0;
+	border-bottom: buttonhighlight 0px inset;
+	border-top: outset 0px buttonhighlight;
+	border-left: outset 0px buttonhighlight;
+	border-right: buttonhighlight 0px inset;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size: 9pt;
+}
+
+.IdeaContainerLabelBodyNone {
+	visibility: hidden;
+	display: none;
+	background-color: #FAEBD7;
+	border-bottom: buttonhighlight 2px outset;
+	border-top: solid 0px gray;
+	border-left: solid 1px gray;
+	border-right: buttonhighlight 2px outset;
+}
+
+.ButtonIdea {
+	border-top: 1px solid #999999;
+	border-right: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	border-left: 1px solid #999999;
+	background-color: #808080;
+	color: #ffffff;
+	font-size: 9pt;
+}
+
+.ButtonIdeaUnable {
+	border-top: 1px solid #999999;
+	border-right: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	border-left: 1px solid #999999;
+	background-color: #D4D0C8;
+	color: #333333;
+	font-size: 9pt;
+}
+
+.ButtonSelect {
+	border-top: 1px solid #999999;
+	border-right: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	border-left: 1px solid #999999;
+	background-color: #808080;
+	color: #ffffff;
+	width: 35;
+	height: 22;
+	font-family: Arial;
+}
+
+.ButtonToolbarNoControl {
+	border-top: 1px solid #999999;
+	border-right: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+	border-left: 1px solid #999999;
+	background-color: #0080C0;
+	color: #ffffff;
+	font-size: 9pt;
+}
+
+.DgBackStyle {
+	background-color: #82A178;
+	border-color: #82A178;
+}
+
+.DgHeaderStyle { /*background-color:#6B696B;*/
+	background-color: #82A178;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #ffffff;
+	font-size: 14px;
+	height: 25px;
+	padding-left: 5px;
+}
+
+.DgItemStyle { /*background-image:url(../images/rowbg.jpg);*/
+	/*background-color:#F7CF4A;*/
+	background-color: #ADD5A0;
+	font-size: 9pt;
+	height: 22px;
+	padding-left: 5px;
+}
+
+.AlternatingItemStyle {
+	background-color: #FEFDEF;
+	font-size: 9pt;
+	height: 22px;
+	padding-left: 5px;
+}
+
+.DgSelectedItemStyle {
+	background-color: #FFFF99;
+	height: 22px;
+	font-size: 9pt;
+	padding-left: 5px;
+}
+
+.DgErrorItemStyle {
+	background-color: #FF0000;
+	height: 22px;
+	font-size: 9pt;
+	padding-left: 5px;
+}
+
+.DgWarningItemStyle {
+	background-color: #9932CC;
+	height: 22px;
+	font-size: 9pt;
+	padding-left: 5px;
+}
+
+.DgDisableItemStyle {
+	background-color: #CCC;
+	height: 22px;
+	font-size: 9pt;
+	padding-left: 5px;
+}
+
+.DgFooterStyle {
+	height: 20px;
+	background-color: #CBB59C;
+	font-size: 9pt;
+}
+
+.DgPageStyle {
+	background-color: #CCCC99;
+	font-size: 9pt;
+	height: 20px;
+}
+
+.DgRowNotConfirmCountComm {
+	background-color: #FFF7E7;
+	height: 20px;
+	color: #8C4510;
+	font-size: 9pt;
+	padding-left: 5px;
+}
+
+.TableRowNotConfirmCountComm {
+	background-color: #FFF7E7;
+	color: #8C4510;
+	font-size: 9pt;
+	padding-left: 5px;
+}
+
+.TextErrorMsg {
+	font-size: 9pt;
+	color: Red;
+}
+
+.TextBoxNotVisible {
+	display: none;
+	visibility: hidden;
+	width: 0px;
+}
+
+.TextCopyRight {
+	font-size: 9pt;
+	color: #ffffff;
+}
+
+.Link {
+	font-size: 14pt;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.CurrentLink {
+	font-size: 18pt;
+	font-weight: bold;
+}
+
+.ReportTableBorder_Left {
+	BORDER-LEFT: #808080 1px solid;
+}
+
+.ReportTableBorder_Right {
+	border-right: #808080 1px solid;
+}
+
+.ReportTableBorder_Both {
+	BORDER-LEFT: #808080 1px solid;
+	border-right: #808080 1px solid;
+}
+
+.input_bottomline {
+	BORDER-RIGHT: #ffffff 1px solid;
+	BORDER-TOP: #ffffff 1px solid;
+	FONT-SIZE: 9pt;
+	BORDER-LEFT: #ffffff 1px solid;
+	COLOR: rgb(0, 0, 0);
+	BORDER-BOTTOM: #000000 1px solid;
+	BACKGROUND-COLOR: #ffffff
+}
+
+.DodidaTable {
+	border: solid 1px #DEDFDE;
+	background-color: #DEDFDE;
+}
+
+.DodidaTableHeader {
+	background-color: #6B696B;
+	color: #ffffff;
+	font-size: 14px;
+	height: 21px;
+	padding-left: 5px;
+}
+
+.DodidaTableTr {
+	background-color: #F7F7DE;
+	font-size: 9pt;
+	height: 20px;
+	padding-left: 5px;
+}
+
+.DodidaAlternatingTr {
+	background-color: #F7F7DE;
+	font-size: 9pt;
+	height: 20px;
+	padding-left: 5px;
+}
+
+.DodidaLink {
+	font-size: 9pt;
+	text-decoration: none;
+	cursor: pointer;
+	color: Red;
+}
+
+.DodidaToolBar {
+	width: 100%;
+	border: 1 outset buttonhighlight;
+	font-size: 9pt;
+	background-color: #FAF0E6;
+}
+
+.bi-tool-bar {
+	BORDER-RIGHT: 2px groove;
+	BORDER-TOP: 2px groove;
+	FONT: 11px Tahoma, Verdana, Arial, Sans-Serif;
+	OVERFLOW: hidden;
+	BORDER-LEFT: 2px groove;
+	BORDER-BOTTOM: 2px groove;
+	WHITE-SPACE: nowrap;
+	POSITION: static;
+	moz-box-sizing: border-box;
+	moz-border-left-colors: ThreeDShadow ThreeDHighlight;
+	moz-border-right-colors: ThreeDHighlight ThreeDShadow;
+	moz-border-top-colors: ThreeDShadow ThreeDHighlight;
+	moz-border-bottom-colors: ThreeDHighlight ThreeDShadow;
+	width: 100%
+}
+
+.filterLeft {
+	filter: progid:DXImageTransform.Microsoft.gradient(startcolorstr=#d6d6d6,
+		endcolorstr=#ffffff, gradientType=0);
+}
+
+.shortTimeView {
+	width: 45px;
+	border: 0px;
+	background: none transparent scroll repeat 0% 0%;
+}
+
+.numberThree {
+	width: 50px;
+}
+
+.hiddenFiled {
+	display: none;
+}
+
+.normalFiled { /* */
+	
+}
+
+.tipsClass {
+	position: absolute;
+	padding: 3px 5px;
+	border: 1px solid #F0C36D;
+	border-radius: 2px;
+	-webkit-border-radius: 2px;
+	background-color: #F9EDBE;
+	color: #222;
+	font-size: 14px;
+	font-weight: bold;
+	margin: 0px auto;
+	text-align: center;
+	width: auto;
+}
+
+.s-d {
+	overflow: hidden;
+}
+
+.s-t {
+	white-space: nowrap;
+	color: #609;
+}
+
+.i-client {
+    display: inline-block;
+    padding-left: 20px;
+    height: 20px;
+    line-height: 20px;
+    background: url(../images/i-client.png) no-repeat;
+}
+
+.i-client.i-client-1 {
+  background-position: 0 -52px;
+}
+.i-client.i-client-2 {
+  background-position: 0 -152px;
+}
+.i-client.i-client-3 {
+  background-position: 0 -102px;
+}

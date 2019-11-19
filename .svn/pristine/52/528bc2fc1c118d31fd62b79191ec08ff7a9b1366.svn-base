@@ -1,0 +1,66 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Survey System</title>
+<link href="../css/css.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css"
+	href="/extjs/resources/css/ext-all.css" />
+<script type="text/javascript" src="/extjs/adapter/jquery/jquery.js"></script>
+<script type="text/javascript"
+	src="/extjs/adapter/jquery/ext-jquery-adapter.js"></script>
+<script type="text/javascript" src="/extjs/ext-all.js"></script>
+<script type="text/javascript" src="../js/plugin/raw_pdf_upload.js"></script>
+
+<style type="text/css">
+.mainDiv {
+	width: 98%;
+	margin-right: auto;
+	margin-left: auto;
+	padding-top: 25px;
+	text-align: left;
+}
+
+#nofile {
+	font-weight: bold;
+	color: #FF0000;
+}
+</style>
+</head>
+<body style="text-align: center;">
+	<table width="98%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Bus Manage &gt;&gt;&gt; Main Schedule Raw Data
+				Upload</td>
+		</tr>
+	</table>
+	<div id="nofile" class="mainDiv" style="">Can not find File.</div>
+	<div id="hasfile" class="mainDiv">
+		<table width="100%" border="0" cellpadding="0" cellspacing="3">
+			<tr>
+				<td>refNo(jobNo):</td>
+				<td>{jobNoNew}</td>
+				<td>Upload User:</td>
+				<td>{modifyUsername}</td>
+				<td>Upload Date:</td>
+				<td>{modifyTime}</td>
+			</tr>
+			<tr>
+				<td>File Name:</td>
+				<td colspan="5">{fileName}</td>
+			</tr>
+		</table>
+	</div>
+	<div id="operate" class="mainDiv">
+		<a href="javascript:OpenUpload('{jobNoNew}','rawpdf');">Upload</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<span style=""><a href="#">Download</a></span> <input
+			name="romote_pdf_host" type="hidden" id="romote_pdf_host" size="5"
+			value="{romote_pdf_host}" /> <input name="type" type="hidden"
+			id="type" size="5" value="Monitoring Survey" /> <input name="action"
+			type="hidden" id="action" size="5" value="RawData Download" /> <input
+			name="jobId" type="hidden" id="jobId" size="5" value="{jobNoNew}" />
+	</div>
+	<div id="history-grid-div" class="mainDiv">
+		<div id="history-grid"></div>
+	</div>
+</body>
+</html>

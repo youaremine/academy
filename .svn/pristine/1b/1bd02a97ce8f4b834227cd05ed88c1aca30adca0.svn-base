@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>list</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+	<table width="100%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Bus Manage &gt;&gt;&gt; Registration List</td>
+		</tr>
+	</table>
+	<table width="100%" border="0" align="center" cellpadding="0"
+		cellspacing="1" bgcolor="#000000">
+		<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+			<td width="7%" height="20">ID</td>
+			<td width="65%" align="center">Transport Mode</td>
+			<td colspan="3" align="center">操作</td>
+		</tr>
+
+		<!-- BEGIN TypeRow -->
+		<tr class="{listStyle}"
+			onmouseover="this.className='DgSelectedItemStyle'"
+			onmouseout="this.className='{listStyle}'">
+			<td>{typeId}</td>
+			<td>{typeName}</td>
+			<td width="4%">{preview}</td>
+			<td width="4%">{add}</td>
+			<td width="4%">{delete}</td>
+		</tr>
+		<!-- END TypeRow -->
+	</table>
+</body>
+</html>

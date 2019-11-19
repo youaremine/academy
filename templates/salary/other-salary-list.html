@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>其他費用列表</title>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/jquery-function.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../js/function.js"></script>
+<script type="text/javascript" src="../js/salary/other-salary-list.js"></script>
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">學費管理 &gt;&gt;&gt; 其他費用列表</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>課程日期</td>
+								<td><table width="200" border="0" cellspacing="0"
+										cellpadding="0">
+										<tr>
+											<td><input name="sSurveyDateStart" type="text" id="sSurveyDateStart" value="{sSurveyDateStart}" class="Wdate" 
+												onfocus="WdatePicker({onpicked:function(){$dp.$('sSurveyDateEnd').value=$dp.cal.getDateStr($dp.dateFmt,$dp.$D('sSurveyDateStart',{M:1}));}})" size="10" /></td>
+											<td>&nbsp;-&nbsp;</td>
+											<td><input name="sSurveyDateEnd" type="text" id="sSurveyDateEnd" value="{sSurveyDateEnd}" class="Wdate"
+												onfocus="WdatePicker({})" size="10" /></td>
+										</tr>
+									</table></td>
+								<td>其他課程</td>
+								<td nowrap="nowrap"><input class="ButtonIdea"
+									name="OpenSubmit2" type="button" id="OpenSubmit2"
+									value="Select"
+									onclick="openModalDialog('../other-project-search-list.php',640,480,'sProjectCode|sProjectName')" />
+									<input name="sProjectCode" type="text" id="sProjectCode"
+									value="{sProjectCode}" size="6" readonly="readonly"
+									style="background-color: #E4E4E4" /> <input
+									name="sProjectName" type="text" id="sProjectName"
+									value="{sProjectName}" readonly="readonly"
+									style="background-color: #E4E4E4" /><a
+									href="javascript:Clear('sProjectCode|sProjectName');">
+										清空</a></td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>學員</td>
+								<td colspan="3"><table width="530" border="0"
+										cellspacing="0" cellpadding="0">
+										<tr>
+											<td><input class="ButtonIdea" name="OpenSubmit"
+												type="button" id="OpenSubmit" value="Select"
+												onclick="openModalDialog('../surveyor_search_list.php',640,480,'sSurveyorId|sSurveyorEngName|sSurveyorContanct|sSurveyorHome')" /></td>
+											<td>&nbsp;</td>
+											<td><input name="sSurveyorId" type="text"
+												id="sSurveyorId" size="4" readonly="readonly"
+												style="background-color: #E4E4E4" value="{sSurveyorId}" /></td>
+											<td><input name="sSurveyorEngName" type="text"
+												id="sSurveyorEngName" size="20" readonly="readonly"
+												style="background-color: #E4E4E4" value="{sSurveyorEngName}" /></td>
+											<td><input name="sSurveyorContanct" type="text"
+												id="sSurveyorContanct" size="10" readonly="readonly"
+												style="background-color: #E4E4E4"
+												value="{sSurveyorContanct}" /></td>
+											<td><input name="sSurveyorHome" type="text"
+												id="sSurveyorHome" size="10" readonly="readonly"
+												style="background-color: #E4E4E4" value="{sSurveyorHome}" /></td>
+											<td><a
+												href="javascript:Clear('sSurveyorId|sSurveyorEngName|sSurveyorContanct|sSurveyorHome');">
+													清空</a></td>
+										</tr>
+									</table></td>
+								<td><input class="ButtonIdea" type="submit"
+									name="btnSubmit" id="btnSubmit" value="搜索(Search)" /></td>
+								<td>{editLink}</td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td height="20"></td>
+				<td align="center">學員編號</td>
+				<td align="center">學員姓名</td>
+				<td align="center">班次</td>
+				<td align="center">類別</td>
+				<td align="center">課程日期</td>
+				<td align="center">開始時間</td>
+				<td align="center">結束時間</td>
+				<td align="center">休息時間</td>
+				<td align="center">Hour</td>
+				<td align="center">Hourly<br />
+			    Rate</td>
+				<td align="center">Wages</td>
+				<td align="center">TE</td>
+				<td align="center">Total</td>
+				<td align="center">Remarks</td>
+				<td align="center">Status</td>
+				<td align="center">&nbsp;</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr id="tr{i}" class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'"
+				onclick=" SelectRow(this);">
+				<td>&nbsp;</td>
+				<td>{surveyorId}</td>
+				<td>{surveyorEngName}</td>
+				<td>{projectName}</td>
+				<td>{salaryType}</td>
+				<td>{surveyDate}</td>
+				<td>{startTime}</td>
+				<td>{endTime}</td>
+				<td>{restHour}</td>
+				<td>{surveyHour}</td>
+				<td>{hourlyRate}</td>
+				<td>{wages}</td>
+				<td>{transportExpenses}</td>
+				<td>{total}</td>
+				<td>{remarks}</td>
+				<td><img id="AuditImg_{otId}" src="../images/{auditStatus}.png" width="32" alt="{auditStatus}" title="{auditStatus}" />&nbsp;{btnAudit}</td>
+				<td>{attachment}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="2">
+			<tr>
+				<td align="right">{pageSetting}</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

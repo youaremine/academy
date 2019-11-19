@@ -1,0 +1,475 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/prototype.js"></script>
+<script type="text/javascript" src="../js/en.js"></script>
+<script type="text/javascript" src="../js/function.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+function CheckForm()
+{
+	var isValid = true;
+	if($('refNo').value == "")
+	{
+		alert(Lang_refNoEmpty);
+		$('refNo').focus();
+		isValid = false;
+		return;
+	}
+	if($('surveyDateYear').value=="" || $('surveyDateMonth').value=="" || $('surveyDateDay').value=="")
+	{
+		alert(Lang_surveyDayEmpty);
+		$('surveyDateYear').focus();
+		isValid = false;
+		return;
+	}
+	
+	//全部条件成立提交	
+	if(isValid)
+	{
+		$('input').submit();
+	}
+}
+
+//检查是否数字
+function CheckIsNum(thisControl)
+{
+	if(!IsNum(thisControl.value))
+	{
+		alert(Lang_noNumber);
+		thisControl.focus();
+		thisControl.value = '';
+		thisControl.select();
+		return false;
+	}
+}
+
+//檢查Ref No.
+function CheckRefNo()
+{
+	$('refNoError').innerHTML = '';
+	var refNo = $('refNo').value;
+	var myAjax = new Ajax.Request(
+		  '../api/main.php', // 请求的URL
+		  {
+			  method: 'get',
+		  	  parameters: "q=IsExist&refNo="+refNo,
+			  onSuccess: function(response){
+				  $msg = eval("("+response.responseText+")");
+				  if($msg.isExist == 'true')
+				  {
+					$('refNoError').innerHTML = refNo + "已存在,仍然要錄入?";
+				  }
+			  }
+		  }
+	  );
+	
+}
+</script>
+<style type="text/css">
+table {
+	font-size: 12px;
+}
+
+.PrintTable {
+	width: 100%;
+	border: 0px solid #000000;
+	background: #FFFFFF;
+	border-bottom: 1px solid #000000;
+	border-right: 1px solid #000000;
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-collapse: collapse;
+}
+
+#PrintTitle td {
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	height: 15px;
+}
+
+#PrintTable td {
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	height: 19px;
+}
+
+.DateTimeInput {
+	width: 20px;
+}
+
+.NumberInput {
+	width: 30px;
+}
+
+.ErrorTextbox {
+	color: #FF0000;
+}
+</style>
+</head>
+<body bgcolor="#FFFFFF">
+	<form action="data_update_press.php" method="post"
+		enctype="multipart/form-data" name="input" id="input">
+		<table id="PrintTitle" class="PrintTable">
+			<tr height=63>
+				<td height=63 colspan="2">Surveyor ( 調查員): <input
+					name="startTime" type="hidden" id="startTime"
+					style="width: 0px; height: 0px;" value="{startTime}"
+					readonly="realonly"></td>
+				<td colspan="9"><table width="500" border="0" cellspacing="0"
+						cellpadding="0">
+						<tr>
+							<td><input class="ButtonIdea" name="OpenSubmit"
+								type="button" id="OpenSubmit" value="Select"
+								onClick="openModalDialog('../surveyor_search_list.php',640,480,'surveyorId|surveyorEngName|surveyorContanct|surveyorHome')" /></td>
+							<td>&nbsp;</td>
+							<td><input name="surveyorId" type="text" id="surveyorId"
+								value="{surveyorId}" size="6" readonly="true"
+								style="background-color: #E4E4E4"></td>
+							<td><input name="surveyorEngName" type="text"
+								id="surveyorEngName" value="{surveyorEngName}" size="20"
+								readonly="true" style="background-color: #E4E4E4"></td>
+							<td><input name="surveyorContanct" type="text"
+								id="surveyorContanct" value="{surveyorContanct}" size="10"
+								readonly="true" style="background-color: #E4E4E4"></td>
+							<td><input name="surveyorHome" type="text" id="surveyorHome"
+								value="{surveyorHome}" size="25" readonly="true"
+								style="background-color: #E4E4E4"></td>
+						</tr>
+					</table></td>
+			</tr>
+			<tr height=34>
+				<td height=34 colspan="2">REF NO.編號:</td>
+				<td width=89><input name="refNo" type="text" id="refNo"
+					value="{refNo}" size="10"> <input name="supaId"
+					type="hidden" id="supaId" value="{supaId}"></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td></td>
+				<td colspan=2>Survey Date 調查日期:</td>
+				<td colspan=2><label> <select name="surveyDateYear"
+						id="surveyDateYear">
+							<option value="" selected>--</option>
+							<!-- BEGIN SurveyDateYearRow -->
+							<option value="{surveyDateYearValue}">{surveyDateYearValue}</option>
+							<!-- END SurveyDateYearRow -->
+					</select> <select name="surveyDateMonth" id="surveyDateMonth">
+							<option value="" selected>--</option>
+							<option value="01">Jan</option>
+							<option value="02">Feb</option>
+							<option value="03">Mar</option>
+							<option value="04">Apr</option>
+							<option value="05">May</option>
+							<option value="06">June</option>
+							<option value="07">July</option>
+							<option value="08">Aug</option>
+							<option value="09">Sept</option>
+							<option value="10">Oct</option>
+							<option value="11">Nov</option>
+							<option value="12">Dec</option>
+					</select> <select name="surveyDateDay" id="surveyDateDay">
+							<option value="">--</option>
+							<option value="01">01</option>
+							<option value="02">02</option>
+							<option value="03">03</option>
+							<option value="04">04</option>
+							<option value="05">05</option>
+							<option value="06">06</option>
+							<option value="07">07</option>
+							<option value="08">08</option>
+							<option value="09">09</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
+							<option value="16">16</option>
+							<option value="17">17</option>
+							<option value="18">18</option>
+							<option value="19">19</option>
+							<option value="20">20</option>
+							<option value="21">21</option>
+							<option value="22">22</option>
+							<option value="23">23</option>
+							<option value="24">24</option>
+							<option value="25">25</option>
+							<option value="26">26</option>
+							<option value="27">27</option>
+							<option value="28">28</option>
+							<option value="29">29</option>
+							<option value="30">30</option>
+							<option value="31">31</option>
+					</select> <input style="display: none" name="surveyDate" type="text"
+						id="surveyDate" size="15" class="Wdate" onClick="WdatePicker({})">
+				</label></td>
+			</tr>
+			<tr height=33>
+				<td height=33 colspan="2">Weather 天氣:</td>
+				<td width=89><select name="weatherId" id="weatherId">
+						<option value="">----</option>
+						<!-- BEGIN WeatherRow -->
+						<option value="{weatherId}">{weatherName}</option>
+						<!-- END WeatherRow -->
+				</select></td>
+				<td width=89><a href="help/weather.html" target="_blank">?</a></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td></td>
+				<td colspan=2>Survey Period 調查時間:</td>
+				<td colspan=2><input name="surFromTimeHor" type="text"
+					class="DateTimeInput" id="surFromTimeHor"
+					onBlur="CheckThisTime(this,this.value,'hor')"
+					value="{surFromTimeHor}"> :<input name="surFromTimeMin"
+					type="text" class="DateTimeInput" id="surFromTimeMin"
+					onBlur="CheckThisTime(this,this.value,'min')"
+					value="{surFromTimeMin}"> - <input name="surToTimeHor"
+					type="text" class="DateTimeInput" id="surToTimeHor"
+					onBlur="CheckIsNum(this)" value="{surToTimeHor}"> :<input
+					name="surToTimeMin" type="text" class="DateTimeInput"
+					id="surToTimeMin" onBlur="CheckThisTime(this,this.value,'min')"
+					value="{surToTimeMin}"></td>
+			</tr>
+			<tr height=22>
+				<td height=22></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr height=19>
+				<td height=19></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td colspan=2>Location(地點):</td>
+				<td colspan=2><label> <input name="location"
+						type="text" id="location" value="{location}" size="38">
+				</label></td>
+			</tr>
+			<tr height=19>
+				<td height=19 colspan="2">交通工具 Transport Mode</td>
+				<td><select name="typeId" id="typeId">
+						<option value="">----</option>
+						<!-- BEGIN TypeRow -->
+						<option value="{typeId}">{typeName}</option>
+						<!-- END TypeRow -->
+				</select></td>
+				<td></td>
+				<td></td>
+				<td colspan=2></td>
+				<td colspan=2>Bounds(方向):</td>
+				<td colspan="2"><input name="bounds" type="text" id="bounds"
+					value="{bounds}" size="38" readonly="realonly"
+					style="background-color: #E4E4E4"></td>
+			</tr>
+			<tr height=21>
+				<td height=21 colspan="2">路線地區 Route Distinct</td>
+				<td><select name="distCode" id="distCode">
+						<option value="">----</option>
+						<!-- BEGIN DistRow -->
+						<option value="{distCode}">{distEngName}</option>
+						<!-- END DistRow -->
+				</select></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td colspan=2>輸入員名稱:</td>
+				<td colspan="2"><input name="userName" type="text"
+					id="userName" size="20" value="{userChiName}" readonly="readonly"
+					style="background-color: #E4E4E4"></td>
+			</tr>
+			<tr height=30>
+				<td height=30 colspan=2>Route No (路線號碼):</td>
+				<td><label> <input name="routeNo" type="text"
+						id="routeNo" value="{routeNo}" size="23"> <input
+						name="busId" type="hidden" id="busId"
+						style="background-color: #E4E4E4" value="{busId}" size="10"
+						readonly="realonly"> <input class="ButtonIdea"
+						name="OpenSubmitRoute" type="button" id="OpenSubmitRoute"
+						value="Select"
+						onClick="openModalDialog('../bus_search_list.php',640,480,'busId|routeNo|typeId|bounds|distCode|amSchNo|pmSchNo|allSchNo')" />
+				</label></td>
+				<td></td>
+				<td></td>
+				<td>&nbsp;</td>
+				<td></td>
+				<td colspan="2">Schedule No：</td>
+				<td colspan="2"><table width="100%" border="0" cellspacing="0"
+						cellpadding="0">
+						<tr>
+							<td width="30%"><label> <input type="radio"
+									name="schType" value="amSchNo">amSchNo
+							</label></td>
+							<td><input name="amSchNo" type="text" id="amSchNo"
+								value="{amSchNo}" size="5" readonly="realonly"
+								style="background-color: #E4E4E4"></td>
+						</tr>
+						<tr>
+							<td><label> <input type="radio" name="schType"
+									value="pmSchNo"> pmSchNo
+							</label></td>
+							<td><input name="pmSchNo" type="text" id="pmSchNo"
+								value="{pmSchNo}" size="5" readonly="realonly"
+								style="background-color: #E4E4E4"></td>
+						</tr>
+						<tr>
+							<td><label> <input type="radio" name="schType"
+									value="allSchNo"> allSchNo
+							</label></td>
+							<td><input name="allSchNo" type="text" id="allSchNo"
+								value="{allSchNo}" size="5" readonly="realonly"
+								style="background-color: #E4E4E4"></td>
+						</tr>
+					</table></td>
+			</tr>
+			<tr height=0>
+				<td width=135></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=140></td>
+				<td width=267></td>
+				<td width=267></td>
+				<td width=267><label></label></td>
+				<td width=119></td>
+			</tr>
+		</table>
+		<table width="100%" height="30" border="0" cellpadding="0"
+			cellspacing="0" class="PrintTable">
+			<tr class="PrintTable" height=0>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr class="PrintTable" height=0>
+				<td width=153 align="right">详细资料文件:&nbsp;</td>
+				<td><label for="fileDetails"></label> <input type="file"
+					name="fileDetails" id="fileDetails"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>&nbsp;</td>
+				<td width=119>&nbsp;</td>
+			</tr>
+			<tr class="PrintTable" height=0>
+				<td>&nbsp;</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>&nbsp;</td>
+				<td><input type="button" onClick="CheckForm()" name="Submit"
+					id="Submit" value="提交(Submit)"></td>
+			</tr>
+		</table>
+		<br>
+		<table id="PrintTable" class="PrintTable">
+			<tr height=35>
+				<td height="35" rowspan=3>*skipped <br> stop<br> 飛站
+				</td>
+				<td rowspan=3 height=81 width=135>Registration<br> Plate
+					No. 車牌<br> / Fleet No.<br> 車隊號碼
+				</td>
+				<td width=129 height="35" id="busMinDiff">PSL/ Cacpcity</td>
+				<td height="35" colspan=4 align=center>Time&nbsp; 時間</td>
+				<td width=140 height="35">On Arrival.</td>
+				<td width=227 height="35">Pick<br>Up
+				</td>
+				<td width=89 height="35">Set Down</td>
+				<td width=89 height="35">Left Behind</td>
+				<td width=119 height="35">On Dept.</td>
+				<td width=20>删除</td>
+			</tr>
+			<tr height=18>
+				<td height=18 width=89>&nbsp;</td>
+				<td colspan=2 align=center>Arrival 到達</td>
+				<td colspan=2 align=center>Departure 出發</td>
+				<td>到站車上人數</td>
+				<td>上車人數</td>
+				<td>落車人數</td>
+				<td>剩餘人龍</td>
+				<td>離站車上人數</td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr height=28>
+				<td height=28 width=89>&nbsp;</td>
+				<td width="89">Hr小時</td>
+				<td width="89">Min分鐘</td>
+				<td width="89">Hr小時</td>
+				<td width="89">Min分鐘</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+				<td>&nbsp;</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr height='26' id="tr[{i}]" name="tr[{i}]">
+				<td><label></label> <input name="sudeId[{i}]" type="hidden"
+					id="sudeId[{i}]" value="{sudeId}" size="3"></td>
+				<td height='26'>{fleetNo}</td>
+				<td>{pslNo}</td>
+				<td align='right'>{arrivalTimeHor}</td>
+				<td align='right'>{arrivalTimeMin}</td>
+				<td align='right'>{departureTimeHor}</td>
+				<td align='right'>{departureTimeMin}</td>
+				<td align='right'>{onArrival}</td>
+				<td align='right'>{pickup}</td>
+				<td>{setDown}</td>
+				<td>{leftBehind}</td>
+				<td>{onDept}</td>
+				<td>&nbsp;</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+	</form>
+	<script type="text/javascript">
+$('typeId').value = "{busTypeId}";
+$('surveyDateYear').value = "{surveyDateYear}";
+$('surveyDateMonth').value = "{surveyDateMonth}";
+$('surveyDateDay').value = "{surveyDateDay}";
+$('bounds').value = "{bounds}";
+$('distCode').value = "{distCode}";
+$('weatherId').value = "{weatherId}";
+
+var someNodeList = document.getElementsByName('schType');
+var nodes = $A(someNodeList);
+nodes.each(function(node){
+	if(node.type=='radio')
+	{
+		if(node.value == "{schType}")
+			node.checked = true;
+	}
+})
+</script>
+</body>
+</html>

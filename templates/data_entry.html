@@ -1,0 +1,887 @@
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" src="js/language.js"></script>
+<script language="javascript" src="js/function.js"></script>
+<script language="javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script language="javascript">
+function CheckForm()
+{
+	var isValid = true;
+	if($('refNo').value == "")
+	{
+		alert(Lang_refNoEmpty);
+		$('refNo').focus();
+		isValid = false;
+		return;
+	}
+	if($('surveyDateYear').value=="" || $('surveyDateMonth').value=="" || $('surveyDateDay').value=="")
+	{
+		alert(Lang_surveyDayEmpty);
+		$('surveyDateYear').focus();
+		isValid = false;
+		return;
+	}
+	
+	for(i=0;i<allRowNo;i++)
+	{
+		if($('pslNo['+i+']').value!="")
+		{
+			//到达时间 小时 不能为空
+			if($('arrivalTimeHor['+i+']').value=="")
+			{
+				alert(Lang_surveyTimeEmpty);
+				$('arrivalTimeHor['+i+']').focus();
+				isValid = false;
+				break;
+			}
+			//到达时间 分钟 不能为空
+			if($('arrivalTimeMin['+i+']').value=="")
+			{
+				alert(Lang_surveyTimeEmpty);
+				$('arrivalTimeMin['+i+']').focus();
+				isValid = false;
+				break;
+			}
+			//出发时间 小时 不能为空
+			if($('departureTimeHor['+i+']').value=="")
+			{
+				alert(Lang_surveyTimeEmpty);
+				$('departureTimeHor['+i+']').focus();
+				isValid = false;
+				break;
+			}
+			//出发时间 分钟 不能为空
+			if($('departureTimeMin['+i+']').value=="")
+			{
+				alert(Lang_surveyTimeEmpty);
+				$('departureTimeMin['+i+']').focus();
+				isValid = false;
+				break;
+			}
+		}
+	}
+	//全部条件成立提交	
+	if(isValid)
+	{
+		ShowConfirmClose(false);
+		$('input').submit();
+	}
+}
+
+//車頭顯示牌紀錄
+function DisplayBoardChange(thisControl,rowNo)
+{
+	var otherDisplayBoardId = 'otherDisplayBoard['+rowNo+']';;
+	if(thisControl.value == "Other")
+	{
+		$(otherDisplayBoardId).style.display = "";
+	}
+	else
+	{
+		$(otherDisplayBoardId).style.display = "none";
+	}
+}
+
+//检查是否数字
+function CheckIsNum(thisControl)
+{
+	if(!IsNum(thisControl.value))
+	{
+		alert(Lang_noNumber);
+		thisControl.focus();
+		thisControl.value = '';
+		thisControl.select();
+		return false;
+	}
+}
+
+//检查是否数字
+function CheckInputIsNum(thisControl,rowNo)
+{
+	if(thisControl.value != '')
+	{
+		if(!IsNum(thisControl.value))
+		{
+			alert(Lang_noNumber);
+			thisControl.focus();
+			thisControl.value = '';
+			thisControl.select();
+			return false;
+		}
+	}
+}
+
+//检查離站車上人數是否符合規則
+function CheckOnDept(thisControl,rowNo)
+{
+	if(thisControl.value != '')
+	{
+		if(!IsNum(thisControl.value))
+		{
+			alert(Lang_noNumber);
+			thisControl.focus();
+			thisControl.value = '';
+			thisControl.select();
+			return false;
+		}
+		onDeptId = 'onDept['+rowNo+']';
+		if(thisControl.id == onDeptId)
+		{
+			onArrivalId = 'onArrival['+rowNo+']';
+			pickupId = 'pickup['+rowNo+']';
+			setDownId = 'setDown['+rowNo+']';
+			if($(pickupId).value != '' && $(setDownId).value!='')
+			{
+				var onArrivalNo = parseInt($(onDeptId).value) - parseInt($(pickupId).value) + parseInt($(setDownId).value);
+				if(onArrivalNo >= 0)
+				{
+					$(onArrivalId).value = onArrivalNo;
+				}
+				else
+				{
+					alert(Lang_OnDeptError);
+					thisControl.focus();
+					thisControl.value = '';
+					thisControl.select();
+				}					
+			}
+		}
+	}
+}
+
+//自动计算 OnDeparture的值
+function AutoCalcDeparture(rowNo)
+{
+	onDeptId = 'onDept['+rowNo+']';
+	onArrivalId = 'onArrival['+rowNo+']';
+	pickupId = 'pickup['+rowNo+']';
+	setDownId = 'setDown['+rowNo+']';
+
+	if($(pickupId).value != '' && $(setDownId).value!='' && $(onArrivalId).value!='')
+	{
+		$(onDeptId).value = parseInt($(onArrivalId).value) + parseInt($(pickupId).value) - parseInt($(setDownId).value);
+	}
+}
+
+//检查是否超出时间范围
+function CheckTrueTimeHor(thisControl)
+{
+	if(thisControl.value != "")
+	{
+		var type = 'hor';
+		var startTime = $('surFromTimeHor').value;
+		if(startTime == '')
+		{
+			thisControl.value = '';
+			alert(Lang_surveyTimeEmpty);
+			$('surFromTimeHor').focus();
+			return;
+		}
+		var endTime = $('surToTimeHor').value;
+		if(endTime == '')
+		{
+			thisControl.value = '';
+			alert(Lang_surveyTimeEmpty);
+			$('surToTimeHor').focus();
+			return;
+		}
+		CheckCurrTime(thisControl,thisControl.value,type,startTime,endTime);
+	}
+}
+
+function CheckTrueTimeMin(thisControl)
+{
+	if(thisControl.value != "")
+	{
+		var type='min';
+		var startTime = '0'
+		var endTime = '60';
+		CheckCurrTime(thisControl,thisControl.value,type,startTime,endTime);
+	}
+}
+
+//检查到站车上人数是否大于下车人数
+function CheckOnArrivalSetDown(control1,control2)
+{
+	var val1 = control1.value;
+	var val2 = control2.value;
+	if(val1!="" && val2!="")
+	{
+		if(parseInt(val1) < parseInt(val2))
+		{
+			alert(Lang_OnArrivalSetDown);
+			control2.focus();
+			control2.select();
+			return;
+		}
+	}
+}
+
+//检查到站人数/离站人数 是否大于车的容量
+function CheckNumberCapacity(control1,control2)
+{
+	var val1 = control1.value;
+	var val2 = control2.value;
+	var maxCap = 0;
+	if(val1!="" && val2!="")
+	{
+		var value = $F('typeId');
+		if(value == '1' || value == '3')
+		{
+			maxCap = 16;
+		}
+		else
+		{
+			maxCap = parseInt(val2)*1.1;
+		}
+		
+		if(parseInt(val1) > maxCap)
+		{
+			alert(Lang_CheckTypeAndCap);
+			control1.focus();
+			control1.select();
+			return;
+		}
+	}
+}
+
+//检查到达时间是否小于离开时间
+function CheckArrivalDeparture(control1,control2,control3,control4)
+{
+	var arrivalTime = control1.value + control2.value;
+	var departureTime = control3.value + control4.value;
+	if(control1.value!="" && control2.value!="" && control3.value!="" && control4.value!="")
+	{
+		if(arrivalTime > departureTime)
+		{
+			alert(Lang_OnArrivalDeparture);
+			control4.focus();
+			control4.select();
+		}
+	}
+}
+
+//如果有上车人数/下车人数,则飞站自动取消
+function CheckSkipStation(rowNo)
+{
+	skippedStopId = 'skippedStop['+rowNo+']';
+	pickupId = 'pickup['+rowNo+']';
+	setDownId = 'setDown['+rowNo+']';
+	if($(pickupId).value>0 || $(setDownId).value>0)
+	{
+		$(skippedStopId).checked = false;
+	}
+}
+
+//根据大巴/小巴得到不同的内容
+function GetDiffCont(value)
+{
+	var value = $F('typeId');
+	if(value == '1' || value == '3')
+	{
+		$('busMinDiff').innerHTML='PSL No.';
+	}
+	else
+	{
+		$('busMinDiff').innerHTML='Capacity.';
+	}
+}
+
+function CheckIsLogin()
+{
+	var url = 'is_login.php';
+	var pars = '';
+	//document.write(url+pars);
+	var myAjax = new Ajax.Request(
+	url,
+	{
+	method: 'get',
+	parameters: pars,
+	onComplete: InitIsLogin
+	});
+}
+
+function InitIsLogin(originalRequest)
+{
+	var isExist = originalRequest.responseText;
+	if(isExist == 'successful')
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+
+var allRowNo = {allRowNo};
+function AddRow()
+{ 
+	allRowNo = allRowNo + 1;
+	var tb = $('PrintTable');
+	var tr = tb.insertRow(tb.rows.length);
+	var tdHtml = "<select name=\"displayBoard["+allRowNo+"]\" id=\"displayBoard["+allRowNo+"]\" tabindex=\"9999999\" onChange=\"DisplayBoardChange(this,"+allRowNo+");\">"
++"        <option value=\"\">--</option>"
++"        <option value=\"Wrong Direction\">錯方向</option>"
++"        <option value=\"Blank\">沒有顯示</option>"
++"        <option value=\"Missing Digital\">缺數字/數字筆劃</option>"
++"        <option value=\"Missing Character\">缺中英文字/中英文字筆劃</option>"
++"        <option value=\"Other\">其它</option>"
++"      </select><br />"
++"      <input id=\"otherDisplayBoard["+allRowNo+"]\"  name=\"otherDisplayBoard["+allRowNo+"]\" type=\"text\"tabindex=\"9999999\" size=\"24\" style=\"display:none;\" />";
+	td = tr.insertCell(0);  
+	td.innerHTML = tdHtml; 
+	tdHtml = "<input name=\"isUpdate["+allRowNo+"]\" type=\"hidden\" id=\"isUpdate["+allRowNo+"]\" value=\"1\" size=\"1\"><input name=\"sudeId["+allRowNo+"]\" type=\"hidden\" id=\"sudeId["+allRowNo+"]\" value=\"\" size=\"3\"><input type=\"checkbox\" name=\"skippedStop[{i}]\" id=\"skippedStop[{i}]\"><label for=\"skippedStop\">*</label>";
+	td = tr.insertCell(1);
+	td.innerHTML = tdHtml;   
+	tdHtml = "<input name=\"fleetNo["+allRowNo+"]\" type=\"text\" id=\"fleetNo["+allRowNo+"]\" size=\"8\" onKeyDown=\"SimulateExcel('','fleetNo','pslNo','fleetNo',"+allRowNo+",event.keyCode)\">";
+	td = tr.insertCell(2);
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"pslNo["+allRowNo+"]\" type=\"text\" id=\"pslNo["+allRowNo+"]\" size=\"8\" onKeyDown=\"SimulateExcel('fleetNo','pslNo','arrivalTimeHor','pslNo',"+allRowNo+",event.keyCode)\"><input class=\"ButtonIdea\" name=\"openMy["+allRowNo+"]\" type=\"button\" id=\"openMy["+allRowNo+"]\" value=\" ... \" onClick=\"openCusModalDialog('data_search_list.php?fleetNo=',640,310,'fleetNo["+allRowNo+"]','pslNo["+allRowNo+"]')\"  tabindex=\"100000\" />" ; 
+	td = tr.insertCell(3);
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"arrivalTimeHor["+allRowNo+"]\" type=\"text\" id=\"arrivalTimeHor["+allRowNo+"]\" class=\"DateTimeInput\" onBlur=\"CheckTrueTimeHor(this);CheckArrivalDeparture($('arrivalTimeHor["+allRowNo+"]'),$('arrivalTimeMin["+allRowNo+"]'),$('departureTimeHor["+allRowNo+"]'),$('departureTimeMin["+allRowNo+"]'))\" onKeyDown=\"SimulateExcel('pslNo','arrivalTimeHor','arrivalTimeMin','arrivalTimeHor',"+allRowNo+",event.keyCode)\" maxlength=\"2\">";
+	td = tr.insertCell(4);
+	td.align = 'right';
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"arrivalTimeMin["+allRowNo+"]\" type=\"text\" id=\"arrivalTimeMin["+allRowNo+"]\" class=\"DateTimeInput\" onBlur=\"CheckTrueTimeMin(this);CheckArrivalDeparture($('arrivalTimeHor["+allRowNo+"]'),$('arrivalTimeMin["+allRowNo+"]'),$('departureTimeHor["+allRowNo+"]'),$('departureTimeMin["+allRowNo+"]'))\" onKeyDown=\"SimulateExcel('arrivalTimeHor','arrivalTimeMin','departureTimeHor','arrivalTimeMin',"+allRowNo+",event.keyCode)\" maxlength=\"2\">";
+	td = tr.insertCell(5);
+	td.align = 'right';
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"departureTimeHor["+allRowNo+"]\" type=\"text\" id=\"departureTimeHor["+allRowNo+"]\" class=\"DateTimeInput\" onBlur=\"CheckTrueTimeHor(this);CheckArrivalDeparture($('arrivalTimeHor["+allRowNo+"]'),$('arrivalTimeMin["+allRowNo+"]'),$('departureTimeHor["+allRowNo+"]'),$('departureTimeMin["+allRowNo+"]'))\"  onKeyDown=\"SimulateExcel('arrivalTimeMin','departureTimeHor','departureTimeMin','departureTimeHor',"+allRowNo+",event.keyCode)\" maxlength=\"2\">";
+	td = tr.insertCell(6);
+	td.align = 'right';
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"departureTimeMin["+allRowNo+"]\" type=\"text\" id=\"departureTimeMin["+allRowNo+"]\" class=\"DateTimeInput\" onBlur=\"CheckTrueTimeMin(this);CheckArrivalDeparture($('arrivalTimeHor["+allRowNo+"]'),$('arrivalTimeMin["+allRowNo+"]'),$('departureTimeHor["+allRowNo+"]'),$('departureTimeMin["+allRowNo+"]'))\" onKeyDown=\"SimulateExcel('departureTimeHor','departureTimeMin','onArrival','departureTimeMin',"+allRowNo+",event.keyCode)\" maxlength=\"2\">";
+	td = tr.insertCell(7);
+	td.align = 'right';
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"onArrival["+allRowNo+"]\" type=\"text\" id=\"onArrival["+allRowNo+"]\" class=\"NumberInput\" onBlur=\"CheckIsNum(this);CheckOnArrivalSetDown(this,$('setDown["+allRowNo+"]'));AutoCalcDeparture("+allRowNo+");\" onKeyDown=\"SimulateExcel('departureTimeMin','onArrival','pickup','onArrival',"+allRowNo+",event.keyCode)\">"; 
+	td = tr.insertCell(8);
+	td.align = 'right';
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"pickup["+allRowNo+"]\" type=\"text\" id=\"pickup["+allRowNo+"]\" class=\"NumberInput\" onBlur=\"CheckIsNum(this);AutoCalcDeparture("+allRowNo+");CheckSkipStation("+allRowNo+");\" onKeyDown=\"SimulateExcel('onArrival','pickup','setDown','pickup',"+allRowNo+",event.keyCode)\">";
+	td = tr.insertCell(9);
+	td.align = 'right';
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"setDown["+allRowNo+"]\" type=\"text\" id=\"setDown["+allRowNo+"]\" class=\"NumberInput\" onBlur=\"CheckIsNum(this);CheckOnArrivalSetDown($('onArrival["+allRowNo+"]'),this);AutoCalcDeparture("+allRowNo+");CheckSkipStation("+allRowNo+");\" onKeyDown=\"SimulateExcel('pickup','setDown','leftBehind','setDown',"+allRowNo+",event.keyCode)\">";
+	td = tr.insertCell(10);
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"leftBehind["+allRowNo+"]\" type=\"text\" id=\"leftBehind["+allRowNo+"]\" class=\"NumberInput\" onBlur=\"CheckIsNum(this)\" onKeyDown=\"SimulateExcel('setDown','leftBehind','onDept','leftBehind',"+allRowNo+",event.keyCode)\">"; 
+	td = tr.insertCell(11);
+	td.innerHTML = tdHtml;
+	tdHtml = "<input name=\"onDept["+allRowNo+"]\" type=\"text\" id=\"onDept["+allRowNo+"]\" class=\"NumberInput\" onChange=\"CheckOnDept(this,"+allRowNo+")\" onKeyDown=\"SimulateExcel('leftBehind','onDept','','onDept',"+allRowNo+",event.keyCode)\"> ";
+	td = tr.insertCell(12);
+	td.innerHTML = tdHtml;
+}
+
+function AddRowByNo(addNo)
+{
+	for($i=0;$i<addNo;$i++)
+	{
+		AddRow();
+	}
+}
+
+function CheckRefNo()
+{
+	$('refNoError').innerHTML = '';
+	var refNo = $('refNo').value;
+	var myAjax = new Ajax.Request(
+		  'api/main.php', // 请求的URL
+		  {
+			  method: 'get',
+		  	  parameters: "q=IsExist&refNo="+refNo,
+			  onSuccess: function(response){
+				  $msg = eval("("+response.responseText+")");
+				  if($msg.isExist == 'true')
+				  {
+					$('refNoError').innerHTML = refNo + "已存在,仍然要錄入?";
+				  }
+			  }
+		  }
+	  );
+	
+}
+//顯示隱藏Route No 2;
+function ShowHideRoute2()
+{
+	var display = "";
+	if($('routeNo2').style.display=="")
+	{
+		display = "none";
+	}
+	$('routeNo2').style.display = display;
+	$('OpenSubmitRoute2').style.display = display;
+	$('routeNo2SchNoTable').style.display = display;
+}
+</script>
+
+<script type="text/javascript">
+ var pb_strConfirmCloseMessage;
+ var pb_blnCloseWindow = false;
+ pb_strConfirmCloseMessage ="You will lose any unsaved content.";
+ function ConfirmClose() {
+     window.event.returnValue = pb_strConfirmCloseMessage;
+     pb_blnCloseWindow = true;
+ }
+ function ShowConfirmClose(blnValue) {
+     if(blnValue) {
+         document.body.onbeforeunload = ConfirmClose;
+     } else {
+         document.body.onbeforeunload = null;
+     }
+ }
+</script>
+<style type="text/css">
+table {
+	font-size: 12px;
+}
+
+.PrintTable {
+	width: 100%;
+	border: 0px solid #000000;
+	background: #FFFFFF;
+	border-bottom: 1px solid #000000;
+	border-right: 1px solid #000000;
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-collapse: collapse;
+}
+
+#PrintTitle td {
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	height: 15px;
+}
+
+#PrintTable td {
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	height: 19px;
+}
+
+.DateTimeInput {
+	width: 20px;
+}
+
+.NumberInput {
+	width: 30px;
+}
+</style>
+</head>
+<body bgcolor="#FFFFFF" onLoad="ShowConfirmClose(true);">
+	<form action="data_entry_press.php" method="post" name="input"
+		id="input">
+		<table id="PrintTitle" class="PrintTable">
+			<tr height=63>
+				<td height=63 colspan="2" bgcolor="#CCCCCC">Surveyor ( 調查員): <input
+					name="startTime" type="hidden" id="startTime"
+					style="width: 0px; height: 0px;" value="{startTime}"
+					readonly="realonly"></td>
+				<td colspan="8"><table width="110" border="0" cellspacing="0"
+						cellpadding="0">
+						<tr>
+							<td><input class="ButtonIdea" name="OpenSubmit"
+								type="button" id="OpenSubmit" value="Select"
+								onClick="openModalDialog('surveyor_search_list.php',640,480,'surveyorId|surveyorEngName|surveyorContanct|surveyorHome')" /></td>
+							<td>&nbsp;</td>
+							<td><input name="surveyorId" type="text" id="surveyorId"
+								size="4" readonly style="background-color: #E4E4E4"></td>
+							<td><input name="surveyorEngName" type="text"
+								id="surveyorEngName" size="20" readonly
+								style="background-color: #E4E4E4"></td>
+							<td><input name="surveyorContanct" type="text"
+								id="surveyorContanct" size="10" readonly
+								style="background-color: #E4E4E4"></td>
+							<td><input name="surveyorHome" type="text" id="surveyorHome"
+								size="10" readonly style="background-color: #E4E4E4"></td>
+						</tr>
+					</table></td>
+			</tr>
+			<tr height=34>
+				<td height=34 colspan="2" bgcolor="#CCCCCC">REF NO.編號:</td>
+				<td width=155><input name="refNo" type="text" id="refNo"
+					size="10" onChange="CheckRefNo();"></td>
+				<td colspan="4" align="center"
+					style="color: red; font-weight: bold;"><span id="refNoError"></span></td>
+				<td bgcolor="#CCCCCC">Survey Date 調查日期:</td>
+				<td colspan=2><label> <select name="surveyDateYear"
+						id="surveyDateYear">
+							<option value="" selected>--</option>
+							<!-- BEGIN SurveyDateYearRow -->
+							<option value="{surveyDateYearValue}">{surveyDateYearValue}</option>
+							<!-- END SurveyDateYearRow -->
+					</select> <select name="surveyDateMonth" id="surveyDateMonth">
+							<option value="" selected>--</option>
+							<option value="1">Jan</option>
+							<option value="2">Feb</option>
+							<option value="3">Mar</option>
+							<option value="4">Apr</option>
+							<option value="5">May</option>
+							<option value="6">June</option>
+							<option value="7">July</option>
+							<option value="8">Aug</option>
+							<option value="9">Sept</option>
+							<option value="10">Oct</option>
+							<option value="11">Nov</option>
+							<option value="12">Dec</option>
+					</select> <select name="surveyDateDay" id="surveyDateDay">
+							<option value="">--</option>
+							<option value="1">01</option>
+							<option value="2">02</option>
+							<option value="3">03</option>
+							<option value="4">04</option>
+							<option value="5">05</option>
+							<option value="6">06</option>
+							<option value="7">07</option>
+							<option value="8">08</option>
+							<option value="9">09</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
+							<option value="16">16</option>
+							<option value="17">17</option>
+							<option value="18">18</option>
+							<option value="19">19</option>
+							<option value="20">20</option>
+							<option value="21">21</option>
+							<option value="22">22</option>
+							<option value="23">23</option>
+							<option value="24">24</option>
+							<option value="25">25</option>
+							<option value="26">26</option>
+							<option value="27">27</option>
+							<option value="28">28</option>
+							<option value="29">29</option>
+							<option value="30">30</option>
+							<option value="31">31</option>
+					</select> <input style="display: none" name="surveyDate" type="text"
+						id="surveyDate" size="15" class="Wdate" onClick="WdatePicker({})">
+				</label></td>
+			</tr>
+			<tr height=33>
+				<td height=33 colspan="2" bgcolor="#CCCCCC">Weather 天氣:</td>
+				<td width=155><select name="weatherId" id="weatherId">
+						<option value="">----</option>
+						<!-- BEGIN WeatherRow -->
+						<option value="{weatherId}">{weatherName}</option>
+						<!-- END WeatherRow -->
+				</select></td>
+				<td width=47><a href="help/weather.html" target="_blank">?</a></td>
+				<td width=47></td>
+				<td width=46></td>
+				<td></td>
+				<td bgcolor="#CCCCCC">Survey Period 調查時間:</td>
+				<td colspan=2><input name="surFromTimeHor" type="text"
+					class="DateTimeInput" id="surFromTimeHor"
+					onBlur="CheckThisTime(this,this.value,'hor')" maxlength="2">:<input
+					name="surFromTimeMin" type="text" class="DateTimeInput"
+					id="surFromTimeMin" onBlur="CheckThisTime(this,this.value,'min')"
+					maxlength="2"> - <input name="surToTimeHor" type="text"
+					class="DateTimeInput" id="surToTimeHor" onBlur="CheckIsNum(this)"
+					maxlength="2">:<input name="surToTimeMin" type="text"
+					class="DateTimeInput" id="surToTimeMin"
+					onBlur="CheckThisTime(this,this.value,'min')" maxlength="2"></td>
+			</tr>
+			<tr height=22>
+				<td colspan="2" rowspan="2" bgcolor="#CCCCCC">備註 Remarks:</td>
+				<td colspan="5" rowspan="2"><textarea name="remarks" cols="40" rows="3" id="remarks"></textarea></td>
+				<td height="22" bgcolor="#CCCCCC">中途站:</td>
+				<td colspan="2"><select name="busStopNo" id="busStopNo" style="display:none;">
+				  <option value="0">----</option>
+				  <!-- BEGIN BusStopNoRow -->
+				  <option value="{stopNo}">{stopNo},{stopDescription}</option>
+				  <!-- END BusStopNoRow -->
+			    </select></td>
+			</tr>
+			<tr height=19>
+				<td height="19" bgcolor="#CCCCCC">Location(地點):</td>
+				<td colspan=2><label> <input name="location"
+						type="text" id="location" size="20">
+				</label></td>
+			</tr>
+			<tr height=19>
+				<td height=19 colspan="2" bgcolor="#CCCCCC">交通工具 Transport Mode</td>
+				<td><select name="typeId" id="typeId" onChange="GetDiffCont()">
+						<option value="">----</option>
+						<!-- BEGIN TypeRow -->
+						<option value="{typeId}">{typeName}</option>
+						<!-- END TypeRow -->
+				</select></td>
+				<td></td>
+				<td></td>
+				<td colspan=2></td>
+				<td bgcolor="#CCCCCC">Bounds(方向):</td>
+				<td colspan="2"><input name="bounds" type="text" id="bounds"
+					size="38" readonly style="background-color: #E4E4E4"></td>
+			</tr>
+			<tr height=21>
+				<td height=21 colspan="2" bgcolor="#CCCCCC">路線地區 Route Distinct
+				</td>
+				<td><select name="distCode">
+						<option value="">----</option>
+						<!-- BEGIN DistRow -->
+						<option value="{distCode}">{distEngName}</option>
+						<!-- END DistRow -->
+				</select></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td bgcolor="#CCCCCC">輸入員名稱:</td>
+				<td colspan="2"><input name="userName" type="text"
+					id="userName" size="20" value="{userChiName}" readonly></td>
+			</tr>
+			<tr height=30>
+				<td height=30 colspan=2 bgcolor="#CCCCCC">Route No<br>
+					(路線號碼):
+				</td>
+				<td><label> <input name="routeNo" type="text"
+						id="routeNo" onChange="CheckRouteNo(this)" size="18"> <input
+						name="busId" type="hidden" id="busId"
+						style="background-color: #E4E4E4" value="{busId}" size="10"
+						readonly="realonly"> <input class="ButtonIdea"
+						name="OpenSubmitRoute" type="button" id="OpenSubmitRoute"
+						value="Select"
+						onClick="openModalDialog('bus_search_list.php',640,480,'busId|routeNo|typeId|bounds|distCode|amSchNo|pmSchNo|allSchNo')" />
+				</label></td>
+				<td colspan="4"><table width="100%" border="0" cellspacing="0"
+						cellpadding="0">
+						<tr>
+							<td width="50%"><label> <input type="radio"
+									name="schType" value="amSchNo"> amSchNo
+							</label></td>
+							<td><input name="amSchNo" type="text" id="amSchNo" size="5"
+								readonly="realonly" style="background-color: #E4E4E4"></td>
+						</tr>
+						<tr>
+							<td><label> <input type="radio" name="schType"
+									value="pmSchNo"> pmSchNo
+							</label></td>
+							<td><input name="pmSchNo" type="text" id="pmSchNo" size="5"
+								readonly="realonly" style="background-color: #E4E4E4"></td>
+						</tr>
+						<tr>
+							<td><label> <input name="schType" type="radio"
+									value="allSchNo" checked> allSchNo
+							</label></td>
+							<td><input name="allSchNo" type="text" id="allSchNo"
+								size="5" readonly style="background-color: #E4E4E4"></td>
+						</tr>
+					</table></td>
+				<td bgcolor="#CCCCCC"><p>
+						<a href="javascript:ShowHideRoute2();" id="showHideRoute2">顯示/隱藏路線2</a>
+					</p>
+					<p>
+						<span> Route No 2<br> (路線號碼2):
+						</span>
+					</p></td>
+				<td><input name="routeNo2" type="text" id="routeNo2"
+					onChange="CheckRouteNo(this)" size="18"> <input
+					name="busId2" type="hidden" id="busId2"
+					style="background-color: #E4E4E4" value="{busId}" size="10"
+					readonly="realonly"> <input class="ButtonIdea"
+					name="OpenSubmitRoute2" type="button" id="OpenSubmitRoute2"
+					value="Select"
+					onClick="openModalDialog('bus_search_list.php',640,480,'busId2|routeNo2|typeId2|bounds2|distCode2|amSchNo2|pmSchNo2|allSchNo2')" /></td>
+				<td><table width="100%" border="0" cellspacing="0"
+						cellpadding="0" id="routeNo2SchNoTable">
+						<tr>
+							<td width="50%"><label> <input type="radio"
+									name="schType2" value="amSchNo"> amSchNo
+							</label></td>
+							<td><input name="amSchNo2" type="text" id="amSchNo2"
+								size="5" readonly style="background-color: #E4E4E4"></td>
+						</tr>
+						<tr>
+							<td><label> <input type="radio" name="schType2"
+									value="pmSchNo"> pmSchNo
+							</label></td>
+							<td><input name="pmSchNo2" type="text" id="pmSchNo2"
+								size="5" readonly style="background-color: #E4E4E4"></td>
+						</tr>
+						<tr>
+							<td><label> <input type="radio" name="schType2"
+									value="allSchNo" checked> allSchNo
+							</label></td>
+							<td><input name="allSchNo2" type="text" id="allSchNo2"
+								size="5" readonly style="background-color: #E4E4E4"></td>
+						</tr>
+					</table></td>
+			</tr>
+			<tr height=0>
+				<td width=63></td>
+				<td width=40></td>
+				<td width=155></td>
+				<td width=47></td>
+				<td width=47></td>
+				<td width=46></td>
+				<td width=73></td>
+				<td width=141></td>
+				<td width=145></td>
+				<td width=130></td>
+			</tr>
+		</table>
+		<table id="PrintTable" class="PrintTable">
+			<tr height=35>
+				<td rowspan=3>車頭顯示牌紀錄</td>
+				<td rowspan=3>*skipped <br> stop<br> 飛站
+				</td>
+				<td rowspan=3 height=81>Registration Plate No. 車牌<br> /
+					Fleet No. 車隊號碼
+				</td>
+				<td id="busMinDiff">PSL No.</td>
+				<td colspan=4 align=center>Time&nbsp; 時間</td>
+				<td>On Arrival.</td>
+				<td>Pick<br>Up
+				</td>
+				<td>Set Down</td>
+				<td>Left Behind</td>
+				<td>On Dept.</td>
+			</tr>
+			<tr height=18>
+				<td height=18></td>
+				<td colspan=2 align=center>Arrival&nbsp; 到達</td>
+				<td colspan=2 align=center>Departure 出發</td>
+				<td>到站車上人數</td>
+				<td>上車人數</td>
+				<td>落車人數</td>
+				<td>剩餘人龍</td>
+				<td>離站車上人數</td>
+			</tr>
+			<tr height=28>
+				<td height=28>&nbsp;</td>
+				<td>Hr小時</td>
+				<td>Min分鐘</td>
+				<td>Hr小時</td>
+				<td>Min分鐘</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+			</tr>
+			<!-- BEGIN InputRow -->
+			<tr height='26'>
+				<td><select name="displayBoard[{i}]" id="displayBoard[{i}]"
+					tabindex="9999999" onChange="DisplayBoardChange(this,{i});">
+						<option value="">--</option>
+						<option value="Wrong Direction">錯方向</option>
+						<option value="Blank">沒有顯示</option>
+						<option value="Missing Digital">缺數字/數字筆劃</option>
+						<option value="Missing Character">缺中英文字/中英文字筆劃</option>
+						<option value="Other">其它</option>
+				</select><br /> <input id="otherDisplayBoard[{i}]"
+					name="otherDisplayBoard[{i}]" type="text" tabindex="9999999"
+					size="24" style="display: none;" /></td>
+				<td><input type="checkbox" name="skippedStop[{i}]"
+					id="skippedStop[{i}]" value="1" tabindex="9999999"> <label
+					for="skippedStop">*</label></td>
+				<td height='26'><input name="fleetNo[{i}]" type="text"
+					id="fleetNo[{i}]" size="8"
+					onKeyDown="SimulateExcel('','fleetNo','pslNo','fleetNo',{i},event.keyCode)"></td>
+				<td><input name="pslNo[{i}]" type="text" id="pslNo[{i}]"
+					size="8"
+					onKeyDown="SimulateExcel('fleetNo','pslNo','arrivalTimeHor','pslNo',{i},event.keyCode)"><input
+					class="ButtonIdea" name="openMy[{i}]" type="button"
+					id="openMy[{i}]" value=" ... "
+					onClick="openCusModalDialog('data_search_list.php?fleetNo=',640,310,'fleetNo[{i}]','pslNo[{i}]')"
+					tabindex="100000" /></td>
+				<td align='right'><input name="arrivalTimeHor[{i}]" type="text"
+					class="DateTimeInput" id="arrivalTimeHor[{i}]"
+					onBlur="CheckTrueTimeHor(this);CheckArrivalDeparture($('arrivalTimeHor[{i}]'),$('arrivalTimeMin[{i}]'),$('departureTimeHor[{i}]'),$('departureTimeMin[{i}]'))"
+					onKeyDown="SimulateExcel('pslNo','arrivalTimeHor','arrivalTimeMin','arrivalTimeHor',{i},event.keyCode)"
+					maxlength="2"></td>
+				<td align='right'><input name="arrivalTimeMin[{i}]" type="text"
+					class="DateTimeInput" id="arrivalTimeMin[{i}]"
+					onBlur="CheckTrueTimeMin(this);CheckArrivalDeparture($('arrivalTimeHor[{i}]'),$('arrivalTimeMin[{i}]'),$('departureTimeHor[{i}]'),$('departureTimeMin[{i}]'))"
+					onKeyDown="SimulateExcel('arrivalTimeHor','arrivalTimeMin','departureTimeHor','arrivalTimeMin',{i},event.keyCode)"
+					maxlength="2"></td>
+				<td align='right'><input name="departureTimeHor[{i}]"
+					type="text" class="DateTimeInput" id="departureTimeHor[{i}]"
+					onBlur="CheckTrueTimeHor(this)"
+					onKeyDown="SimulateExcel('arrivalTimeMin','departureTimeHor','departureTimeMin','departureTimeHor',{i},event.keyCode)"
+					maxlength="2"></td>
+				<td align='right'><input name="departureTimeMin[{i}]"
+					type="text" class="DateTimeInput" id="departureTimeMin[{i}]"
+					onBlur="CheckTrueTimeMin(this);CheckArrivalDeparture($('arrivalTimeHor[{i}]'),$('arrivalTimeMin[{i}]'),$('departureTimeHor[{i}]'),$('departureTimeMin[{i}]'))"
+					onKeyDown="SimulateExcel('departureTimeHor','departureTimeMin','onArrival','departureTimeMin',{i},event.keyCode)"
+					maxlength="2"></td>
+				<td align='right'><input name="onArrival[{i}]" type="text"
+					id="onArrival[{i}]" class="NumberInput"
+					onBlur="CheckIsNum(this);CheckOnArrivalSetDown(this,$('setDown[{i}]'));CheckNumberCapacity(this,$('pslNo[{i}]'));AutoCalcDeparture({i});"
+					onKeyDown="SimulateExcel('departureTimeMin','onArrival','pickup','onArrival',{i},event.keyCode)"></td>
+				<td align='right'><input name="pickup[{i}]" type="text"
+					id="pickup[{i}]" class="NumberInput"
+					onBlur="CheckIsNum(this);AutoCalcDeparture({i});CheckSkipStation({i});"
+					onKeyDown="SimulateExcel('onArrival','pickup','setDown','pickup',{i},event.keyCode)"></td>
+				<td><input name="setDown[{i}]" type="text" id="setDown[{i}]"
+					class="NumberInput"
+					onBlur="CheckIsNum(this);CheckOnArrivalSetDown($('onArrival[{i}]'),this);AutoCalcDeparture({i});CheckSkipStation({i});"
+					onKeyDown="SimulateExcel('pickup','setDown','leftBehind','setDown',{i},event.keyCode)"></td>
+				<td><input name="leftBehind[{i}]" type="text"
+					id="leftBehind[{i}]" class="NumberInput" onBlur="CheckIsNum(this)"
+					onKeyDown="SimulateExcel('setDown','leftBehind','onDept','leftBehind',{i},event.keyCode)"></td>
+				<td><input name="onDept[{i}]" type="text" id="onDept[{i}]"
+					class="NumberInput"
+					onChange="CheckOnDept(this,{i});CheckNumberCapacity(this,$('pslNo[{i}]'));"
+					onKeyDown="SimulateExcel('leftBehind','onDept','','onDept',{i},event.keyCode)"></td>
+			</tr>
+			<!-- END InputRow -->
+		</table>
+		<table width="100%" height="30" border="0" cellpadding="0"
+			cellspacing="0" class="PrintTable">
+			<tr class="PrintTable" height=0>
+				<td width=153><label> <input name="addRow"
+						onClick="AddRow();" type="button" id="addRow"
+						value="添加一行(Add a row)">
+				</label></td>
+				<td width="20"></td>
+				<td><input name="addRow" onClick="AddRowByNo(10);"
+					type="button" id="addRow2" value="添加十行(Add ten row)"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>&nbsp;</td>
+				<td width=119>&nbsp;</td>
+			</tr>
+			<tr class="PrintTable" height=0>
+				<td>&nbsp;</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>&nbsp;</td>
+				<td><input type="button" onClick="CheckForm()" name="Submit"
+					id="Submit" value="提交(Submit)"></td>
+			</tr>
+		</table>
+	</form>
+	<script type="text/javascript">
+function myTimer() 
+{
+    CheckIsLogin();
+    window.setTimeout("myTimer()",30000);//两分钟循环一次
+}
+
+myTimer();
+
+ShowHideRoute2();
+</script>
+</body>
+</html>

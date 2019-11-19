@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>調查員登入</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../js/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="../js/bootstrap-3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Css -->
+    <link href="../css/account.css" rel="stylesheet">
+
+	
+  </head>
+
+  <body>
+
+    <div class="container"> 
+    
+    <div style="text-align:center;"><img src='http://www.ozzotec.com/wp-content/uploads/OZZO_WEBSITE_logo1.png' /></div>
+    <div style="text-align:center; font-weight:bold; font-size:18px; margin:5px;">調查員查看工資 及 認領工作</div>  
+  <form id='formLogin'>
+  <div class="form-group">
+    <label for="username">用戶名：</label>
+    <input type="text" class="form-control" id="username" name="username" placeholder="請輸入手提電話號碼">
+  </div>
+  <div class="form-group">
+    <label for="password">密碼：</label>
+    <input type="password" class="form-control" id="password" name="password" placeholder="請輸入密碼">
+  </div>
+  <div class="form-group">
+    <input type="text" class="form-control txt-antispam" id="antispam" name="antispam" placeholder="請輸入驗證碼"><img class="img-antispam" src="../antispam.php" />
+  </div>
+  <button type="button" id="btnLogin" class="btn btn-primary btn-login">登入</button>
+</form>
+    <div class="footer">
+    	© Ozzo Technology (HK) Ltd
+    </div>  
+      
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../js/bootstrap-3.3.5/js/jquery.min.js"></script>
+    <script src="../js/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+    <script src="../js/account/login.js"></script>
+  </body>
+</html>

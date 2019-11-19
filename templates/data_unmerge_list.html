@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>list</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+	<table width="100%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Data Management &gt;&gt;&gt;UnMerge Result</td>
+		</tr>
+	</table>
+	<table width="100%" align="center">
+		<tr>
+			<td height="20"><fieldset>
+					<legend>Search</legend>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						<form id="form1" name="form1" method="post" action="">
+							<tr>
+								<td>路線號碼(Route No)</td>
+								<td><label> <input name="txtRouteNo" type="text"
+										id="txtRouteNo" value="{txtRouteNo}" />
+								</label></td>
+								<td>調查日期(Survey Date)</td>
+								<td><input name="txtSurveyDate" type="text"
+									id="txtSurveyDate" class="Wdate" onclick="WdatePicker({})"
+									value="{txtSurveyDate}" /></td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+							</tr>
+						</form>
+					</table>
+				</fieldset></td>
+		</tr>
+	</table>
+	<table width="100%" border="0" align="center" cellpadding="0"
+		cellspacing="1" bgcolor="#000000">
+		<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+			<td height="20"></td>
+			<td align="center">REF NO.<br /> 編號
+			</td>
+			<td align="center">Route No<br /> 路線號碼
+			</td>
+			<td align="center">Type<br /> 類型
+			</td>
+			<td align="center">Survey Date<br /> 調查日期
+			</td>
+			<td align="center">Survey Period <br /> 調查時間:
+			</td>
+			<td align="center">Location<br /> 地點
+			</td>
+			<td align="center">Bounds<br /> 方向
+			</td>
+			<td align="center">輸入員</td>
+			<td colspan="4" align="center">操作</td>
+		</tr>
+
+		<!-- BEGIN Row -->
+		<tr bgcolor="#FFFFFF" class="{listStyle}">
+			<td>&nbsp;</td>
+			<td>{refNo}</td>
+			<td>{routeNo}</td>
+			<td>{type}</td>
+			<td>{surveyDate}</td>
+			<td>{surveyPeriod}</td>
+			<td>{location}</td>
+			<td>{bounds}</td>
+			<td>{userName}</td>
+			<td><a href="data_view.php?supaId={supaId}" target="_blank"><img
+					src="images/Preview.jpg" width="15" height="17" border="0"
+					alt="Preview"></a></td>
+			<td><a href="data_unmerge_list_add.php?act=Add&supaId={supaId}"
+				target="unmerge_list_add"><img src="images/UnMerge.gif"
+					alt="Merge" width="15" height="15" border="0"></a></td>
+			<td><a style="display: none"
+				href="survey_input_download.php?supaId={supaId}"><img
+					src="images/excel.jpg" alt="excel" width="15" height="17"
+					border="0" title="Excel Download" /></a></td>
+			<td><a href="" style="display: none"><img
+					src="images/Delete.gif" alt="Delete" width="11" height="11"
+					border="0"></a></td>
+		</tr>
+		<!-- END Row -->
+	</table>
+	<table width="100%" height="200px" border="0" cellspacing="0"
+		cellpadding="0">
+		<tr>
+			<td height="150" valign="bottom" bgcolor="#EEEEEE"
+				style="font-weight: bold; font-size: 18px;">撤消合併後的資料預覽(After
+				UnMerged Data Preview):</td>
+		</tr>
+		<tr>
+			<td><iframe name="unmerge_list_add" id="unmerge_list_add"
+					src="data_unmerge_list_add.php" style="width: 100%; height: 200px"></iframe></td>
+		</tr>
+	</table>
+</body>
+</html>

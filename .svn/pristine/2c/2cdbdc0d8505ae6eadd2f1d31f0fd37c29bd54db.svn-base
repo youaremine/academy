@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>AppendixD Survey</title>
+<style type="text/css">
+body {
+	font-size: 12px;
+}
+
+.Question {
+	width: 80px;
+}
+</style>
+<script type="text/javascript">
+function CheckForm()
+{
+	var isValid = true;
+	if(document.getElementById('surveyDate').value=="")
+	{
+		document.getElementById('surveyDate').focus();
+		isValid = false;
+		return;
+	}
+	//全部条件成立提交	
+	if(isValid)
+	{
+		document.getElementById('input').submit();
+	}
+}
+
+
+function patternOfExcel(objName,number)
+{
+	var nameDown = objName.replace('?',number+1);
+	var nameUp = objName.replace('?',number-1);
+	var objDown = document.getElementById(nameDown);
+	var objUp = document.getElementById(nameUp);
+	if(event.keyCode==13 && objDown!=null)
+	{
+		objDown.focus();
+	}
+	else if(event.keyCode==40 && objDown!=null)
+	{
+		objDown.focus();
+	}
+	else if(event.keyCode==38 && objUp!=null)
+	{
+		objUp.focus();
+	}
+}
+
+</script>
+</head>
+
+<body>
+	<form id="input" name="input" method="post"
+		action="mobile_appendixd_survey_entry_press.php">
+		<table width="200" border="0" align="center" cellpadding="0"
+			cellspacing="2">
+			<tr>
+				<td align="center"><input type="hidden" name="appeId"
+					id="appeId" value="{appeId}" style="width: 0px; height: 0px;" />
+					華人永遠墳場 交通調查</td>
+			</tr>
+			<tr>
+				<td><table width="100%" border="0" cellspacing="0"
+						cellpadding="0">
+						<tr>
+							<td height="25">調查員</td>
+							<td><input type="text" name="surveyorEngName"
+								id="surveyorEngName" style="background-color: #E4E4E4" size="10"
+								readonly="readonly" value="{surveyorEngName}" /></td>
+						</tr>
+						<tr>
+							<td height="25">調查日期</td>
+							<td><label> <input type="text" name="surveyDate"
+									id="surveyDate" size="10" value="{surveyDate}"
+									style="background-color: #E4E4E4" readonly="readonly" />
+							</label></td>
+						</tr>
+						<tr>
+							<td height="25">:調查時間</td>
+							<td><label> <input type="text" name="surveyTime"
+									id="surveyTime" size="10" value="{surveyTime}"
+									style="background-color: #E4E4E4" readonly="readonly" />
+							</label></td>
+						</tr>
+					</table></td>
+			</tr>
+			<tr>
+				<td><table width="100%" border="0" cellpadding="0"
+						cellspacing="1" bgcolor="#000000" id="PrintTable">
+						<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+							<td colspan="2">共<span>{allNo}</span>人 <span
+								style="color: red; font-weight: bold;">{rejectNo}</span>拒絕 <span
+								style="color: green; font-weight: bold;">{allowNo}</span>接受
+							</td>
+						</tr>
+						<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+							<td><p align="center">
+									<input type="hidden" name="apdeId" id="apdeId"
+										style="width: 0px; height: 0px;" value="{apdeId}" />{apdeId}
+								</p></td>
+							<td valign="top"><p align="center">問題1 乘搭前來?</p></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>拒絕?</td>
+							<td align="center" valign="middle"><input
+								name="questionOne_1" type="text" class="Question"
+								id="questionOne_1" size="30" /></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td valign="middle"><input type="checkbox" name="isReject"
+								id="isReject" value="yes" /></td>
+							<td align="center" valign="middle">問題2 乘搭離開?</td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td valign="middle">&nbsp;</td>
+							<td align="center" valign="middle"><input
+								name="questionTwo_1" type="text" class="Question"
+								id="questionTwo_1" size="30" /></td>
+						</tr>
+					</table>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						<tr>
+							<td width="20%">&nbsp;</td>
+							<td width="20%">&nbsp;</td>
+							<td>&nbsp;</td>
+							<td width="15%"><input type="button" onclick="CheckForm()"
+								name="Submit" id="Submit" value="提交(Submit)" /></td>
+						</tr>
+					</table></td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

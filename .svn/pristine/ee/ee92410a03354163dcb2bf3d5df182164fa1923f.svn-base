@@ -1,0 +1,221 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Bus System</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" src="js/language.js"></script>
+<script language="javascript" src="js/function.js"></script>
+<script language="javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script language="javascript" type="text/javascript">
+function CheckForm()
+{
+	var isValid = true;
+	if($('inputerCode').value == "")
+	{
+		alert(Lang_UserNameEmpty);
+		$('inputerCode').focus();
+		isValid = false;
+		return;
+	}
+	
+	if($('period').value == "")
+	{
+		alert(Lang_periodEmpty);
+		$('period').focus();
+		isValid = false;
+		return;
+	}
+	
+	//全部条件成立提交	
+	if(isValid)
+	{
+		$('input').submit();
+	}
+}
+
+function CheckMyForm()
+{
+	var isValid = true;
+	$('perHour').value = 1;	
+	//全部条件成立提交	
+	if(isValid)
+	{
+		$('input').submit();
+	}
+}
+function expandOrReduceChild(myId)
+{
+	var img = document.getElementById('img_'+myId);
+	var child = document.getElementById('child_'+myId);
+	if(img.alt == 'reduce' )
+	{
+		img.src = "images/expand.gif";
+		img.alt = "expand";
+		child.style.display = 'none';
+	}
+	else
+	{
+		img.src = "images/reduce.gif";
+		img.alt = "reduce";
+		child.style.display = '';
+	}
+}
+</script>
+<style type="text/css">
+<!--
+.DateTimeInput {
+	width: 20px;
+}
+-->
+</style>
+</head>
+
+<body>
+	<table width="98%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Bus Manage &gt;&gt;&gt; Timesheet Detail</td>
+		</tr>
+	</table>
+	<table width="98%" align="center">
+		<tr>
+			<td><form action="inputer_timesheet_detail_press.php"
+					method="post" name="input" id="input">
+					<table width="778" border="0" align="center" cellpadding="0"
+						cellspacing="1" bgcolor="#000000">
+						<tr>
+							<td colspan="4" align="center" bgcolor="#CCCCCC"><strong>Timesheet
+									for Temporary Staff</strong></td>
+						</tr>
+						<tr>
+							<td height="25" colspan="8" bgcolor="#FFFFFF"><span style="">
+									<input style="width: 0px; height: 0px;" type="hidden"
+									name="itmoId" id="itmoId" value="{itmoId}"> <input
+									style="width: 0px; height: 0px;" type="hidden"
+									name="inputUserId" id="inputUserId" value="{inputUserId}">
+									<input style="width: 0px; height: 0px;" type="hidden"
+									name="inputTime" id="inputTime" value="{inputTime}">
+							</span></td>
+						</tr>
+						<tr>
+							<td width="124" height="25" bgcolor="#FFFFFF">Name:</td>
+							<td width="226" height="25" bgcolor="#FFFFFF"><label>
+									<input name="engName" type="text" id="engName"
+									value="{engName}" size="20" readonly>
+							</label></td>
+							<td width="130" height="25" bgcolor="#FFFFFF">ID:</td>
+							<td width="293" height="25" bgcolor="#FFFFFF"><input
+								name="inputerCode" type="text" id="inputerCode"
+								value="{inputerCode}" size="20" readonly></td>
+						</tr>
+						<tr>
+							<td height="25" bgcolor="#FFFFFF">Phone:</td>
+							<td height="25" bgcolor="#FFFFFF"><input name="inputPhone"
+								type="text" id="inputPhone" value="{inputPhone}" size="20"></td>
+							<td height="25" bgcolor="#FFFFFF">Post:</td>
+							<td height="25" bgcolor="#FFFFFF"><input
+								name="inputUserPost" type="text" id="inputUserPost"
+								value="{inputUserPost}" size="20"></td>
+						</tr>
+						<tr>
+							<td height="25" bgcolor="#FFFFFF">&nbsp;</td>
+							<td height="25" bgcolor="#FFFFFF">&nbsp;</td>
+							<td height="25" bgcolor="#FFFFFF">Duration Total:</td>
+							<td height="25" bgcolor="#FFFFFF"><input
+								name="durationMonth" type="text" id="durationMonth"
+								value="{durationMonth}" readonly="readonly" size="20"></td>
+						</tr>
+						<tr>
+							<td height="25" bgcolor="#FFFFFF">Period:</td>
+							<td height="25" bgcolor="#FFFFFF"><input name="period"
+								type="text" id="period" class="Wdate" onclick="WdatePicker({})"
+								value="{period}" size="20"></td>
+							<td height="25" bgcolor="#FFFFFF"><label style="">Set
+									$/h:</label></td>
+							<td height="25" bgcolor="#FFFFFF"><label style=""><input
+									style="width: 0px; height: 0px;" type="hidden" name="perHour"
+									id="perHour" value="0"> <input name="perHourMoney"
+									type="text" id="perHourMoney" value="{perHourMoney}" size="20">
+									<input style="" type="button" onClick="CheckMyForm()"
+									name="SubmitMoney" id="SubmitMoney" value="设置(Setting)"></label></td>
+						</tr>
+
+
+						<tr>
+							<td colspan="4" bgcolor="#FFFFFF">&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="4"><table width="100%" border="0"
+									align="center" cellpadding="0" cellspacing="1"
+									bgcolor="#000000">
+									<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+										<td width="4%" height="20"></td>
+										<td width="31%" align="center">Date</td>
+										<td width="57%" align="center"><p align="center">Duration</p></td>
+										<td width="8%" align="center">&nbsp;</td>
+									</tr>
+									<!-- BEGIN MonthRow -->
+									<tr class="{listStyle}"
+										onMouseOver="this.className='DgSelectedItemStyle'"
+										onMouseOut="this.className='{listStyle}'" bgcolor="#FFFFFF">
+										<td><img style="cursor: pointer;" src="images/expand.gif"
+											id="img_{childId}" name="img_{childId}" alt="expand"
+											title="expand" onClick="expandOrReduceChild('{childId}');" /></td>
+										<td>{periodDate}</td>
+										<td>{durationDay}</td>
+										<td>{modify}</td>
+									</tr>
+									<tr id="child_{childId}" class="{listStyle}"
+										style="display: none;">
+										<td>&nbsp;</td>
+										<td colspan="3"><table width="100%" border="0"
+												align="center" cellpadding="0" cellspacing="1"
+												bgcolor="#BFBFBF">
+												<tr style="background-color: #CCCCCC;">
+													<td rowspan="2" align="center">No</td>
+													<td rowspan="2" align="center">Job No.</td>
+													<td rowspan="2" align="center">Purpose</td>
+													<td colspan="2" align="center">Travelling</td>
+													<td colspan="2" align="center">Transport</td>
+													<td colspan="2" align="center">Time</td>
+													<td rowspan="2" align="center">Duration</td>
+													<td align="center"></td>
+												</tr>
+												<tr style="background-color: #CCCCCC;">
+													<td align="center">From</td>
+													<td align="center">To</td>
+													<td align="center">Type</td>
+													<td align="center">$</td>
+													<td align="center">From</td>
+													<td align="center">To</td>
+													<td align="center">Lunch</td>
+												</tr>
+												<!-- BEGIN InputRow -->
+												<tr>
+													<td align="center" bgcolor="#FFFFFF"
+														style="height: 30px; vertical-align: middle;">{no}</td>
+													<td bgcolor="#FFFFFF">{jobNo}</td>
+													<td bgcolor="#FFFFFF">{purpose}</td>
+													<td bgcolor="#FFFFFF">{travellingForm}</td>
+													<td bgcolor="#FFFFFF">{travellingTo}</td>
+													<td bgcolor="#FFFFFF">{transportType}</td>
+													<td bgcolor="#FFFFFF">{transportMoney}</td>
+													<td bgcolor="#FFFFFF">{timeForm}</td>
+													<td bgcolor="#FFFFFF">{timeTo}</td>
+													<td bgcolor="#FFFFFF">{duration}</td>
+													<td bgcolor="#FFFFFF"><input name="isLunch[{i}]"
+														type="checkbox" id="isLunch[{i}]" value="yes"
+														{isLunch} style="border: 0px;" disabled /></td>
+												</tr>
+												<!-- END InputRow -->
+											</table></td>
+									</tr>
+									<!-- END MonthRow -->
+								</table></td>
+						</tr>
+					</table>
+				</form></td>
+		</tr>
+	</table>
+</body>
+</html>

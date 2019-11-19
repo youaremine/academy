@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>帳戶角色</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+.PrintTable {width: 100%;
+	border: 0px solid #000000;
+	background: #FFFFFF;
+	border-bottom: 1px solid #000000;
+	border-right: 1px solid #000000;
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-collapse: collapse;
+}
+</style>
+</head>
+
+<body>
+<table width="100%" align="center">
+  <tr class="DgHeaderStyle">
+    <td height="20">帳戶管理 &gt;&gt;&gt; 帳戶角色 </td>
+  </tr>
+</table>
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#000000">
+  <tr bgcolor="#FFFFFF" class="DgHeaderStyle"> 
+    <td height="20">編號</td>
+    <td align="center">角色</td>
+    <td align="center">簡介</td>
+    <td colspan="3" align="center">操作</td>
+  </tr>
+  <!-- BEGIN Row -->  
+  <tr class="{listStyle}" onmouseover="this.className='DgSelectedItemStyle'" onmouseout="this.className='{listStyle}'"> 
+    <td>{roleId}</td>
+    <td>{roleCode}</td>
+    <td>{roleName}</td>
+    <td> <a href="user_role_update.php?roleId={roleId}" target="_self"><img src="images/Modify.gif" width="15" height="17" border="0" title="編輯"></a></td>
+    <td><a href="user_role_relationship.php?roleId={roleId}"><img src="images/link_blue.png" alt="關聯權限" width="24" height="24" border="0"></a></td>
+    <td>{delete}</td>
+  </tr>
+  <!-- END Row -->
+</table>
+<table width="100%" height="30" border="0" cellpadding="0"
+			cellspacing="0" class="PrintTable">
+  <tr class="PrintTable" height="0">
+    <td width="153"><input type="button" name="Submit" id="Submit" value="新加一個角色(Add a role)" onclick="javascript:window.location='user_role_update.php';" /></td>
+    <td width="20"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>&nbsp;</td>
+    <td width="119">&nbsp;</td>
+  </tr>
+  <tr class="PrintTable" height="0">
+    <td>&nbsp;</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+</body>
+</html>

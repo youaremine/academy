@@ -1,0 +1,82 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>學員列表</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" type="text/javascript">
+function SetHidValue(values)
+{
+	$('hidValue').value = values;
+}
+</script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+</head>
+<base target="_self" />
+<body>
+	<form id="searchForm" name="searchForm" method="post" action="">
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>編號</td>
+								<td><input name="txtSurvId" type="text" id="txtSurvId"
+									value="{txtSurvId}" size="12" /></td>
+								<td>姓名</td>
+								<td><input name="txtEngName" type="text" id="txtEngName"
+									value="{txtEngName}" size="12" /></td>
+								<td>手提</td>
+								<td><input name="txtContact" type="text" id="txtContact"
+									value="{txtContact}" size="12" /></td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td width="0%" height="20"></td>
+				<td width="13%" align="center">編號</td>
+				<td align="center" nowrap="nowrap">中文名</td>
+				<td width="13%" align="center">英文名</td>
+				<td width="13%" align="center">手提</td>
+				<td width="13%" align="center">住址</td>
+				<td width="13%" align="center">地區</td>
+				<td width="22%" align="center">備註</td>
+			</tr>
+
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onMouseOver="this.className='DgSelectedItemStyle'"
+				onMouseOut="this.className='{listStyle}'" bgcolor="#FFFFFF"
+				onDblClick="var selValue = '{survId}|{engName}|{contact}|{survHome}|{dipaCode}|{IsSupervisor}|{remark}';if(window.opener){window.opener.returnValue = selValue;}window.returnValue=selValue;self.close();"
+				style="cursor: pointer;">
+				<td>&nbsp;</td>
+				<td>{survId}</td>
+				<td>{chiName}</td>
+				<td>{engName}</td>
+				<td>{contact}</td>
+				<td>{survHome}</td>
+				<td>{dipaCode}</td>
+				<td>{remark}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<input name="hidValue" type="hidden" id="hidValue" />
+	</form>
+</body>
+</html>

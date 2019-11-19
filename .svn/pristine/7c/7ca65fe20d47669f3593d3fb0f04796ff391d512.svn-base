@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>學員學費查詢</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../js/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="../js/bootstrap-3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Css -->
+    <link href="../css/account.css" rel="stylesheet">
+
+	
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">查詢學費</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="./">個人中心</a></li>
+            <li class="active"><a href="./salary.php">查詢工資</a></li>
+            <li><a href="./jobs.php">選取課堂</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">    
+        <p>
+        <button type="button" id="btnPirvMonth" class="btn btn-lg btn-defalut last-month" data-value="{privMonth}">{privMonthShort}月</button>
+        <button type="button" id="btnCurrMonth" class="btn btn-lg btn-primary current-month" data-value="{currMonth}">{currMonthShort}月</button>
+        <button type="button" id="btnNextMonth" class="btn btn-lg btn-defalut next-month" data-value="{nextMonth}">{nextMonthShort}月</button>
+        </p>
+      <div class="row">
+        <div class="col-md-6">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th>金額</th>
+              </tr>
+            </thead>
+              <tfoot>
+    			<tr>
+                <td>實際繳交學費</td>
+                <td>{AZ}</td>
+                </tr>
+              </tfoot>
+            <tbody>
+              <tr>
+                <td>總學時 {AD} 小時</td>
+                <td>{AR}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- BEGIN Row -->
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td>課程日期:<em>{plannedSurveyDate}</em></td>
+              </tr>
+              <tr>
+                <td><em>{jobNo}</em> : {surveyLocation}</td>
+              </tr>
+              <tr>
+                <td> {surveyTimeHours} , 總共{estimatedManHour}小時</td>
+              </tr>
+              <tr>
+                <td>總學費: {periodHour_1}x{periodWagesHr_1} + {periodHour_2}x{periodWagesHr_2} = {totalWages}</td>
+              </tr>
+              <tfoot>
+              <tr>
+                <td>實際繳交學費: {wagesTaOnBoard}</td>
+              </tr>
+              </tfoot>
+            </tbody>
+          </table>
+          <!-- END Row -->
+          <!-- BEGIN OtherRow -->
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <td><em>{projectName}</em> </td>
+              </tr>
+              <tr>
+                <td>{surveyDate} {startTime}-{endTime},總共{surveyHour}小時</td>
+              </tr>
+              <tr>
+                <td>學費: {wages}</td>
+              </tr>
+              <tfoot>
+              <tr>
+                <td>實際繳交學費: {total}</td>
+              </tr>
+              </tfoot>
+            </tbody>
+          </table>
+          <!-- END OtherRow -->
+        </div>
+      </div>
+    <div class="footer">
+    	© Ozzo Technology (HK) Ltd
+    </div>  
+      
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../js/bootstrap-3.3.5/js/jquery.min.js"></script>
+    <script src="../js/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+    <script src="../js/account/salary.js"></script>
+  </body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>{jobNoNew}的聊天記錄</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../js/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="../js/bootstrap-3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Css -->
+    <link href="../js/bootstrap-fileinput-master/css/fileinput.css" rel="stylesheet">
+    <link href="../js/bootstrap-3.3.5/plugin/ekko-lightbox/ekko-lightbox.css" rel="stylesheet">
+    <link href="../css/post.css?t={SITEVESION}" rel="stylesheet">
+    <link href="../css/post-single.css?t={SITEVESION}" rel="stylesheet">
+    <style >
+        .had_del{
+            text-decoration: line-through;
+            color: #888;
+        }
+        .del_wrap{
+            color:red;
+            font-size:8px;
+        }
+        .comment blockquote.post_wrap{
+            position: relative;
+            padding-right:60px;
+        }
+        .comment-right blockquote.post_wrap{
+            position: relative;
+            padding-right:60px;
+        }
+        .delpostbtn{
+            position: absolute;
+            right: 10px;
+            display: none;
+        }
+        .post_wrap:hover .delpostbtn{
+            display: block;
+        }
+
+    </style>
+</head>
+
+<body style="padding-top:70px;padding-bottom: 100px;">
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="delModel" tabindex="-1" role="dialog" aria-labelledby="delModelLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="delModelLabel">
+                    提示
+                </h4>
+            </div>
+            <div class="modal-body">
+                您確定要刪除該條評論嗎？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">取消
+                </button>
+                <button type="button" class="btn btn-danger" id="delBtn">
+                    确认删除
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    發送圖片
+                </h4>
+            </div>
+            <div class="modal-body">
+                <input type="file" id="imgInput" name="picFile" class="projectfile" value="" />
+                <!--<button type="submit" id="sendImg" class="btn btn-primary">
+                    发送
+                </button>-->
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">關閉
+                    </button>
+                    <button id="sendImg" type="button" class="btn btn-primary">
+                        發送
+                    </button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">{jobNoNew}的聊天記錄</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="./">消息中心</a></li>
+                <li><a href="./unreply.php">未回覆消息</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+
+<nav class="navbar navbar-inverse navbar-fixed-bottom">
+    <div class="dropdown col-xs-2 col-sm-2" style="line-height: 77px;">
+        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+            發送圖片
+        </button>
+    </div>
+    <div class="container">
+        <form id="formPost" class="form-search" role="form">
+
+            <input type="hidden" name="jobNoNew" value="{jobNoNew}" />
+
+            <div class="row">
+                <div class="dropdown col-xs-2 col-sm-2">
+
+
+                    <button type="button" class="btn dropdown-toggle" id="ddmJobNo" data-toggle="dropdown">
+                        相關課堂
+                        <span class="caret"></span>
+                    </button>
+
+
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="ddmJobNo" style="height: 300px;overflow-y: scroll;">
+                        <!-- BEGIN JobNoNewRow -->
+                        <li role="presentation">
+                            <a role="menuitem" tabindex="-1" href="single.php?jobNoNew={rowJobNoNew}">{rowJobNoNew}</a>
+                        </li>
+                        <!-- END JobNoNewRow -->
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation">
+                            <a role="menuitem" tabindex="-1" href="single.php?jobNoNew={jobNo}">{jobNo}</a>
+                        </li>
+                    </ul>
+                </div>
+                <textarea name="content" id="content" class="col-xs-6 col-sm-6" placeholder="調查編號：{jobNoNew}，請輸入回覆內容" rows="3"></textarea>
+                <div class="col-xs-1 col-sm-1">
+                    <button id="btnSend" type="button" class="btn btn-success btn-lg">發送</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row" id="chat_history_list">
+    </div>
+    <div style="clear:both;"></div>
+    <div class="row">
+
+    </div>
+    <div class="footer">
+        © Ozzo Technology (HK) Ltd
+    </div>
+
+</div><!-- /.container -->
+<script type="text/html" id="tpl_chat_history">
+    <ol>
+        <% for (var i=0;i<data.length;i++) { %>
+        <% var item = data[i]; %>
+        <% if(item.userId>0) { %>
+        <li class="comment-right">
+            <div class="comment-meta-right">
+                <h3><%=item.userName%></h3>
+                <h4><%=item.userId%></h4>
+                <span><%=item.shortInputTime%></span>
+            </div>
+
+            <blockquote class="post_wrap">
+
+                <% if(item.format=='image') { %>
+                <button class="btn btn-danger btn-sm delpostbtn" data-postId="<%=item.postId%>" data-target="#delModel" data-toggle="modal">删除</button>
+                <p><a href="<%=item.content%>" data-toggle="lightbox">
+                    <img src="<%=item.content%>" width="50" class="img-responsive">
+                </a></p>
+                <% if(item.delFlag=='yes') { %>
+                <p class="del_wrap">
+                    <span>(Delete By <%=item.deluser_engName%></span>
+                    <span>At <%=item.delTime%>)</span>
+                </p>
+                <% } %>
+                <% }else if(item.format=='location') { %>
+                <p class="location"><a href="<%=item.content%>" data-toggle="lightbox">
+                    <img src="<%=item.content%>" width="50" class="img-map">
+                </a>
+                    <a href="map.php?postId=<%=item.postId%>" target="_blank">
+                        <img src="../images/map.png" width="40" class="img-map">
+                    </a>
+                </p>
+                <% }else{ %>
+                <button class="btn btn-danger btn-sm delpostbtn" data-postId="<%=item.postId%>" data-target="#delModel" data-toggle="modal">删除</button>
+                <% if(item.delFlag=='no') { %>
+                <p class=""><%=#brReplace(item.content)%></p>
+                <% }else{ %>
+                <p class="had_del"><%=#brReplace(item.content)%></p>
+                <p class="del_wrap">
+                    <span>(Delete By <%=item.deluser_engName%></span>
+                    <span>At <%=item.delTime%>)</span>
+                </p>
+                <% } %>
+
+                <% } %>
+            </blockquote>
+        </li>
+        <%}else{%>
+        <li class="comment">
+            <div class="comment-meta">
+                <h3><%=item.survName%></h3>
+                <h4><%=item.survId%></h4>
+                <span><%=item.shortInputTime%></span>
+            </div>
+            <blockquote class="post_wrap">
+
+                <% if(item.format=='image') { %>
+                <button class="btn btn-danger btn-sm delpostbtn" data-postId="<%=item.postId%>" data-target="#delModel" data-toggle="modal">删除</button>
+                <p><a href="<%=item.content%>" data-toggle="lightbox">
+                    <img src="<%=item.content%>" width="50" class="img-responsive">
+                </a></p>
+                <% if(item.delFlag=='yes') { %>
+                <p class="del_wrap">
+                    <span>(Delete By <%=item.deluser_engName%></span>
+                    <span>At <%=item.delTime%>)</span>
+                </p>
+                <% } %>
+                <% }else if(item.format=='location') { %>
+                <p class="location"><a href="<%=item.content%>" data-toggle="lightbox">
+                    <img src="<%=item.content%>" width="50" class="img-map">
+                </a>
+                    <a href="map.php?postId=<%=item.postId%>" target="_blank">
+                        <img src="../images/map.png" width="40" class="img-map">
+                    </a>
+                </p>
+                <% }else{ %>
+                <button class="btn btn-danger btn-sm delpostbtn" data-postId="<%=item.postId%>" data-toggle="modal" data-target="#delModel" data-toggle="modal">删除</button>
+                <% if(item.delFlag=='no') { %>
+                <p class=""><%=#brReplace(item.content)%></p>
+                <% }else{ %>
+                <p class="had_del"><%=#brReplace(item.content)%></p>
+                <p class="del_wrap">
+                    <span>(Delete By <%=item.deluser_engName%></span>
+                    <span>At <%=item.delTime%>)</span>
+                </p>
+                <% } %>
+                <% } %>
+            </blockquote>
+        </li>
+        <%}%>
+        <%}%>
+    </ol>
+	<script type="text/javascript">
+		$(document).ready(function ($) {
+			$(document).delegate('*[data-toggle="lightbox"]:not([data-gallery="navigateTo"])', 'click', function(event) {
+					event.preventDefault();
+					return $(this).ekkoLightbox({
+						onShown: function() {
+							if (window.console) {
+								return console.log('Checking our the events huh?');
+							}
+						},
+						onNavigate: function(direction, itemIndex) {
+							if (window.console) {
+								return console.log('Navigating '+direction+'. Current item: '+itemIndex);
+							}
+						}
+					});
+				});
+
+		});
+	</script>
+</script>
+<script src="../js/bootstrap-3.3.5/js/jquery.min.js"></script>
+<script src="../js/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="../js/bootstrap-fileinput-master/js/fileinput.js"></script>
+<script src="../js/bootstrap-fileinput-master/js/locales/zh-TW.js"></script>
+<script src="../js/bootstrap-3.3.5/plugin/ekko-lightbox/ekko-lightbox.js"></script>
+<script src="../js/template-native.js"></script>
+<script src="../js/post/single.js?t={SITEVESION}"></script>
+<script type="text/javascript">
+    var jobNoNew = '{jobNoNew}';
+
+
+    var projectfileoptions = {
+        showUpload : false,
+        showRemove : false,
+        language : 'zh-TW',
+        allowedPreviewTypes : [ 'image' ],
+        allowedFileExtensions : [ 'jpg', 'png', 'gif' ],
+        maxFileSize : 2000,
+        showRemove:true,
+        uploadUrl:'/academy/api/post.php?q=uploadPicPC',
+        uploadAsync:true,
+        uploadExtraData:{'jobNoNew':jobNoNew},
+        maxFileCount:1,
+    };
+
+    $('input[class=projectfile]').each(function() {
+        var imageurl = $(this).attr("value");
+
+        if (imageurl) {
+            var op = $.extend({
+                initialPreview : [ // 预览图片的设置
+                    "<img src='" + imageurl + "' class='file-preview-image'>", ]
+            }, projectfileoptions);
+
+            $(this).fileinput(op);
+        } else {
+            $(this).fileinput(projectfileoptions);
+        }
+    });
+
+    $('#sendImg').on('click',function(){
+        $('#imgInput').fileinput('upload');
+        $('#imgInput').fileinput('disable')
+
+    })
+
+    $('#imgInput').on('fileuploaded', function(event, data, previewId, index) {
+        var form = data.form, files = data.files, extra = data.extra,
+            response = data.response, reader = data.reader;
+        if(data.response.status == 'success'){
+            window.location.reload();
+        }else{
+            alert(data.response.msg);
+            $('#myModal').modal('hide');
+        }
+
+    });
+
+
+    var postId = 0;
+    $('#chat_history_list').on('click','.delpostbtn',function(){
+        postId = $(this).attr('data-postId');
+    })
+
+    $('#delBtn').on('click',function(){
+        $.ajax({
+            type : "POST",
+            url : "../api/post.php?q=del",
+            data : {'postId':postId,'q':'del','aa':'bb'},
+            dataType : "json",
+            success : function(data) {
+
+                if(data.status == 'success'){
+                    window.location.reload();
+                }else{
+                    alert(data.msg);
+                    $('#delModel').modal('hide');
+                }
+
+                console.log(data);
+            }
+        });
+    })
+
+</script>
+</body>
+</html>

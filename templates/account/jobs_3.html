@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../../favicon.ico">
+<title>調查列表</title>
+
+<!-- Bootstrap core CSS -->
+<link href="../js/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap theme -->
+<link href="../js/bootstrap-3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+<!-- Css -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="../css/account.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto';
+      font-size: 14px;
+      padding:0px;
+
+    }
+
+    .wrap {
+      box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+      border-radius: 4px;
+    }
+
+    a:focus,
+    a:hover,
+    a:active {
+      outline: 0;
+      text-decoration: none;
+    }
+
+    .panel {
+      border-width: 0 0 1px 0;
+      border-style: solid;
+      border-color: #fff;
+      background: none;
+      box-shadow: none;
+    }
+
+    .panel:last-child {
+      border-bottom: none;
+    }
+
+    .panel-group > .panel:first-child .panel-heading {
+      border-radius: 4px 4px 0 0;
+    }
+
+    .panel-group .panel {
+      border-radius: 0;
+    }
+
+    .panel-group .panel + .panel {
+      margin-top: 0;
+    }
+
+    .panel-heading {
+      background-color: #337ab7;
+      border-radius: 0;
+      border: none;
+      color: #5e606d;
+      padding: 0;
+    }
+
+    .panel-title a {
+      display: block;
+      color: #fff;
+      padding: 10px;
+      position: relative;
+      font-size: 16px;
+      font-weight: 400;
+
+    }
+    .panel-title2 a{
+      display: block;
+      color: #fff;
+      background: #3790dc;
+      padding: 10px;
+      position: relative;
+      font-size: 16px;
+      font-weight: 400;
+      border-bottom: 1px solid #65c4f1;
+      border-top: 1px solid #65c4f1;
+      border-left: 1px solid #65c4f1;
+      border-right: 1px solid #65c4f1;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+    .panel-title2 a span{
+      font-size:16px;
+    }
+    .panel-body {
+      background: #fff;
+    }
+
+    .panel:last-child .panel-body {
+      border-radius: 0 0 4px 4px;
+    }
+
+    .panel:last-child .panel-heading,.panel:last-child .panel-heading2 {
+      border-radius: 0 0 4px 4px;
+      -webkit-transition: border-radius 0.3s linear 0.2s;
+      transition: border-radius 0.3s linear 0.2s;
+    }
+
+
+    .panel:last-child .panel-heading.active，
+    .panel:last-child .panel-heading2.active{
+      border-radius: 0;
+      -webkit-transition: border-radius linear 0s;
+      transition: border-radius linear 0s;
+    }
+    /* #bs-collapse icon scale option */
+
+    .panel-heading a:before
+    {
+      content: '\e146';
+      position: absolute;
+      font-family: 'Material Icons';
+      right: 5px;
+      top: 10px;
+      font-size: 24px;
+      -webkit-transition: all 0.5s;
+      transition: all 0.5s;
+      -webkit-transform: scale(1);
+      transform: scale(1);
+    }
+
+    .panel-heading.active a:before
+    .panel-heading2.active a:before{
+      content: ' ';
+      -webkit-transition: all 0.5s;
+      transition: all 0.5s;
+      -webkit-transform: scale(0);
+      transform: scale(0);
+    }
+
+    #bs-collapse .panel-heading a:after {
+      content: ' ';
+      font-size: 24px;
+      position: absolute;
+      font-family: 'Material Icons';
+      right: 5px;
+      top: 10px;
+      -webkit-transform: scale(0);
+      transform: scale(0);
+      -webkit-transition: all 0.5s;
+      transition: all 0.5s;
+    }
+
+    #bs-collapse .panel-heading.active a:after {
+      content: '\e909';
+      -webkit-transform: scale(1);
+      transform: scale(1);
+      -webkit-transition: all 0.5s;
+      transition: all 0.5s;
+    }
+    /* #accordion rotate icon option */
+
+    #accordion .panel-heading a:before{
+      content: '\e316';
+      font-size: 24px;
+      position: absolute;
+      font-family: 'Material Icons';
+      right: 5px;
+      top: 10px;
+      -webkit-transform: rotate(180deg);
+      transform: rotate(180deg);
+      -webkit-transition: all 0.5s;
+      transition: all 0.5s;
+    }
+
+    #accordion .panel-heading.active a:before,
+    #accordion .panel-heading2.active a:before{
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+      -webkit-transition: all 0.5s;
+      transition: all 0.5s;
+    }
+
+    .panel-title2 a .residue_class{
+      font-size: 14px;
+    }
+
+    ul.nav{
+      padding: 20px 0px;
+    }
+
+    .panel-body{
+      padding: 5px;
+      padding-top: 0px;
+    }
+    .emptyWrap{
+      width: 60%;
+      margin: 0px auto;
+      padding-top: 58px;
+    }
+    .empty_img img{
+      width: 100%;
+      height: 100%;
+    }
+    .empty_text{
+      text-align: center;
+      margin-top: 50px;
+      font-size: 18px;
+      color: #bfbfbf;
+    }
+    .collapsing {
+      -webkit-transition: none;
+      transition: none;
+      display: none;
+    }
+    .collapsing {
+      transition: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!--<ul class="nav nav-pills" role="tablist">
+    <li role="presentation" {assignedStyle}><a href="jobs_2.php?type=assigned">已確認<span class="badge"><?php echo $assignedNum;?></span></a></li>
+    <li role="presentation" {appliedStyle}><a href="jobs_2.php?type=applied">已認領</a></li>
+    <li role="presentation" {openingStyle}><a href="jobs_2.php?type=opening">搜尋工作</a></li>
+  </ul>-->
+  <?php
+        if(empty($res)){
+        ?>
+  <div class="emptyWrap">
+      <div class="empty_img">
+        <img src="../images/icon_empty.png" alt="暫無可選課堂">
+      </div>
+      <div class="empty_text">
+        暫無可選課堂
+      </div>
+  </div>
+  <?php }?>
+  <section class="jq22-container">
+      <div class="col-md-12 col-sm-12" style="padding-right:0px;padding-left:0px;">
+        <div class="panel-group wrap" id="accordion" role="tablist" aria-multiselectable="true">
+
+
+        <?php
+        $si = 0;
+        $weekarray=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+        $text = "時間待定";
+        foreach($res as $k=>$v){
+
+          $si++;
+          $surveyWeek = $weekarray[date("w",strtotime($k))];
+
+          ?>
+          <div class="panel">
+            <div class="panel-heading" role="tab" id="heading<?php echo $si;?>" >
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $si;?>" aria-expanded="true" aria-controls="collapse<?php echo $si;?>">
+
+                  <span>
+                        <?php
+                        if($k != '0000-00-00'){
+                          echo $surveyWeek;
+                          ?>
+                    <span><?php echo $k;?></span>
+                    <?php
+                        }else{
+                          echo $text;
+                        }
+
+                        ?>
+                  </span>
+
+                </a>
+              </h4>
+            </div>
+
+            <div id="collapse<?php echo $si;?>" class="panel-collapse collapse <?php if($si==1){ echo 'in';}?>" role="tabpanel" aria-labelledby="heading<?php echo $si;?>">
+              <div class="panel-group accordion2"  role="tablist" aria-multiselectable="true">
+          <?php
+            $bi = 0;
+            foreach($v as $job_c_k=>$one_job_c){
+                $bi++;
+          ?>
+              <div class="panel23">
+                <div class="panel-heading2" role="tab2" id="heading2<?php echo $bi;?>" >
+                  <h4 class="panel-title2">
+
+                    <?php
+                        if(is_array($one_job_c['vehicle']) && !empty($one_job_c['vehicle'])){
+                          $vehicles = $one_job_c['vehicle'];
+                          foreach($vehicles as $vk=>$vv){
+                    ?>
+
+                    <a href="job-detail.php?random=true&jobno=<?php echo $job_c_k;?>&vehicle=<?php echo $vv;?>" >
+                      <span><?php echo $job_c_k;?> : <?php echo $one_job_c['surveyType'];?></span>
+                      <?php
+                      if(!empty($one_job_c['diy_name'])){
+                      ?>
+                      <br><br>
+
+                        <span><?php echo $one_job_c['diy_name'];?> : <?php echo $one_job_c['diy_value'];?></span>
+
+                      <?php
+                      }
+                     ?>
+
+                      </br></br>
+                      <span class="residue_class">主題 : <?php echo empty($vv)?"暫無主題":$vv;?></span>
+                    </a>
+
+                    <?php
+                          }
+                        }
+                    ?>
+                  </h4>
+                </div>
+              <!-- 调查类型 -->
+
+              </div>
+          <?php } ?>
+
+
+
+            </div>
+            </div>
+          </div>
+
+
+
+
+          <?php
+        }
+?>
+
+
+
+
+
+
+          <!-- end of panel -->
+        </div>
+        <!-- end of #accordion -->
+      </div>
+  </section>
+
+  <!--<div class="footer"> © Ozzo Technology (HK) Ltd </div>-->
+<!-- /.container -->
+
+<!-- Bootstrap core JavaScript
+    ================================================== --> 
+<!-- Placed at the end of the document so the pages load faster --> 
+<script src="../js/bootstrap-3.3.5/js/jquery.min.js"></script> 
+<script src="../js/bootstrap-3.3.5/js/bootstrap.min.js"></script> 
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.collapse.in').prev('.panel-heading').addClass('active');
+
+    $('#accordion, #bs-collapse')
+            .on('show.bs.collapse', function(a) {
+              $(a.target).prev('.panel-heading').addClass('active');
+            })
+            .on('hide.bs.collapse', function(a) {
+              $(a.target).prev('.panel-heading').removeClass('active');
+            });
+    $('.accordion2') .on('show.bs.collapse', function(a) {
+      $(a.target).parents('.panel2').find('.panel-heading2').addClass('active');
+    })
+            .on('hide.bs.collapse', function(a) {
+              $(a.target).parents('.panel2').find('.panel-heading2').removeClass('active');
+            });
+  });
+</script>
+</body>
+</html>

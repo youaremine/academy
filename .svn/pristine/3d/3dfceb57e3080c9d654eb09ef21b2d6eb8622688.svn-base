@@ -1,0 +1,169 @@
+<?php
+/**
+ * about main schedule's me
+ * @copyright 2007-2012 Xiaoqiang.
+ * @author Xiaoqiang.Wu <jamblues@gmail.com>
+ * @version 1.01 , 2012-12-14
+ */
+include_once("../includes/config.inc.php");
+
+$query = $_REQUEST ['q'];
+
+switch ($query) {
+    case "Info" :
+        $jobNo = $_REQUEST ['jobNo'];
+        $jobNoNew = $_REQUEST ['jobNoNew'];
+        if (!empty ($jobNo) || !empty ($jobNoNew)) {
+            $m = new MainSchedule();
+            $ma = new MainScheduleAccess($db);
+            $m->jobNo = $jobNo;
+            $m->jobNoNewSigle = $jobNoNew;
+            $rs = $ma->GetListSearch($m);
+            echo json_encode($rs);
+        }
+        break;
+    case 'IsExist' :
+        $refNo = $_REQUEST ['refNo'];
+        if (!empty ($refNo)) {
+            $spl = new SurveyPartList ($db);
+            $spl->refNo = $refNo;
+            $rs = $spl->GetListSearch();
+            $rsNum = count($rs);
+            if ($rsNum > 0) {
+                $message = array('isExist' => 'true');
+            } else {
+                $message = array('isExist' => 'false');
+            }
+        } else {
+            $message = array('isExist' => 'false');
+        }
+        echo json_encode($message);
+        break;
+    case 'assignContractor' :
+        $msc = new MainScheduleContractor ();
+        $msc->jobNoNew = $_REQUEST ['jobNoNew'];
+        $msc->company = $_REQUEST ['company'];
+        $msc->mscId = $_REQUEST ['mscId'];
+        $msc->modifyTime = date("Y-m-d H:i:s");
+        $msc->modifyUserId = $_SESSION ['userId'];
+        $msca = new MainScheduleContractorAccess ($db);
+        if ($msc->mscId > 0) {
+            if (empty ($msc->company)) // 选空的时候直接删除.
+            {
+                $msca->Del($msc);
+            } else // 更新分判商
+            {
+                $msc_t = new MainScheduleContractor ();
+                $msc_t->mscId = $msc->mscId;
+                $rs = $msca->GetListSearch($msc_t);
+                $msc_t = $rs [0];
+                $msc_t->company = $msc->company;
+                $msc_t->modifyTime = $msc->modifyTime;
+                $msc_t->modifyUserId = $msc->modifyUserId;
+                $msca->Update($msc_t);
+            }
+        } else // 新加的数据
+        {
+            if (!empty ($msc->company)) {
+                $msc->inputTime = date("Y-m-d H:i:s");
+                $msc->inputUserId = $_SESSION ['userId'];
+                $msc->mscId = $msca->Add($msc);
+            }
+        }
+        $message = array('success' => 'true', 'mscId' => $msc->mscId);
+        echo json_encode($message);
+        break;
+    case 'changePlannedSurveyDate' :
+        $mspd = new MainSchedulePlannedDate ();
+        $mspda = new MainSchedulePlannedDateAccess ($db);
+        $mspd->plannedSurveyDate = $_REQUEST ['plannedSurveyDate'];
+        $mspd->userType = "Surveyor";
+        $mspd->inputUserId = $_SESSION ['userId'];
+        $mspd->inputTime = date($conf ['dateTime'] ['format']);
+        if (empty($mspd->inputUserId)) {
+            $message = array('success' => false, 'message' => '登錄已經失效,請重新登錄!', 'mstd' => $mspd->mstd);
+        } else {
+            $jobNoNews = $_REQUEST ['jobNoNew'];
+            $jobNoNewsArray = explode(",", $jobNoNews);
+            $jobNoNewsArrayNum = count($jobNoNewsArray);
+            foreach ($jobNoNewsArray as $k => $v) {
+                if (empty ($v)) continue;
+                $mspd->jobNoNew = $v;
+                $mspd->mstd = $mspda->Add($mspd);
+            }
+            $message = array('success' => true, 'mstd' => $mspd->mstd);
+        }
+        echo json_encode($message);
+        break;
+    case 'backupMainschedule' :
+        $mshl = new MainScheduleHistoryLog ();
+        $mshl->backupMonth = $_REQUEST ['backupMonth'];
+        $mshl->inputUserId = $_SESSION ['userId'];
+        $mshl->inputTime = date("Y-m-d H:i:s");
+        $mshla = new MainScheduleHistoryLogAccess ($db);
+        $mshl->mshlId = $mshla->BackupMonthMainSchedule($mshl);
+        $message = array('success' => 'true', 'mshlId' => $mshl->mshlId);
+        echo json_encode($message);
+        break;
+    case 'unbackupMainschedule' :
+        $mshl = new MainScheduleHistoryLog ();
+        $mshl->mshlId = $_REQUEST ['mshlId'];
+        $mshl->modifyUserId = $_SESSION ['userId'];
+        $mshl->modifyTime = date("Y-m-d H:i:s");
+        $mshla = new MainScheduleHistoryLogAccess ($db);
+        $mshla->Del($mshl);
+        $message = array('success' => 'true', 'mshlId' => $mshl->mshlId);
+        echo json_encode($message);
+        break;
+    case 'approvalBackupMainschedule' :
+        $mshl = new MainScheduleHistoryLog ();
+        $mshl->mshlId = $_REQUEST ['mshlId'];
+        $mshl->isApproval = 'yes';
+        $mshl->modifyUserId = $_SESSION ['userId'];
+        $mshl->modifyTime = date("Y-m-d H:i:s");
+        $mshla = new MainScheduleHistoryLogAccess ($db);
+        $mshla->ApprovalBackupMonthMainSchedule($mshl);
+        $message = array('success' => 'true', 'mshlId' => $mshl->mshlId);
+        echo json_encode($message);
+        break;
+    case 'unapprovalBackupMainschedule' :
+        $mshl = new MainScheduleHistoryLog ();
+        $mshl->mshlId = $_REQUEST ['mshlId'];
+        $mshl->isApproval = 'no';
+        $mshl->modifyUserId = $_SESSION ['userId'];
+        $mshl->modifyTime = date("Y-m-d H:i:s");
+        $mshla = new MainScheduleHistoryLogAccess ($db);
+        $mshla->ApprovalBackupMonthMainSchedule($mshl);
+        $message = array('success' => 'true', 'mshlId' => $mshl->mshlId);
+        echo json_encode($message);
+        break;
+    case 'openJob' :
+        if (empty($_SESSION ['userId'])) {
+            $message = array('success' => false, 'message' => '登錄已經失效,請重新登錄!', 'jobNoNew' => $mso->jobNoNew);
+            die(json_encode($message));
+        }
+        $mso = new MainScheduleOpen();
+        $msoa = new MainScheduleOpenAccess($db);
+        $mso->inputUserId = $_SESSION ['userId'];
+        $mso->inputTime = date("Y-m-d H:i:s");
+        $relationJobNoNews = $_REQUEST['relationJobNoNews'];
+        $relationJobNoNewsArray = explode(",", $relationJobNoNews);
+        $jobNoNews = $_REQUEST['jobNoNews'];
+        $jobNoNewsArray = explode(",", $jobNoNews);
+        foreach ($jobNoNewsArray as $k => $v) {
+            if (empty ($v)) continue;
+            //添加记录
+            $mso->batchNumber = uniqid();
+            $mso->jobNoNew = $v;
+            $msoa->Add($mso);
+            //如果有关联的job,以同一批号插入
+            foreach($relationJobNoNewsArray as $v2){
+                if (empty ($v2)) continue;
+                $mso->jobNoNew = $v2;
+                $msoa->Add($mso);
+            }
+        }
+        $message = array('success' => true, 'jobNoNew' => $mso->jobNoNew);
+        die(json_encode($message));
+        break;
+}

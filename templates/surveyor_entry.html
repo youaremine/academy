@@ -1,0 +1,108 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>新增/修改學員資料</title>
+<link href="css/css.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/jquery-1.6.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+	<table width="98%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">{currentPosition}</td>
+		</tr>
+	</table>
+	<form action="surveyor_entry_press.php" method="post" name="form1"
+		id="form1">
+		<table align="center" class="TableNone" style="width: 640px">
+			<tr>
+				<td align="right">編號</td>
+				<td style="font-weight: bold;">&nbsp;&nbsp;{survId}</td>
+				<td align="right">中文名:</td>
+				<td><input type="text" name="chiName" id="chiName"
+					value="{chiName}" /></td>
+			</tr>
+			<tr>
+				<td align="right">英文名</td>
+				<td><input type="text" name="engName" id="engName"
+					value="{engName}" /> <input type="hidden" name="survId"
+					id="survId" value="{survId}" /></td>
+				<td align="right">VIP</td>
+				<td><input type="text" name="VIP" id="VIP" value="{VIP}" /></td>
+			</tr>
+			<tr>
+				<td align="right">出生日期</td>
+				<td><input type="text" name="birthday" id="birthday" value="{birthday}" class="Wdate" onClick="WdatePicker({})" /></td>
+                <td align="right">類型</td>
+				<td><select name="survType" id="survType">
+						<!-- BEGIN SurvTypeRow -->
+						<option value="{survTypeCode}">{survTypeName}</option>
+						<!-- END SurvTypeRow -->
+				</select></td>
+			</tr>
+			<tr>
+				<td align="right">手提</td>
+				<td><input type="text" name="contact" id="contact"
+					value="{contact}" /></td>
+				<td align="right">WhatsAPP</td>
+				<td><input type="text" name="whatsAPP" id="whatsAPP"
+					value="{whatsAPP}" /></td>
+			</tr>
+			<tr>
+				<td align="right">住址</td>
+				<td><input type="text" name="survHome" id="survHome"
+					value="{survHome}" /></td>
+				<td align="right">郵箱</td>
+				<td><input type="text" name="email" id="email" value="{email}" /></td>
+			</tr>
+			<tr>
+				<td align="right">地區</td>
+				<td><select name="dipaCode" id="dipaCode">
+						<option value="">----</option>
+						<!-- BEGIN DistPartRow -->
+						<option value="{distPartCode}">{distPartEngName}</option>
+						<!-- END DistPartRow -->
+				</select></td>
+				<td align="right">狀態</td>
+				<td><select name="status" id="status">
+					<!-- BEGIN StatusRow -->
+					<option value="{statusCode}">{statusName}</option>
+					<!-- END StatusRow -->
+				</select></td>
+			</tr>
+			<tr>
+				<td align="right">備註</td>
+				<td colspan="2"><textarea name="remarks" id="remarks">{remarks}</textarea></td>
+			</tr>
+
+			<tr>
+				<td align="right">禁止自選課程至</td>
+				<td><input name="selfBefore" type="text" id="selfBefore" class="Wdate" onclick="WdatePicker({})" value="{selfBefore}" size="10" /></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="right">去年上堂次數</td>
+				<td><input name="lastYearSurveyTimes" type="text" id="lastYearSurveyTimes" value="{lastYearSurveyTimes}" size="10" /></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="right">&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td><input class="ButtonIdea" type="submit" id="btnSubmit"
+					name="btnSubmit" value="提交(Submit)"></td>
+			</tr>
+		</table>
+	</form>
+	<script type="text/javascript">
+$(document).ready(function(){
+	$('#dipaCode').val('{dipaCode}');
+	$('#personalRecord').val('{personalRecord}');
+	$('#company').val('{company}');
+	$('#status').val('{status}');
+	$('#survType').val('{survType}');
+});
+</script>
+</body>
+</html>

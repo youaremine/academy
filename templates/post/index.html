@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>消息中心</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../js/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="../js/bootstrap-3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- Css -->
+    <link href="../css/post.css?t={SITEVESION}" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">消息中心</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="{indexActive}"><a href="./">消息中心</a></li>
+                <li class="{unreplyActive}"><a href="./unreply.php">未回覆消息</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-10" id="post_list_group">
+
+        </div><!-- /.col-sm-4 -->
+    </div>
+
+    <div class="footer">
+        © Ozzo Technology (HK) Ltd
+    </div>
+
+</div><!-- /.container -->
+
+
+<script type="text/html" id="tpl_post_list">
+    <div class="list-group">
+        <% for (var i=0;i<data.length;i++) { %>
+        <% var item = data[i] %>
+        <a href="./single.php?jobNoNew=<%=item.jobNoNew%>" class="list-group-item">
+            <% if(item.userId <=0 ) { %>
+            <span class="badge">新</span>
+            <%}%>
+            <h4 class="list-group-item-heading">
+                <%=item.jobNoNew%>
+                <% if(item.s_engName != '') { %>
+                <span style="color: #00CCFF">-(<%=item.s_engName%>)</span>
+                <%}%>
+            </h4>
+            <p class="list-group-item-text">
+                <% if(item.userId <=0 ) { %>
+                <strong><%=item.survId%></strong>
+                <%}else{%>
+                <strong><%=item.userId%></strong>
+                <%}%>
+                :<%=item.content%><span><%=item.shortInputTime%></span>
+            </p>
+        </a>
+        <%}%>
+    </div>
+</script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../js/bootstrap-3.3.5/js/jquery.min.js"></script>
+<script src="../js/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="../js/template-native.js"></script>
+<script src="../js/post/index.js?t={SITEVESION}"></script>
+<script type="text/javascript">
+    var postType = "{postType}";
+</script>
+</body>
+</html>

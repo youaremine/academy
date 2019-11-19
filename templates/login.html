@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Login</title>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #FF00FF
+}
+-->
+	.login_other{
+		width: 450px;
+		margin:0px auto;
+		padding-left: 168px;
+	}
+</style>
+</head>
+
+<body>
+	<table width="960" height="768" border="0" align="center"
+		cellpadding="0" cellspacing="0" background="images/login.png">
+		<tr>
+			<td valign="top">
+				<form id="form1" name="form1" method="post"
+					action="">
+					<table width="450" border="0" align="center" cellpadding="0"
+						cellspacing="0">
+						<tr>
+							<td height="350" colspan="3" style="color: #FF0000">&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="3" style="color: #FF0000">{Error}</td>
+						</tr>
+						<tr>
+							<td width="85" height="30">Username:</td>
+							<td width="179"><input name="userName" type="text"
+								id="userName" value="{userName}" style="width: 160px" /></td>
+							<script language="javascript" type="text/javascript">
+			document.getElementById('userName').focus();
+			</script>
+							<td width="186">&nbsp;</td>
+						</tr>
+						<tr>
+							<td height="30">Password:</td>
+							<td><input name="passWord" type="password" id="passWord"
+								style="width: 160px" /></td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td height="30">&nbsp;</td>
+							<td valign="middle"><input name="antispam" type="text"
+								id="antispam" style="width: 160px" /></td>
+							<td valign="middle"><img src="antispam.php" /></td>
+						</tr>
+						<tr>
+							<td height="30">&nbsp;</td>
+							<td colspan="2"><div align="left">
+									<div class="STYLE1" id="errormsg_0_logincaptcha">Enter
+										the numbers as they are shown in the image above.</div>
+								</div></td>
+						</tr>
+						<tr>
+							<td height="30">&nbsp;</td>
+							<td><label> <input type="submit" name="login"
+									value="Login" />
+							</label>
+							</td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="3" style="color: #FF0000; font-size: 25px; height: 30px;"></td>
+						</tr>
+						<tr>
+							<td colspan="3" style="color: #FF0000; font-size: 30px;">{forUser}</td>
+						</tr>
+					</table>
+					<div class="login_other">
+						<fb:login-button id="fbBtn" scope="public_profile,email" onlogin="checkLoginState();" >
+						</fb:login-button>
+					</div>
+				</form>
+			</td>
+		</tr>
+	</table>
+
+	<!--<button id="signout">退出</button>-->
+</body>
+</html>
+<script>
+	/*document.getElementById('signout').onclick = function(){
+		FB.getLoginStatus(function (response) {
+			console.log('inside login status');
+			if (response.status === 'connected') {
+				// the user is logged in and has authenticated your
+				// app, and response.authResponse supplies
+				// the user's ID, a valid access token, a signed
+				// request, and the time the access token
+				// and signed request each expire
+				var uid = response.authResponse.userID;
+				var accessToken = response.authResponse.accessToken;
+
+				FB.logout(function (response) {
+					console.log(response);
+					//FB.Auth.setAuthResponse(null, 'unknown');
+
+				});
+			} else if (response.status === 'not_authorized') {
+				// the user is logged in to Facebook,
+				// but has not authenticated your app
+
+			} else {
+				// the user isn't logged in to Facebook.
+				console.log('response status not logged in');
+			}
+		});
+	};*/
+	// This is called with the results from from FB.getLoginStatus().
+	function statusChangeCallback(response) {
+		console.log('statusChangeCallback');
+		console.log(response);
+		// The response object is returned with a status field that lets the
+		// app know the current login status of the person.
+		// Full docs on the response object can be found in the documentation
+		// for FB.getLoginStatus().
+		if (response.status === 'connected') {
+			// Logged into your app and Facebook.
+			testAPI();
+		} else {
+			// The person is not logged into your app or we are unable to tell.
+			//document.getElementById('status').innerHTML = 'Please log into this app.';
+		}
+	}
+
+	// This function is called when someone finishes with the Login
+	// Button.  See the onlogin handler attached to it in the sample
+	// code below.
+	function checkLoginState() {
+		FB.getLoginStatus(function(response) {
+			statusChangeCallback(response);
+		});
+	}
+
+	window.fbAsyncInit = function() {
+		FB.init({
+			appId      : '2332837050298063',
+			cookie     : true,  // enable cookies to allow the server to access
+								// the session
+			xfbml      : true,  // parse social plugins on this page
+			version    : 'v3.2' // The Graph API version to use for the call
+		});
+
+		// Now that we've initialized the JavaScript SDK, we call
+		// FB.getLoginStatus().  This function gets the state of the
+		// person visiting this page and can return one of three states to
+		// the callback you provide.  They can be:
+		//
+		// 1. Logged into your app ('connected')
+		// 2. Logged into Facebook, but not your app ('not_authorized')
+		// 3. Not logged into Facebook and can't tell if they are logged into
+		//    your app or not.
+		//
+		// These three cases are handled in the callback function.
+
+		document.getElementById('fbBtn').onclick = function(){
+			FB.getLoginStatus(function(response) {
+				statusChangeCallback(response);
+			});
+		}
+	};
+
+
+
+	// Load the SDK asynchronously
+	(function(d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s); js.id = id;
+		js.src = "https://connect.facebook.net/en_US/sdk.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+
+	// Here we run a very simple test of the Graph API after login is
+	// successful.  See statusChangeCallback() for when this call is made.
+	function testAPI() {
+		console.log('Welcome!  Fetching your information.... ');
+		FB.api('/me', function(response) {
+			console.log(response);
+			console.log('Successful login for: ' + response.name);
+			window.location.href="/hkbook/login_other.php?type=1&identifier="+response.id;//TODO change the path
+
+			//document.getElementById('status').innerHTML = 'Thanks for logging in, ' + response.name + '!';
+		});
+	}
+</script>

@@ -1,0 +1,65 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Bus System</title>
+<link href="css/css.css" rel="stylesheet" type="text/css">
+<script language="javascript" src="js/prototype.js"></script>
+</head>
+
+<body>
+	<table width="98%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Bus Manage &gt;&gt;&gt; Registration View</td>
+		</tr>
+	</table>
+	<table width="98%" align="center">
+		<tr>
+			<td><form action="registration_input_press.php" method="post"
+					enctype="multipart/form-data" name="input" id="input">
+					<table width="100%" border="0" align="center" cellpadding="0"
+						cellspacing="0">
+						<tr>
+							<td width="10%" height="30">Transport Mode:</td>
+							<td width="90%"><select name="typeId" id="typeId"
+								disabled="disabled">
+									<option>----</option>
+									<!-- BEGIN TypeRow -->
+									<option value="{typeId}">{typeName}</option>
+									<!-- END TypeRow -->
+							</select></td>
+						</tr>
+						<tr>
+							<td colspan="2"><table width="100%" border="0"
+									align="center" cellpadding="0" cellspacing="1"
+									bgcolor="#000000">
+									<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+										<td width="7%" height="20">ID</td>
+										<td width="25%" align="center">Plate No</td>
+										<td width="25%" align="center">Fleet No</td>
+										<td width="25%" align="center">Total Capacity</td>
+									</tr>
+									<!-- BEGIN Row -->
+									<tr class="{listStyle}"
+										onMouseOver="this.className='DgSelectedItemStyle'"
+										onMouseOut="this.className='{listStyle}'">
+										<td>{regiId}</td>
+										<td>{plateNo}</td>
+										<td>{fleetNo}</td>
+										<td>{capacity}</td>
+									</tr>
+									<!-- END Row -->
+								</table></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td align="right"><label></label></td>
+						</tr>
+					</table>
+				</form></td>
+		</tr>
+	</table>
+	<script language="javascript" type="text/javascript">
+$('typeId').value = "{selTypeId}";
+</script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+#signup {
+	width: 404px;
+}
+
+#plannedSurveyDateDialog {
+	width: 404px;
+	padding-bottom: 2px;
+	display: none;
+	background: #FFF;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.7);
+	-webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+	-moz-box-shadow: 0 0px 4px rgba(0, 0, 0, 0.7);
+}
+
+#plannedSurveyDateDialog-header {
+	background: url(../images/jquery.leanModal/hd-bg.png);
+	padding: 18px 18px 14px 18px;
+	border-bottom: 1px solid #CCC;
+	border-top-left-radius: 5px;
+	-moz-border-radius-topleft: 5px;
+	-webkit-border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	-moz-border-radius-topright: 5px;
+	-webkit-border-top-right-radius: 5px;
+}
+
+#plannedSurveyDateDialog-header  h2 {
+	color: #444;
+	font-size: 2em;
+	font-weight: 700;
+	margin-bottom: 3px;
+	text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+#plannedSurveyDateDialog-header  p {
+	color: #444;
+	font-size: 1.3em;
+	margin: 0;
+	text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+	text-shadow: none;
+}
+
+#plannedSurveyDateDialog .txt-fld {
+	position: relative;
+	width: 364px;
+	padding: 14px 20px;
+	border-bottom: 1px solid #EEE;
+	text-align: right;
+}
+
+#plannedSurveyDateDialog .btn-fld {
+	width: 254px;
+	overflow: hidden;
+	padding: 12px 20px 12px 130px;
+}
+
+#plannedSurveyDateDialog .txt-fld label {
+	display: block;
+	float: left;
+	width: 180px;
+	padding-top: 8px;
+	color: #222;
+	font-size: 1.3em;
+	text-align: left;
+}
+
+#plannedSurveyDateDialog .txt-fld input {
+	width: 154px;
+	padding: 8px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	font-size: 1.2em;
+	color: #222;
+	background: #F7F7F7 url(../images/datePicker.gif) no-repeat right;;
+	font-family: "Helvetica Neue";
+	outline: none;
+	border-top: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	border-right: 1px solid #E7E6E6;
+	border-bottom: 1px solid #E7E6E6;
+}
+
+#plannedSurveyDateDialog .txt-fld input.good_input {
+	background: #DEF5E1 url(../images/jquery.leanModal/good.png) 206px
+		center no-repeat;
+}
+
+#plannedSurveyDateDialog .txt-fld input.error_input {
+	background: #FDE0E0;
+}
+
+#plannedSurveyDateDialog .txt-error {
+	color: red;
+}
+
+button {
+	float: right;
+	font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+	background: #3F9D4A;
+	border: none;
+	cursor: pointer;
+	width: auto;
+	overflow: visible;
+	font-size: 1.4em;
+	color: #FFF;
+	padding: 7px 10px;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	font-weight: bold;
+	text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.modal_close {
+	position: absolute;
+	top: 12px;
+	right: 18px;
+	display: block;
+	width: 14px;
+	height: 14px;
+	background: url(../images/jquery.leanModal/modal_close.png);
+	z-index: 2;
+}
+
+@media print {
+	.printHide {
+		display: none
+	}
+}
+
+#openJobDialog {
+    width: 404px;
+    padding-bottom: 2px;
+    display: none;
+    background: #FFF;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 0 0px 4px rgba(0, 0, 0, 0.7);
+}
+
+#openJobDialog-header {
+    background: url(../images/jquery.leanModal/hd-bg.png);
+    padding: 18px 18px 14px 18px;
+    border-bottom: 1px solid #CCC;
+    border-top-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    -webkit-border-top-right-radius: 5px;
+}
+
+#openJobDialog-header  h2 {
+    color: #444;
+    font-size: 2em;
+    font-weight: 700;
+    margin-bottom: 3px;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+#openJobDialog-header  p {
+    color: #444;
+    font-size: 1.3em;
+    margin: 0;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+    text-shadow: none;
+}
+
+#openJobDialog .txt-fld {
+    position: relative;
+    width: 364px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #EEE;
+    text-align: right;
+}
+
+#openJobDialog .btn-fld {
+    width: 254px;
+    overflow: hidden;
+    padding: 12px 20px 12px 130px;
+}
+
+#openJobDialog .txt-fld label {
+    display: block;
+    float: left;
+    width: 180px;
+    padding-top: 8px;
+    color: #222;
+    font-size: 1.3em;
+    text-align: left;
+}
+
+#openJobDialog .txt-fld input {
+    width: 154px;
+    padding: 8px;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    font-size: 1.2em;
+    color: #222;
+    font-family: "Helvetica Neue";
+    outline: none;
+    border-top: 1px solid #CCC;
+    border-left: 1px solid #CCC;
+    border-right: 1px solid #E7E6E6;
+    border-bottom: 1px solid #E7E6E6;
+}
+
+#openJobDialog .txt-fld input.good_input {
+    background: #DEF5E1 url(../images/jquery.leanModal/good.png) 206px
+    center no-repeat;
+}
+
+#openJobDialog .txt-fld input.error_input {
+    background: #FDE0E0;
+}
+
+#openJobDialog .txt-error {
+    color: #ff0000;
+}

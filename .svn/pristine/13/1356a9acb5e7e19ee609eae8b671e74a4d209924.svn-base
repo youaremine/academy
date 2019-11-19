@@ -1,0 +1,85 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Bus System</title>
+<link href="css/css.css" rel="stylesheet" type="text/css">
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" src="js/language.js"></script>
+<script language="javascript" src="js/function.js"></script>
+<script language="javascript" type="text/javascript">
+function CheckForm()
+{
+	var isValid = true;
+	if($('typeId').value == "")
+	{
+		alert(Lang_TransportModeEmpty);
+		$('typeId').focus();
+		isValid = false;
+		return;
+	}
+	
+	if (Trim($('busList').value) == "" )
+	{
+		alert(Lang_PlateNoFleetNoEmpty);
+		$('busList').focus();
+		isValid = false;
+		return;
+	}
+
+	//全部条件成立提交	
+	if(isValid)
+	{
+		$('input').submit();
+	}
+}
+</script>
+</head>
+
+<body>
+	<table width="98%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Bus Manage &gt;&gt;&gt; Registration</td>
+		</tr>
+	</table>
+	<table width="98%" align="center">
+		<tr>
+			<td><form action="registration_input_press.php" method="post"
+					enctype="multipart/form-data" name="input" id="input">
+					<table width="500" border="0" align="center" cellpadding="0"
+						cellspacing="0">
+						<tr>
+							<td height="30">Transport Mode:</td>
+							<td><select name="typeId" id="typeId" disabled="disabled">
+									<option>----</option>
+									<!-- BEGIN TypeRow -->
+									<option value="{typeId}">{typeName}</option>
+									<!-- END TypeRow -->
+							</select><input type="hidden" name="butyId" id="butyId" value="{butyId}" /></td>
+						</tr>
+						<tr>
+							<td><label>Fleet No/Plate No/Capacity</label></td>
+							<td><textarea name="busList" cols="35" rows="30"
+									id="busList"></textarea></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td align="right"><input type="button" onClick="CheckForm()"
+								name="Submit" id="Submit" value="提交(Submit)"> <label></label></td>
+						</tr>
+					</table>
+				</form></td>
+		</tr>
+	</table>
+	<table width="98%" border="0" align="center" cellpadding="0"
+		cellspacing="0">
+		<tr>
+			<td bgcolor="#FFB263">上傳流程: <br />1,將Fleet No,Plate
+				No,Capacity三個內容整理在一個excel中. <br />2,將這三列的內容複製到上面的空白框中. <br />
+			</td>
+		</tr>
+	</table>
+	<script language="javascript" type="text/javascript">
+$('typeId').value = "{butyId}";
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Main Schedule Report Send</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css"
+	href="/extjs/resources/css/ext-all.css" />
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="/extjs/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="/extjs/ext-all.js"></script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 5px;
+	margin-top: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+-->
+</style>
+<script type="text/javascript">
+	Ext.QuickTips.init();
+	Ext.onReady(function() {
+		var mhtml = new Ext.form.HtmlEditor({
+			id : 'sendContent',
+			width : 800,
+			height : 280,
+			value : "{txtSendContent}"
+		});
+
+		mhtml.render('sendContentBody');
+	});
+	function showMask() {
+		// Basic mask:
+		var myMask = new Ext.LoadMask(Ext.getBody(), {
+			msg : "Please wait..."
+		});
+		myMask.show();
+	}
+</script>
+</head>
+<body bgcolor="#FFFFFF">
+	<form id="myForm" name="myForm" method="post" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">Main Schedule Report &gt;&gt;&gt; Send</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr class="DgItemStyle">
+				<td height="20">From:</td>
+				<td><input name="senderMailAddr" type="text"
+					id="senderMailAddr" style="width: 800px; background-color: #DDD;"
+					value="{txtSenderMailAddr}" disabled="disabled" /></td>
+			</tr>
+			<tr class="DgItemStyle">
+				<td height="20" width="25">To:</td>
+				<td width="95%"><input name="receiverMailAddr" type="text"
+					id="receiverMailAddr" style="width: 800px"
+					value="{txtReceiverMailAddr}" /></td>
+			</tr>
+			<tr class="DgItemStyle">
+				<td height="20">CC:</td>
+				<td><input name="CCMailAddr" type="text" id="CCMailAddr"
+					style="width: 800px" value="{txtCCMailAddr}" /></td>
+			</tr>
+			<tr class="DgItemStyle">
+				<td height="20">Subject:</td>
+				<td><input name="sendSubject" type="text" id="sendSubject"
+					style="width: 800px" value="{txtSendSubject}" /></td>
+			</tr>
+			<tr class="DgItemStyle">
+				<td height="20">Body:</td>
+				<td><div id="sendContentBody"></div></td>
+			</tr>
+			<tr class="DgItemStyle">
+				<td height="20">File:</td>
+				<td><ul>
+						<li>{requestFormFileName} <input type="hidden"
+							name="requestFormFile" id="requestFormFile"
+							value="{requestFormFile}" style="width: 0px; height: 0px;" />
+						</li>
+						<li>{rawDataFileName} <input type="hidden" name="rawDataFile"
+							id="rawDataFile" value="{rawDataFile}"
+							style="width: 0px; height: 0px;" />
+						</li>
+						<li>{reportFileName} <input type="hidden" name="reportFile"
+							id="reportFile" value="{reportFile}"
+							style="width: 0px; height: 0px;" />
+						</li>
+						<li>{summaryTableFileName} <input type="hidden"
+							name="summaryTableFile" id="summaryTableFile"
+							value="{summaryTableFile}" style="width: 0px; height: 0px;" />
+						</li>
+					</ul></td>
+			</tr>
+			<tr class="DgItemStyle">
+				<td height="20">&nbsp;</td>
+				<td><input type="submit" name="send" id="send" value="Send"
+					style="width: 100px; height: 50px;" onclick="showMask();" {isDisabled} /><span
+					style="color: #FF0000; font-size: 120%; font-weight: bold;">{isDisabledError}</span>
+					<input type="hidden" name="refNo" id="refNo" value="{refNo}" />
+					<input type="hidden" name="shortRefNo" id="shortRefNo" value="{shortRefNo}" />
+					</td>
+			</tr>
+		</table>
+		<fieldset>
+			<legend>History</legend>
+			<table width="100%" cellpadding="0" cellspacing="1">
+				<tr class="DgHeaderStyle">
+					<td style="" nowrap="nowrap">Ref No</td>
+					<td><p>Send Time</p></td>
+					<td style="" nowrap="nowrap">Sender Name</td>
+					<td>Sender Mail</td>
+					<td nowrap="nowrap" style="">Recipient</td>
+					<td>Recipient's Email</td>
+					<td>SendSubject</td>
+				</tr>
+				<!-- BEGIN Row -->
+				<tr class="{listStyle}"
+					onmouseover="this.className='DgSelectedItemStyle'"
+					onmouseout="this.className='{listStyle}'">
+					<td>{keyId}</td>
+					<td>{sendTime}</td>
+					<td>{senderName}</td>
+					<td>{senderMail}</td>
+					<td>{receiverName}</td>
+					<td style="white-space: nowrap;">{receiverMail}</td>
+					<td style="white-space: nowrap;">{sendSubject} <label></label></td>
+				</tr>
+				<!-- END Row -->
+			</table>
+		</fieldset>
+		<br />
+	</form>
+</body>
+</html>

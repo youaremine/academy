@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Surveyor List</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" type="text/javascript">
+function SetHidValue(values)
+{
+	$('hidValue').value = values;
+}
+</script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+</head>
+<base target="_self" />
+<body>
+	<form id="searchForm" name="searchForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>Timesheet Period:</td>
+								<td><label> <select name="periodYear"
+										id="periodYear">
+											<option value="" selected>--</option>
+											<!-- BEGIN PeriodYearRow -->
+											<option value="{periodYear}">{periodYear}</option>
+											<!-- END PeriodYearRow -->
+									</select> - <select name="periodMonth" id="periodMonth">
+											<option value="">--</option>
+											<option value="01">01</option>
+											<option value="02">02</option>
+											<option value="03">03</option>
+											<option value="04">04</option>
+											<option value="05">05</option>
+											<option value="06">06</option>
+											<option value="07">07</option>
+											<option value="08">08</option>
+											<option value="09">09</option>
+											<option value="10">10</option>
+											<option value="11">11</option>
+											<option value="12">12</option>
+									</select>
+								</label></td>
+								<td width="15%"><input class="ButtonIdea" type="submit"
+									name="submit" id="submit" value="搜索(Search)" /></td>
+								<td width="10%">&nbsp;</td>
+								<td width="10%">&nbsp;</td>
+								<td width="10%">&nbsp;</td>
+								<td width="10%">&nbsp;</td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td width="1%" height="20"></td>
+				<td width="15%" align="center">User ID</td>
+				<td width="15%" align="center">User Name</td>
+				<td width="15%" align="center">Mobile</td>
+				<td width="15%" align="center"><p align="center">Timesheet
+						Period</p></td>
+				<td width="40%" colspan="4" align="center">&nbsp;</td>
+			</tr>
+
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onMouseOver="this.className='DgSelectedItemStyle'"
+				onMouseOut="this.className='{listStyle}'" bgcolor="#FFFFFF"
+				onDblClick="window.returnValue='{survId}|{engName}|{contact}|{survHome}|{dipaCode}|{IsSupervisor}|{remark}';window.close();"
+				style="cursor: pointer;">
+				<td>&nbsp;</td>
+				<td>{inputUserId}</td>
+				<td>{engName}</td>
+				<td>{inputPhone}</td>
+				<td>{period}</td>
+				<td>{privew}</td>
+				<td>{modify}</td>
+				<td>{excelDown}</td>
+				<td>{delete}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<input name="hidValue" type="hidden" id="hidValue" />
+	</form>
+	<script type="text/javascript">
+$('periodYear').value = "{defaultPeriodYear}";
+$('periodMonth').value = "{defaultPeriodMonth}";
+</script>
+</body>
+</html>

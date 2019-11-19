@@ -1,0 +1,271 @@
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" src="js/language.js"></script>
+<script language="javascript" src="js/function.js"></script>
+<script language="javascript">
+function CheckForm()
+{
+	var isValid = true;
+	if($('refNo').value == "")
+	{
+		alert(Lang_refNoEmpty);
+		$('refNo').focus();
+		isValid = false;
+		return;
+	}
+	if($('surveyDate').value == "")
+	{
+		alert(Lang_refNoEmpty);
+		$('surveyDate').focus();
+		isValid = false;
+		return;
+	}
+	if(isValid)
+	{
+		$('input').submit();
+	}
+}
+
+</script>
+<style type="text/css">
+table {
+	font-size: 12px;
+}
+
+.PrintTable {
+	width: 100%;
+	border: 0px solid #000000;
+	background: #FFFFFF;
+	border-bottom: 1px solid #000000;
+	border-right: 1px solid #000000;
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-collapse: collapse;
+}
+
+#PrintTitle td {
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	height: 15px;
+}
+
+#PrintTable td {
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	height: 19px;
+}
+
+.DateTimeInput {
+	width: 20px;
+}
+
+.NumberInput {
+	width: 20px;
+}
+
+input {
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+}
+</style>
+</head>
+<body bgcolor="#FFFFFF">
+	<form action="input_state.php" method="post" name="input" id="input">
+		<table id="PrintTitle" class="PrintTable">
+			<tr height=63>
+				<td height=63 width=135></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=140></td>
+				<td colspan=3 width=267>&nbsp;</td>
+				<td width=119>{copyFunction}</td>
+			</tr>
+			<tr height=34>
+				<td height=34>REF NO.編號:</td>
+				<td width=89></td>
+				<td width=89><input name="refNo" type="text" id="refNo"
+					size="10" value="{refNo}"></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td></td>
+				<td colspan=2>Survey Date 調查日期:</td>
+				<td colspan=2><label> <input name="surveyDate"
+						type="text" id="surveyDate" size="15" value="{surDate}">
+				</label></td>
+			</tr>
+			<tr height=33>
+				<td height=33><span style="">Weather 天氣:</span></td>
+				<td width=89></td>
+				<td colspan="2"><span style=""><input name="weatherName"
+						type="text" id="weatherName" size="35" value="{weatherName}"></span></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td></td>
+				<td colspan=2>Survey Period 調查時間:</td>
+				<td colspan=2><label> <input name="surFromTimeHor"
+						type="text" id="surFromTimeHor" class="DateTimeInput"
+						value="{surFromTimeHor}">:<input name="surFromTimeMin"
+						type="text" id="surFromTimeMin" class="DateTimeInput"
+						value="{surFromTimeMin}">
+				</label> - <input name="surToTimeHor" type="text" id="surToTimeHor"
+					class="DateTimeInput" value="{surToTimeHor}">:<input
+					name="surToTimeMin" type="text" id="surToTimeMin"
+					class="DateTimeInput" value="{surToTimeMin}"></td>
+			</tr>
+			<tr height=22>
+				<td height=22></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr height=19>
+				<td height=19></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td colspan=2>Location(地點):</td>
+				<td colspan=2><label> <input name="location"
+						type="text" id="location" size="35" value="{location}">
+				</label></td>
+			</tr>
+			<tr height=19>
+				<td height=19></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td colspan=2></td>
+				<td colspan=2>Bounds(方向):</td>
+				<td colspan="2"><input name="bounds" type="text" id="bounds"
+					size="35" value="{bounds}"></td>
+			</tr>
+			<tr height=21>
+				<td height=21></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td colspan="2"><label style="">輸入員名稱:</label></td>
+				<td colspan="2"><label style=""><input name="userName"
+						type="text" id="userName" size="20" value="{userName}"></label></td>
+			</tr>
+			<tr height=30>
+				<td height=30 colspan=2>Route No (路線號碼):</td>
+				<td><label> <input name="routeNo" type="text"
+						id="routeNo" size="15" value="{routeNo}">
+				</label></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td x:fmla="=CELL(&quot;filename&quot;,$A$2)">&nbsp;</td>
+			</tr>
+			<tr height=0>
+				<td width=135></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=140></td>
+				<td width=267></td>
+				<td width=89></td>
+				<td width=89></td>
+				<td width=119></td>
+			</tr>
+		</table>
+		<table id="PrintTable" class="PrintTable">
+			<tr height=35>
+				<td rowspan=3>*skipped <br> stop<br> 飛站
+				</td>
+				<td rowspan=3 height=81 width=135>Registration Plate No. 車牌<br>
+					/ Fleet No. 車隊號碼
+				</td>
+				<td width=89>PSL</td>
+				<td colspan=4 align=center>Time&nbsp; 時間</td>
+				<td width=140>On Arrival.</td>
+				<td width=267>Pick<br> Up
+				</td>
+				<td width=89>Set Down</td>
+				<td width=89>Left Behind</td>
+				<td width=119>On Dept.</td>
+			</tr>
+			<tr height=18>
+				<td height=18 width=89></td>
+				<td colspan=2 align=center>Arrival&nbsp; 到達</td>
+				<td colspan=2 align=center>Departure 出發</td>
+				<td>到站車上人數</td>
+				<td>上車人數</td>
+				<td>落車人數</td>
+				<td>剩餘人龍</td>
+				<td>離站車上人數</td>
+			</tr>
+			<tr height=28>
+				<td height=28 width=89>No.</td>
+				<td>Hr小時</td>
+				<td>Min分鐘</td>
+				<td>Hr小時</td>
+				<td>Min分鐘</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+				<td>(No.)</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr height=26>
+				<td>{skippedStopFlag}</td>
+				<td height=26><input name="fleetNo[]" type="text"
+					id="fleetNo[]" size="20" value="{fleetNo}"></td>
+				<td><input name="pslNo[]" type="text" id="pslNo[]" size="15"
+					value="{pslNo}"></td>
+				<td align=right><input name="arrivalTimeHor[]" type="text"
+					id="arrivalTimeHor[]" class="DateTimeInput"
+					value="{arrivalTimeHor}"></td>
+				<td align=right><input name="arrivalTimeMin[]" type="text"
+					id="arrivalTimeMin[]" class="DateTimeInput"
+					value="{arrivalTimeMin}"></td>
+				<td align=right><input name="departureTimeHor[]" type="text"
+					id="departureTimeHor[]" class="DateTimeInput"
+					value="{departureTimeHor}"></td>
+				<td align=right><input name="departureTimeMin[]" type="text"
+					id="departureTimeMin[]" class="DateTimeInput"
+					value="{departureTimeMin}"></td>
+				<td align=right><input name="onArrival[]" type="text"
+					id="onArrival[]" class="NumberInput" value="{onArrival}"></td>
+				<td align=right><input name="pickup[]" type="text"
+					id="pickup[]" class="NumberInput" value="{pickup}"></td>
+				<td><input name="setDown[]" type="text" id="setDown[]"
+					class="NumberInput" value="{setDown}"></td>
+				<td><input name="leftBehind[]" type="text" id="leftBehind[]"
+					class="NumberInput" value="{leftBehind}"></td>
+				<td><input name="onDept[]" type="text" id="onDept[]"
+					class="NumberInput" value="{onDept}"></td>
+			</tr>
+			<!-- END Row -->
+		</table>
+	</form>
+</body>
+</html>

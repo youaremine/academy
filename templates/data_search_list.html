@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Surveyor List</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" type="text/javascript">
+function SetHidValue(values)
+{
+	$('hidValue').value = values;
+}
+</script>
+</head>
+
+<body>
+	<form id="searchForm" name="searchForm" method="get" action="">
+		<fieldset>
+			<legend>運輸署提供</legend>
+			<table width="100%" border="0" align="center" cellpadding="0"
+				cellspacing="1" bgcolor="#000000">
+				<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+					<td width="10%" align="center">&nbsp;</td>
+					<td width="25%" height="20" align="center">Fleet No. 車隊號碼</td>
+					<td width="30%" height="20" align="center">Registration Plate
+						No.車牌</td>
+					<td width="20%" align="center">PSL/ Capacity</td>
+					<td width="15%" align="center">&nbsp;</td>
+				</tr>
+
+				<!-- BEGIN RowReg -->
+				<tr class="{listStyle}"
+					onmouseover="this.className='DgSelectedItemStyle'"
+					onmouseout="this.className='{listStyle}'" bgcolor="#FFFFFF"
+					ondblclick="window.returnValue='{capacity}|';window.close();"
+					style="cursor: pointer;">
+					<td>&nbsp;</td>
+					<td>{plateNo}</td>
+					<td>{fleetNo}</td>
+					<td>{capacity}</td>
+					<td>&nbsp;</td>
+				</tr>
+				<!-- END RowReg -->
+			</table>
+		</fieldset>
+
+		<fieldset>
+			<legend>ACROSS</legend>
+			<table width="100%" border="0" align="center" cellpadding="0"
+				cellspacing="1" bgcolor="#000000">
+				<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+					<td width="10%" align="center">Company</td>
+					<td width="25%" height="20" align="center">Fleet No. 車隊號碼</td>
+					<td width="30%" height="20" align="center">Registration Plate
+						No.車牌</td>
+					<td width="20%" align="center">PSL/ Capacity</td>
+					<td width="15%" align="center">Sch.</td>
+				</tr>
+
+				<!-- BEGIN RowAcross -->
+				<tr class="{listStyle}"
+					onmouseover="this.className='DgSelectedItemStyle'"
+					onmouseout="this.className='{listStyle}'" bgcolor="#FFFFFF"
+					ondblclick="window.returnValue='{capacity}|';window.close();"
+					style="cursor: pointer;">
+					<td>{company}</td>
+					<td>{fleetNo}</td>
+					<td>{plateNo}</td>
+					<td>{capacity}</td>
+					<td>{sch}</td>
+				</tr>
+				<!-- END RowAcross -->
+			</table>
+		</fieldset>
+		<fieldset>
+			<legend>最近10次歷史記錄</legend>
+			<table width="100%" border="0" align="center" cellpadding="0"
+				cellspacing="1" bgcolor="#000000">
+				<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+					<td width="10%"></td>
+					<td width="25%" height="20" align="center">Fleet No. 車隊號碼</td>
+					<td width="30%" height="20" align="center">Registration Plate
+						No. 車牌</td>
+					<td width="20%" align="center">PSL/ Cacpcity</td>
+					<td width="15%" align="center">&nbsp;</td>
+				</tr>
+
+				<!-- BEGIN Row -->
+				<tr class="{listStyle}"
+					onmouseover="this.className='DgSelectedItemStyle'"
+					onmouseout="this.className='{listStyle}'" bgcolor="#FFFFFF"
+					ondblclick="window.returnValue='{pslNo}|';window.close();"
+					style="cursor: pointer;">
+					<td>&nbsp;</td>
+					<td>{fleetNo}</td>
+					<td>{plateNo}</td>
+					<td>{pslNo}</td>
+					<td>&nbsp;</td>
+				</tr>
+				<!-- END Row -->
+			</table>
+		</fieldset>
+		<input name="hidValue" type="hidden" id="hidValue" />
+	</form>
+</body>
+</html>

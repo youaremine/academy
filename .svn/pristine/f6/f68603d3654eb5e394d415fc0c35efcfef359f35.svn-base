@@ -1,0 +1,84 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Surveyor List</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" type="text/javascript">
+function SetHidValue(values)
+{
+	$('hidValue').value = values;
+}
+</script>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+</head>
+<base target="_self" />
+<body>
+	<form id="searchForm" name="searchForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr>
+				<td height="20" style="display: none;"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>Name</td>
+								<td><label> <input name="txtEngName" type="text"
+										id="txtEngName" value="{txtEngName}" size="12" />
+								</label></td>
+								<td>Contact</td>
+								<td><input name="txtContact" type="text" id="txtContact"
+									value="{txtContact}" size="12" /></td>
+								<td>Home</td>
+								<td><input name="txtSurvHome" type="text" id="txtSurvHome"
+									value="{txtSurvHome}" size="12" /></td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td width="0%" height="20"></td>
+				<td width="15%" align="center">Lantau(日期):</td>
+				<td width="15%" align="center">Location(位置):</td>
+				<td width="15%" align="center">District(地区)</td>
+				<td width="15%" align="center"><p align="center">Weather(天氣):</p></td>
+				<td width="20%" align="center">Survey Taken by(調查員)</td>
+				<td width="22%" colspan="4" align="center">&nbsp;</td>
+			</tr>
+
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onMouseOver="this.className='DgSelectedItemStyle'"
+				onMouseOut="this.className='{listStyle}'" bgcolor="#FFFFFF"
+				onDblClick="window.returnValue='{survId}|{engName}|{contact}|{survHome}|{dipaCode}|{IsSupervisor}|{remark}';window.close();"
+				style="cursor: pointer;">
+				<td>&nbsp;</td>
+				<td>{surveyDate}</td>
+				<td>{location}</td>
+				<td>{district}</td>
+				<td>{weather}</td>
+				<td>{survId}</td>
+				<td>{privew}</td>
+				<td>{modify}</td>
+				<td>{excelDown}</td>
+				<td>{delete}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<input name="hidValue" type="hidden" id="hidValue" />
+	</form>
+</body>
+</html>

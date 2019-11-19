@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>已點名學員列表</title>
+<link rel="stylesheet" type="text/css"
+	href="/extjs/resources/css/ext-all.css" />
+<script type="text/javascript" src="/extjs/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="/extjs/ext-all.js"></script>
+<script language="javascript" src="js/data_list.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="js/function.js"></script>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">主列表 &gt;&gt;&gt; 已點名學員列表 </td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>搜索</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+						  <tr>
+						    <td>上學日期:</td>
+						    <td><table width="200" border="0"
+										cellspacing="0" cellpadding="0">
+						      <tr>
+						        <td><input name="txtSurveyDateStart" type="text"
+												id="txtSurveyDateStart" value="{txtSurveyDateStart}"
+												class="Wdate" onclick="WdatePicker({})" size="10" /></td>
+						        <td>&nbsp;-&nbsp;</td>
+						        <td><input name="txtSurveyDateEnd" type="text"
+												id="txtSurveyDateEnd" value="{txtSurveyDateEnd}"
+												class="Wdate" onclick="WdatePicker({})" size="10" /></td>
+					          </tr>
+						      </table></td>
+							  <td>點名時間:</td>
+							  <td><table width="200" border="0"
+														cellspacing="0" cellpadding="0">
+							  <tr>
+								  <td><input name="txtInputTimeStart" type="text"
+											 id="txtInputTimeStart" value="{txtInputTimeStart}"
+											 class="Wdate" onclick="WdatePicker({})" size="10" /></td>
+								  <td>&nbsp;-&nbsp;</td>
+								  <td><input name="txtInputTimeEnd" type="text"
+											 id="txtInputTimeEnd" value="{txtInputTimeEnd}"
+											 class="Wdate" onclick="WdatePicker({})" size="10" /></td>
+							  </tr>
+						  </table></td>
+						    <td>點名人:</td>
+						    <td><input name="txtInputter" type="text" id="txtInputter" value="{txtInputter}" size="15" /></td>
+						    <td><span style="">District:</span></td>
+						    <td><span style="">{ddlDistIdSelect}</span></td>
+					      </tr>
+						  <tr>
+						    <td>課程編號:</td>
+						    <td><label>
+						      <input name="txtRefNo" type="text"
+										id="txtRefNo" value="{txtRefNo}" size="10" />
+						      </label></td>
+						    <td>&nbsp;</td>
+						    <td>&nbsp;</td>
+						    <td><span style="">狀態:</span></td>
+						    <td><span style="">
+						      <select name="ddlDelFlag" id="ddlDelFlag">
+								<option value="no" selected="selected">正常</option>
+						        <option value="yes">已刪除</option>
+						        <option value="">全部</option>
+					        </select>
+						      </span></td>
+						    <td><input class="ButtonIdea" type="submit" id="submit" value="搜索(Search)" /></td>
+							  <td><a href="./to-excel/data_list_to_excel.php?{queryString}" title="下載資料輸入情況(Excel)"><img src="./images/excel.png" width="24" border="0">下載</a></td>
+					      </tr>
+				  </table>
+				</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td height="20"></td>
+				<td align="center">課堂編號</td>
+				<td align="center">課堂類型</td>
+				<td align="center">課堂日期</td>
+				<td align="center">課堂時間</td>
+				<td align="center">上學地點</td>
+				<td align="center">學員</td>
+				<td align="center">是否報名（是/否）</td>
+				<td align="center">狀態（已到/未到）</td>
+				<td align="center" style="">點名人</td>
+				<td align="center" style="">點名時間</td>
+				<td colspan="4">&nbsp;</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr id="tr{i}" class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'"
+				onclick=" SelectRow(this);">
+				<td>{channelIcon}</td>
+				<td>{jobNoNew}{remarks}</td>
+				<td>{surveyType}</td>
+				<td>{plannedSurveyDate}</td>
+				<td>{surveyTimeHours}</td>
+				<td>{surveyLocation}</td>
+				<td>{surveyorInfo}</td>
+				<td>{isAssign}</td>
+				<td>{isDataEntry}</td>
+				<td>{userName}</td>
+				<td>{inputTime}</td>
+				<td>{privew}</td>
+				<td>{modify}</td>
+				<td>{excelDown}</td>
+				<td>{delete}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="2">
+			<tr>
+				<td align="right">{pageSetting}</td>
+			</tr>
+		</table>
+	</form>
+
+<script type="text/javascript">
+Ext.onReady(function(){
+	Ext.get('ddlDistId').dom.value = "{ddlDistId}";
+	Ext.get('ddlDelFlag').dom.value = "{ddlDelFlag}";
+});
+</script>
+</body>
+</html>

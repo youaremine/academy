@@ -1,0 +1,259 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Bus System</title>
+<link href="css/css.css" rel="stylesheet" type="text/css">
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" src="js/language.js"></script>
+<script language="javascript" src="js/function.js"></script>
+<script language="javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script language="javascript" type="text/javascript">
+function CheckForm()
+{
+	var isValid = true;
+	if($('inputerCode').value == "")
+	{
+		alert(Lang_UserNameEmpty);
+		$('inputerCode').focus();
+		isValid = false;
+		return;
+	}
+	
+	if($('period').value == "")
+	{
+		alert(Lang_periodEmpty);
+		$('period').focus();
+		isValid = false;
+		return;
+	}
+	
+	//全部条件成立提交	
+	if(isValid)
+	{
+		$('input').submit();
+	}
+}
+//检查是否超出时间范围
+function CheckTrueTimeHor(thisControl)
+{
+	if(thisControl.value != "")
+	{
+		var type = 'hor';
+		var startTime = '0';
+		var endTime = '24';
+		CheckCurrTime(thisControl,thisControl.value,type,startTime,endTime);
+	}
+}
+
+function CheckTrueTimeMin(thisControl)
+{
+	if(thisControl.value != "")
+	{
+		var type='min';
+		var startTime = '0'
+		var endTime = '60';
+		CheckCurrTime(thisControl,thisControl.value,type,startTime,endTime);
+	}
+}
+
+function CalcDuration(rowNo)
+{
+	var startTimeHor = $('timeFormHor['+rowNo+']').value;
+	var startTimeMin = $('timeFormMin['+rowNo+']').value;
+	var endTimeHor = $('timeToHor['+rowNo+']').value;
+	var endTimeMin = $('timeToMin['+rowNo+']').value;
+	if(startTimeHor!="" && startTimeMin!="" && endTimeHor!="" && endTimeMin!="")
+	{
+		var startTime = startTimeHor + ':' + startTimeMin;
+		var endTime = endTimeHor + ':' + endTimeMin;
+		var diffMin = TimeDiff(startTime,endTime);
+		var diffHor = diffMin/60;
+		$('duration['+rowNo+']').value = diffHor;
+	}
+	
+}
+</script>
+<style type="text/css">
+<!--
+.DateTimeInput {
+	width: 20px;
+}
+-->
+</style>
+</head>
+
+<body>
+	<table width="98%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">Bus Manage &gt;&gt;&gt; Timesheet</td>
+		</tr>
+	</table>
+	<table width="98%" align="center">
+		<tr>
+			<td><form action="inputer_timesheet_entry_press.php"
+					method="post" name="input" id="input">
+					<table width="778" border="0" align="center" cellpadding="0"
+						cellspacing="1" bgcolor="#000000">
+						<tr>
+							<td colspan="4" align="center" bgcolor="#CCCCCC"><strong>Timesheet
+									for Temporary Staff</strong></td>
+						</tr>
+						<tr>
+							<td height="25" colspan="8" bgcolor="#FFFFFF"><span style="">
+									<input style="width: 0px; height: 0px;" type="hidden"
+									name="inputUserId" id="inputUserId" value="{inputUserId}">
+							</span></td>
+						</tr>
+						<tr>
+							<td width="124" height="25" bgcolor="#FFFFFF">Name:</td>
+							<td height="25" bgcolor="#FFFFFF"><label> <input
+									name="engName" type="text" id="engName" value="{engName}"
+									size="20" readonly>
+							</label></td>
+							<td width="130" height="25" bgcolor="#FFFFFF">ID:</td>
+							<td height="25" bgcolor="#FFFFFF"><input name="inputerCode"
+								type="text" id="inputerCode" value="{inputerCode}" size="20"
+								readonly></td>
+						</tr>
+						<tr>
+							<td height="25" bgcolor="#FFFFFF">Phone:</td>
+							<td height="25" bgcolor="#FFFFFF"><input name="inputPhone"
+								type="text" id="inputPhone" value="{inputPhone}" size="20"></td>
+							<td height="25" bgcolor="#FFFFFF">Post:</td>
+							<td height="25" bgcolor="#FFFFFF"><input
+								name="inputUserPost" type="text" id="inputUserPost"
+								value="{inputUserPost}" size="20"></td>
+						</tr>
+						<tr>
+							<td height="25" bgcolor="#FFFFFF">&nbsp;</td>
+							<td height="25" bgcolor="#FFFFFF">&nbsp;</td>
+							<td height="25" bgcolor="#FFFFFF">&nbsp;</td>
+							<td height="25" bgcolor="#FFFFFF">&nbsp;</td>
+						</tr>
+						<tr>
+							<td height="25" bgcolor="#FFFFFF">Timesheet Period:</td>
+							<td height="25" bgcolor="#FFFFFF"><div
+									style="display: none;">
+									<label> <select name="periodYear" id="periodYear">
+											<!-- BEGIN PeriodYearRow -->
+											<option value="{periodYear}">{periodYear}</option>
+											<!-- END PeriodYearRow -->
+									</select> - <select name="periodMonth" id="periodMonth">
+											<option value="01">01</option>
+											<option value="02">02</option>
+											<option value="03">03</option>
+											<option value="04">04</option>
+											<option value="05">05</option>
+											<option value="06">06</option>
+											<option value="07">07</option>
+											<option value="08">08</option>
+											<option value="09">09</option>
+											<option value="10">10</option>
+											<option value="11">11</option>
+											<option value="12">12</option>
+									</select>
+									</label>
+								</div> <input name="period" type="text" id="period" value="{period}"
+								size="20" readonly="readonly" class="Wdate"
+								onclick="WdatePicker({})"></td>
+							<td height="25" bgcolor="#FFFFFF">Duration:</td>
+							<td height="25" bgcolor="#FFFFFF"><input name="durationDay"
+								type="text" id="durationDay" size="20" /></td>
+						</tr>
+
+
+						<tr>
+							<td colspan="4" bgcolor="#FFFFFF">&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="4"><table width="100%" border="0"
+									align="center" cellpadding="0" cellspacing="1"
+									bgcolor="#000000">
+									<tr style="background-color: #CCCCCC;">
+										<td rowspan="2" align="center">No</td>
+										<td rowspan="2" align="center">Job No.</td>
+										<td rowspan="2" align="center">Purpose</td>
+										<td colspan="2" align="center">Travelling</td>
+										<td colspan="2" align="center">Transport</td>
+										<td colspan="2" align="center">Time</td>
+										<td rowspan="2" align="center">Duration</td>
+										<td align="center"></td>
+									</tr>
+									<tr style="background-color: #CCCCCC;">
+										<td align="center">From</td>
+										<td align="center">To</td>
+										<td align="center">Type</td>
+										<td align="center">$</td>
+										<td align="center">From</td>
+										<td align="center">To</td>
+										<td align="center">Lunch</td>
+									</tr>
+									<!-- BEGIN InputRow -->
+									<tr>
+										<td align="center" bgcolor="#FFFFFF"
+											style="height: 30px; vertical-align: middle;">{day}</td>
+										<td bgcolor="#FFFFFF"><input name="jobNo[{i}]"
+											type="text" id="jobNo[{i}]" size="8" /></td>
+										<td bgcolor="#FFFFFF"><select name="purpose[{i}]"
+											id="purpose[{i}]">
+												<option value="Report"{selectedReport}>Report</option>
+												<option value="Forms"{selectedForms}>Forms</option>
+												<option value="Office"{selectedOffice}>Office</option>
+										</select></td>
+										<td bgcolor="#FFFFFF"><input name="travellingForm[{i}]"
+											type="text" id="travellingForm[{i}]" size="12" /></td>
+										<td bgcolor="#FFFFFF"><input name="travellingTo[{i}]"
+											type="text" id="travellingTo[{i}]" size="12" /></td>
+										<td bgcolor="#FFFFFF"><input name="transportType[{i}]"
+											type="text" id="transportType[{i}]" size="8" /></td>
+										<td bgcolor="#FFFFFF"><input name="transportMoney[{i}]"
+											type="text" id="transportMoney[{i}]" size="5" /></td>
+										<td bgcolor="#FFFFFF"><input name="timeFormHor[{i}]"
+											type="text" id="timeFormHor[{i}]" class="DateTimeInput"
+											onBlur="CheckTrueTimeHor(this);CalcDuration({i});" /> <input
+											name="timeFormMin[{i}]" type="text" id="timeFormMin[{i}]"
+											class="DateTimeInput"
+											onBlur="CheckTrueTimeMin(this);CalcDuration({i});" /></td>
+										<td bgcolor="#FFFFFF"><input name="timeToHor[{i}]"
+											type="text" id="timeToHor[{i}]" class="DateTimeInput"
+											onBlur="CheckTrueTimeHor(this);CalcDuration({i});" /> <input
+											name="timeToMin[{i}]" type="text" id="timeToMin[{i}]"
+											class="DateTimeInput"
+											onBlur="CheckTrueTimeMin(this);CalcDuration({i});" /></td>
+										<td bgcolor="#FFFFFF"><input name="duration[{i}]"
+											type="text" id="duration[{i}]" size="6" readonly="readonly" /></td>
+										<td bgcolor="#FFFFFF"><input name="isLunch[{i}]"
+											type="checkbox" id="isLunch[{i}]" value="yes" /></td>
+									</tr>
+									<!-- END InputRow -->
+								</table></td>
+						</tr>
+						<tr>
+							<td colspan="2" bgcolor="#FFFFFF">&nbsp;</td>
+							<td bgcolor="#FFFFFF">&nbsp;</td>
+							<td bgcolor="#FFFFFF">&nbsp;</td>
+						</tr>
+						<tr>
+							<td bgcolor="#FFFFFF">&nbsp;</td>
+							<td bgcolor="#FFFFFF">&nbsp;</td>
+							<td bgcolor="#FFFFFF">&nbsp;</td>
+							<td bgcolor="#FFFFFF"><input type="button"
+								onClick="CheckForm()" name="Submit" id="Submit"
+								value="提交(Submit)"></td>
+						</tr>
+					</table>
+				</form></td>
+		</tr>
+	</table>
+	<table width="98%" border="0" align="center" cellpadding="0"
+		cellspacing="0">
+		<tr>
+			<td bgcolor="#FFB263"></td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+$('periodYear').value = "{defaultPeriodYear}";
+$('periodMonth').value = "{defaultPeriodMonth}";
+</script>
+</body>
+</html>

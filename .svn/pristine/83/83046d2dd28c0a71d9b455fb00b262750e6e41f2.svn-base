@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>list</title>
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css"
+	href="/extjs/resources/css/ext-all.css" />
+<script type="text/javascript" src="/extjs/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="/extjs/ext-all.js"></script>
+<script type="text/javascript" src="../js/product_list.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">KLN-GMB &gt;&gt;&gt; Summary</td>
+			</tr>
+		</table>
+	</form>
+	<form id="listForm" name="listForm" method="post"
+		action="product_list_state.php">
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td height="20" style="">&nbsp;</td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+				<td height="40" style="">Download &quot;<a
+					href="survey_to_excel_annex_summary.php">Annex_Summary
+						Table.xls</a>&quot;
+				</td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+				<td height="40" style="">Download &quot;<a
+					href="survey_to_excel_summary_tables.php">Summary Tables
+						2013(Peakiest one-hour & half-hour).xls</a>&quot;
+				</td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+				<td height="40" style="">Download &quot;<a
+					href="survey_to_excel_summary_drivers_driving_hour.php">Summary
+						of Driver's Driving Hours of GMB Routes.xls</a>&quot;
+				</td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+				<td height="40" style="">Download &quot;<a
+					href="survey_to_excel_summary_each_every_drivers_driving_hours.php">Summary
+						of Each and every Driver's Driving Hours of the GMB routes.xls</a>&quot;
+				</td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+				<td height="40" style="">Download &quot;<a
+					href="survey_to_excel_summary_drivers_working_hour.php">Summary
+						of Driver's Working Hours of GMB Routes.xls</a>&quot;
+				</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<!-- END Row -->
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="2">
+			<tr>
+				<td align="right">&nbsp;</td>
+			</tr>
+		</table>
+		<label> <br />
+		</label>
+	</form>
+</body>
+</html>

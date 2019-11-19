@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>帳戶管理</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<table width="100%" align="center">
+  <tr class="DgHeaderStyle">
+    <td height="20">帳戶管理 &gt;&gt;&gt; 用戶角色 </td>
+  </tr>
+</table>
+<form action="user_role_update_press.php" method="post" id="userForm">
+<table width="100%" border="0" align="center" cellpadding="0" cellspacing="1" bgcolor="#000000">
+  <tr bgcolor="#FFFFFF">
+    <td align="right">&nbsp;</td> 
+    <td height="20">&nbsp;</td>
+    </tr>
+  <tr bgcolor="#FFFFFF">
+    <td align="right" class="DgHeaderStyle">編號: </td>
+    <td height="20"><input type="hidden" name="roleId" id="roleId" value="{roleId}" />
+      <span style="font-weight:bold; font-size:16px; margin-left:5px;">{roleId}</span></td>
+    </tr>
+  <tr bgcolor="#FFFFFF">
+    <td align="right" class="DgHeaderStyle">角色: </td>
+    <td height="20"><input type="text" id="roleCode" name="roleCode" value="{roleCode}" /></td>
+    </tr>
+  <tr bgcolor="#FFFFFF">
+    <td align="right" class="DgHeaderStyle">簡介: </td>
+    <td height="20"><input type="text" id="roleName" name="roleName" value="{roleName}" /></td>
+    </tr>
+  <tr bgcolor="#FFFFFF">
+    <td align="right" class="DgHeaderStyle">&nbsp;</td>
+    <td height="20"><input type="submit" onclick="CheckForm()" name="Submit"
+					id="Submit" value="提交(Submit)" /></td>
+    </tr>
+  <!-- BEGIN Row -->  <!-- END Row -->
+</table>
+</form>
+</body>
+</html>

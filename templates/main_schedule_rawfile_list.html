@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>List Mian Schedule</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css"
+	href="/extjs/resources/css/ext-all.css" />
+<script type="text/javascript" src="/extjs/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="/extjs/ext-all.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="js/main_schedule_rawfile_list.js"></script>
+<script type="text/javascript" src="js/function.js"></script>
+
+</head>
+<body bgcolor="#FFFFFF">
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">Main Schedule &gt;&gt;&gt; List Main Schedule</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>Planned Survey Date:</td>
+								<td><input name="txtPlannedSurveyDateStart" type="text"
+									id="txtPlannedSurveyDateStart" class="Wdate"
+									onclick="WdatePicker({})" value="{txtPlannedSurveyDateStart}"
+									size="10" /> - <input name="txtPlannedSurveyDateEnd"
+									type="text" id="txtPlannedSurveyDateEnd" class="Wdate"
+									onclick="WdatePicker({})" value="{txtPlannedSurveyDateEnd}"
+									size="10" /></td>
+								<td>Job No:</td>
+								<td><input name="txtJobNoNew" type="text" id="txtJobNoNew"
+									value="{txtJobNoNew}" size="10" /></td>
+								<td>Route No:</td>
+								<td><input name="txtRouteNo" type="text" id="txtRouteNo"
+									value="{txtRouteNo}" size="10" /></td>
+								<td style="">District:</td>
+								<td style="">{ddlDistIdSelect}</td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		Total Man-hour(only current page): {totalEstimatedManHour}
+		<table width="100%" cellpadding="0" cellspacing="1">
+			<tr class="DgHeaderStyle">
+				<td style="" nowrap="nowrap">Week <br /> No
+				</td>
+				<td style="" nowrap="nowrap">Job No.</td>
+				<td>Planned Survey Date</td>
+				<td>TD File No</td>
+				<td>Received Date</td>
+				<td>Due Date</td>
+				<td>From (TD)</td>
+				<td colspan="2">RawFile</td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'"
+				onclick=" SelectRow(this);">
+				<td>{weekNo}</td>
+				<td>{jobNoNew}</td>
+				<td style="white-space: nowrap;">{plannedSurveyDate}</td>
+				<td>{tdFileNo}</td>
+				<td style="white-space: nowrap;">{receivedDate}</td>
+				<td style="white-space: nowrap;">{dueDate}</td>
+				<td>{fromTD}</td>
+				<td>{rawFile}</td>
+				<td><div style="display: none;">{uploadUrl}</div></td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="2">
+			<tr>
+				<td align="right">{pageSetting}</td>
+			</tr>
+		</table>
+		<br />
+	</form>
+	<script language="javascript" type="text/javascript">
+Ext.get('ddlDistId').dom.value = "{ddlDistId}";
+</script>
+</body>
+</html>

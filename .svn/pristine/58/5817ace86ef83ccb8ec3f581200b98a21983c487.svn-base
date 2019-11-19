@@ -1,0 +1,350 @@
+<div>
+	<p></p>
+	<div>
+		<p></p>
+		<p></p>
+		<p>Tender Reference No. TD7/2011</p>
+		<p>Surveys on Public Transport Services</p>
+		<p>in the New Territories (2011-012)</p>
+		<p></p>
+		<p></p>
+		<p></p>
+		<p></p>
+		<p>Progress Report No. {reportNo}</p>
+		<p>({reportDate})</p>
+		<p></p>
+		<p></p>
+		<p></p>
+		<p></p>
+		<p></p>
+		<div>
+			<p></p>
+			<p></p>
+			<p></p>
+			<p></p>
+			<p></p>
+			<p></p>
+			<p></p>
+			<p></p>
+			<p></p>
+			<p></p>
+			<p></p>
+			<p></p>
+		</div>
+		<p></p>
+		<p>Ozzo Technology (HK) Ltd</p>
+		<p>Flat 5D, Worldwide Centre,</p>
+		<p>123 Tung Chau Street, Tai Kok Tsui, Kowloon, Hong Kong</p>
+		<p>Tel: 3488 5449 Fax: 3020 0370</p>
+		<p>http:// www.ozzotec.com</p>
+		<p></p>
+	</div>
+	<p></p>
+	<br clear="all" />
+	<p></p>
+	<div>
+		<p>Contents</p>
+		<p>1 INTRODUCTION 2</p>
+		<p>1.1 Background 2</p>
+		<p>1.2 Report Structure 2</p>
+		<p>2 REPORTING PROGRESS AND MAN-HOURS DEPLOYED 3</p>
+		<p>2.1 The New Territories Surveys 3</p>
+		<p>3 CUMULATED MAN-HOUR CONSUMPTION 6</p>
+		<p>4 PLANNED ACTIVITIES 7</p>
+		<p></p>
+	</div>
+	<p></p>
+	<br clear="all" />
+	<p></p>
+	<div>
+		<h1>
+			<a name="_Toc261129476">1 INTRODUCTION</a>
+		</h1>
+		<h2>
+			<a name="_Toc261129477">1.1 Background</a>
+		</h2>
+		<p>1.1.1 Ozzo Technology (HK) Limited (Ozzo) was commissioned by
+			Transport Department (TD) to carry out the Consultancy Service to
+			conduct Surveys on Public Transport Services in the New Territories
+			(2011-2012) (hereinafter referred to as &quot;the Survey&quot;). The
+			purpose of the Survey is to collect the operational information to
+			form basis for monitoring and planning of public transport services
+			and non-franchised bus services in the New Territories commencement
+			date of the Survey was on {surveyStartDate}.</p>
+		<p>1.1.2 This progress report is prepared in accordance with
+			Clause 5.5 of the Brief. It outlines the progress that has been made
+			by the Consultants during the period from between {startIncludeDate}
+			to {endIncludeDate}.</p>
+		<p></p>
+		<h2>
+			<a name="_Toc261129478">1.2 Report Structure</a>
+		</h2>
+		<p>1.2.1 Following the introduction of this Chapter, other
+			sections of this progress report are enlisted as follows:</p>
+		<p>l Chapter 2 describes the reporting progress and man-hours
+			deployed;</p>
+		<p>l Chapter 3 summarizes the cumulated man-hour consumption;</p>
+		<p>l Chapter 4 provides planned activities in the coming weeks;</p>
+		<p></p>
+		<h1>
+			<a name="_Toc261129479">2 REPORTING PROGRESS AND MAN-HOURS
+				DEPLOYED</a>
+		</h1>
+		<h2>
+			<a name="_Toc261129480">2.1 The New Territories Surveys</a>
+		</h2>
+		<p>2.1.1 Tables 2-1 summarises the surveys undertaken by Ozzo
+			during the reporting period. In total, {requestNoIncludeTotal} survey
+			requests are undertaken for the New Territories.</p>
+		<p>2.1.2 A total of {estimatedManHourIncludeTotal} man-hours have
+			been deployed for carrying out {districtName} surveys during the
+			reporting period. Tables 2-1 also summarises the details of man-hours
+			deployed for each survey request.</p>
+		<p>Table 2-1 Summary of Surveys Undertaken for {districtName}
+			Region</p>
+		<table width="491" border="0" cellpadding="0" cellspacing="0">
+			<thead>
+				<tr>
+					<td width="123">
+						<p align="center">
+							<b>Survey Week</b>
+						</p>
+					</td>
+					<td width="123">
+						<p align="center">
+							<b>Request Form No.</b>
+						</p>
+					</td>
+					<td width="123">
+						<p align="center">
+							<b>Survey Date (</b> <b>yyyy</b> <b>/mm/</b> <b>dd</b> <b>)</b>
+						</p>
+					</td>
+					<td width="123">
+						<p align="center">
+							<b>Man-hours Deployed</b>
+						</p>
+					</td>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- BEGIN SurveyRow -->
+				<tr>
+					<td valign="top" width="123" nowrap="nowrap">
+						<p align="center">
+							<b>{weekNo}</b>
+						</p>
+					</td>
+					<td width="123" nowrap="nowrap">
+						<p align="center">{jobNo}</p>
+					</td>
+					<td width="123" nowrap="nowrap">
+						<p align="center">{plannedSurveyDate}</p>
+					</td>
+					<td width="123" nowrap="nowrap">
+						<p align="center">{estimatedManHour}</p>
+					</td>
+				</tr>
+				<!-- END SurveyRow -->
+				<tr>
+					<td width="123" nowrap="nowrap">
+						<p align="center"></p>
+					</td>
+					<td width="123" nowrap="nowrap">
+						<p align="center">
+							<b> </b>
+						</p>
+					</td>
+					<td width="123" nowrap="nowrap">
+						<p align="center">
+							<b>Total</b>
+						</p>
+					</td>
+					<td width="123" nowrap="nowrap">
+						<p align="center">
+							<b>{estimatedManHourIncludeTotal}</b>
+						</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p></p>
+		<p>2.1.3 Table 2-2 summarises the total man-hours deployed
+			including the on-board fare expenses and survey hours remained for
+			the reporting period.</p>
+		<p>Table 2-2 Summary of Total Man-hours Used &amp; Survey Hours
+			Remained</p>
+		<table width="491" border="0" cellpadding="0" cellspacing="0">
+			<tbody>
+				<tr>
+					<td rowspan="2" width="279">
+						<p align="center">
+							<b>Survey Week</b>
+						</p>
+					</td>
+					<td colspan="4" width="418">
+						<p align="center">
+							<b>{districtName}</b>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td width="418">
+						<p align="center">
+							<b>Survey Man-hour Deployed</b>
+						</p>
+					</td>
+					<td colspan="2" width="123">
+						<p align="center">
+							<b>On-board fare</b>
+						</p>
+					</td>
+					<td width="123">
+						<p align="center">
+							<b>No. of request</b>
+						</p>
+					</td>
+				</tr>
+				<!-- BEGIN SummaryRow -->
+				<tr>
+					<td width="279">
+						<p align="center">{weekNoWeek}</p>
+					</td>
+					<td width="418">
+						<p align="center">{estimatedManHourWeek}</p>
+					</td>
+					<td colspan="2" width="123">
+						<p align="center">{onBoardCostWeek}</p>
+					</td>
+					<td width="123">
+						<p align="center">({requestNoWeek})</p>
+					</td>
+				</tr>
+				<!-- END SummaryRow -->
+				<tr>
+					<td width="279">
+						<p align="center">Total</p>
+					</td>
+					<td width="418">
+						<p align="center">
+							<b>{estimatedManHourWeekTotal}</b>
+						</p>
+					</td>
+					<td colspan="2" width="123">
+						<p align="center">
+							<b>{onBoardCostWeekTotal}</b>
+						</p>
+					</td>
+					<td width="123">
+						<p align="center">
+							<b>({requestNoWeekTotal})</b>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3" width="279">
+						<p align="center">
+							Survey Hours Remained <br /> (<b>{surveytime}</b><b></b> hrs - V
+							Total Man-hours Deployed - V On-board fare)
+						</p>
+					</td>
+					<td colspan="2" width="213">
+						<p align="center">
+							<b>{remainedManHourTotal}</b>
+						</p>
+					</td>
+				</tr>
+				<tr height="0">
+					<td width="279"><br /></td>
+					<td width="418"><br /></td>
+					<td width="123"><br /></td>
+					<td width="213"><br /></td>
+					<td width="123"><br /></td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+			Note: 1) The on-board fares are converted into survey hours
+			({feeHour} per hour) <br /> 2) * Survey is conducted across more than
+			one week
+		</p>
+		<p></p>
+		<p>2.1.4 Table 2-3 show the breakdown of the on-board fare
+			expenses for the reporting period.</p>
+		<p>Table 2-3 Summary of On-board fare</p>
+		<table width="491" border="0" cellpadding="0" cellspacing="0">
+			<tbody>
+				<tr>
+					<td rowspan="2" width="73">
+						<p align="center">
+							<b>Survey Week</b>
+						</p>
+					</td>
+					<td colspan="2" width="418">
+						<p align="center">
+							<b>{districtName}</b>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td width="418">
+						<p align="center">
+							<b>Request no.</b>
+						</p>
+					</td>
+					<td width="418">
+						<p align="center">
+							<b>On-board fare</b>
+						</p>
+					</td>
+				</tr>
+				<!-- BEGIN OnBoardFareRow -->
+				<tr>
+					<td width="73">
+						<p align="center">{weekNoOnBoardFare}</p>
+					</td>
+					<td width="418">
+						<p align="center">{jobNoOnBoardFare}</p>
+					</td>
+					<td width="418">
+						<p align="center">{onBoardFare}</p>
+					</td>
+				</tr>
+				<!-- END OnBoardFareRow -->
+				<tr>
+					<td width="73">
+						<p align="center">Total</p>
+					</td>
+					<td colspan="2" width="418">
+						<p align="center">
+							<b>{onBoardFareSummaryTotal}</b>
+						</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+
+			Note: 1) The on-board fares are converted into survey hours
+			({feeHour} per hour) <br /> 2) * Surveyors required to take taxi to
+			remote survey location.
+		</p>
+		<p>3) # Survey is conducted across more than one week</p>
+		<p></p>
+		<b> <br clear="all" />
+		</b>
+		<h1>
+			<a name="_Toc261129481">3 CUMULATED MAN-HOUR CONSUMPTION</a>
+		</h1>
+		<p>3.1.1 Up to week {endWeekNo}, the received request forms
+			amounted to be {surveytime} hours, of which,
+			{estimatedManHourWeekTotal} hours have been surveyed and
+			{reportHoursTotal} hours reports have been completed.</p>
+		<p align="center">
+			<img
+				src="../progress_chart.php?distId={complateJobNo}&chkReceivedHours=1&chkSurveyedHours=1&chkReportedHours=1&txtWeekStart={startWeekNoProgressChart}&txtWeekEnd={endWeekNoProgressChart}"
+				height="400" width="800" />
+		</p>
+	</div>
+	<p></p>
+</div>

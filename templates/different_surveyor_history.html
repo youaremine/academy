@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Surveyor List</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script language="javascript" src="/My97DatePicker/WdatePicker.js"></script>
+</head>
+
+<body>
+	<form id="searchForm" name="searchForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>Planned Survey Date</td>
+								<td><select name="ddlMonth" id="ddlMonth">
+										<!-- BEGIN MonthRow -->
+										<option value="{rowMonth}">{rowMonth}</option>
+										<!-- END MonthRow -->
+								</select></td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td width="0%" height="20"></td>
+				<td width="13%" align="center">Week No.</td>
+				<td width="13%" align="center">Job No.</td>
+				<td width="13%" align="center">Request No.</td>
+				<td width="13%" align="center">Planned Survey Date</td>
+				<td width="24%" align="center">Current Main Schedule Surveryor
+				</td>
+				<td width="24%" align="center">History Main Schedule Surveryor
+				</td>
+			</tr>
+
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'" bgcolor="#FFFFFF">
+				<td>&nbsp;</td>
+				<td>{weekNo}</td>
+				<td>{jobNo}</td>
+				<td>{jobNoNew}</td>
+				<td>{plannedSurveyDate}</td>
+				<td style="color: #FF00FF; font-weight: bold;">{surveyorCode}</td>
+				<td><span style="color: #0000FF; font-weight: bold;">{mySurvId}</span></td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<input name="hidValue" type="hidden" id="hidValue" />
+	</form>
+	<script type="text/javascript">
+	$('#ddlMonth').val('{ddlMonth}');
+</script>
+</body>
+</html>

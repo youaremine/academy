@@ -1,0 +1,202 @@
+.Photo {
+	border-color: #000000;
+	border-width: 1pt;
+	border-style: Solid;
+	width: 100px;
+	height: 100px;
+	align: Center;
+}
+
+.Canvas {
+	width: 97%;
+	border-color: #000000;
+	border-width: 0pt;
+	border-style: Solid;
+	text-align: Center;
+	background-color: #FFFFFF;
+	margin: 0px;
+}
+
+table.calendar {
+	width: 100%;
+	border-color: #000000;
+	border-width: 1pt;
+	border-style: Solid;
+	text-align: Center;
+	border-collapse: collapse;
+	background-color: #FFFFFF;
+	margin: 0px;
+}
+
+.MonthCaption {
+	background: URL('../images/calendar/Caption.jpg');
+	font-family: Arial;
+	font-size: 31pt;
+	font-weight: Bold;
+	font-style: Normal;
+	color: #000000;
+	text-decoration: None;
+	border-color: #000000;
+	border-width: 1pt;
+	border-style: Solid;
+	text-align: Right;
+	background-color: #FFFFFF;
+	padding: 5px;
+	margin: 0px;
+}
+
+.Weekdays {
+	background: URL('../images/calendar/Weekday.jpg');
+	font-family: Arial;
+	font-size: 17pt;
+	font-weight: Normal;
+	font-style: Normal;
+	color: #FFFFFF;
+	text-decoration: None;
+	border-color: #000000;
+	border-width: 1pt;
+	border-style: Solid;
+	text-align: Center;
+	background-color: #000000;
+}
+
+.Date {
+	font-family: Helvetica;
+	font-size: 14pt;
+	font-weight: Bold;
+	font-style: Oblique;
+	color: #000000;
+	text-decoration: None;
+	border-color: #000000;
+	border-width: 0pt;
+	border-style: Solid;
+	text-align: Right;
+	background-color: #FFFFFF;
+	background: transparent;
+}
+
+.Holidays {
+	font-family: Arial;
+	font-size: 8pt;
+	font-weight: Bold;
+	font-style: Normal;
+	color: #000000;
+	text-decoration: None;
+	border-color: #000000;
+	border-width: 0pt;
+	border-style: Solid;
+	text-align: Left;
+	background-color: #FFFFFF;
+	background: transparent;
+}
+
+.Events {
+	font-family: Arial;
+	font-size: 8pt;
+	font-weight: Normal;
+	font-style: Normal;
+	color: #000000;
+	text-decoration: None;
+	border-color: #000000;
+	border-width: 1pt;
+	border-style: Solid;
+	text-align: Left;
+	padding: 5px;
+	background-color: #FFFFFF;
+}
+
+#freeTimeDialog {
+	width: 404px;
+	padding-bottom: 2px;
+	display: none;
+	background: #FFF;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.7);
+	-webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+	-moz-box-shadow: 0 0px 4px rgba(0, 0, 0, 0.7);
+}
+
+#freeTimeDialog-header {
+	background: url(../images/jquery.leanModal/hd-bg.png);
+	padding: 18px 18px 14px 18px;
+	border-bottom: 1px solid #CCC;
+	border-top-left-radius: 5px;
+	-moz-border-radius-topleft: 5px;
+	-webkit-border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	-moz-border-radius-topright: 5px;
+	-webkit-border-top-right-radius: 5px;
+}
+
+#freeTimeDialog-header  h2 {
+	color: #444;
+	font-size: 2em;
+	font-weight: 700;
+	margin-bottom: 3px;
+	text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+#freeTimeDialog-header  p {
+	color: #444;
+	font-size: 1.3em;
+	margin: 0;
+	text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+	text-shadow: none;
+}
+
+#freeTimeDialog .txt-fld {
+	position: relative;
+	width: 364px;
+	padding: 14px 20px;
+	border-bottom: 1px solid #EEE;
+	text-align: right;
+}
+
+#freeTimeDialog .btn-fld {
+	width: 254px;
+	overflow: hidden;
+	padding: 12px 20px 12px 130px;
+}
+
+#freeTimeDialog .txt-fld label {
+	display: block;
+	float: left;
+	width: 80px;
+	padding-top: 8px;
+	color: #222;
+	font-size: 1.3em;
+	text-align: left;
+}
+
+#freeTimeDialog .txt-fld input {
+	width: 104px;
+	height: 30px;
+	padding: 8px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	font-size: 1.2em;
+	color: #222;
+	background: #F7F7F7 url(../images/datePicker.gif) no-repeat right;;
+	font-family: "Helvetica Neue";
+	outline: none;
+	border-top: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	border-right: 1px solid #E7E6E6;
+	border-bottom: 1px solid #E7E6E6;
+}
+
+#freeTimeDialog .txt-fld input.good_input {
+	background: #DEF5E1 url(../images/jquery.leanModal/good.png) 206px
+		center no-repeat;
+}
+
+#freeTimeDialog .txt-fld input.error_input {
+	background: #FDE0E0;
+}
+
+#freeTimeDialog .txt-error {
+	color: red;
+}

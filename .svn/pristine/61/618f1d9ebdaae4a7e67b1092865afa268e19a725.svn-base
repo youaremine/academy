@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>list</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<style type="text/css">
+<!--
+.PrintTable {
+	width: 100%;
+	border: 0px solid #000000;
+	background: #FFFFFF;
+	border-bottom: 1px solid #000000;
+	border-right: 1px solid #000000;
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-collapse: collapse;
+}
+-->
+</style>
+</head>
+
+<body>
+	<form id="form1" name="form1" method="post" action="">
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td height="20">SupaId <input id="newSupaId" name="newSupaId"
+					type="hidden" style="width: 0px; height: 0px" value="{newSupaId}" /></td>
+				<td align="center">REF NO.<br /> 編號
+				</td>
+				<td align="center">Route No<br /> 路線號碼
+				</td>
+				<td align="center">Type<br /> 類型
+				</td>
+				<td align="center">Survey Date<br /> 調查日期
+				</td>
+				<td align="center">Survey Period <br /> 調查時間:
+				</td>
+				<td align="center">Location<br /> 地點
+				</td>
+				<td align="center">Bounds<br /> 方向
+				</td>
+				<td align="center">輸入員</td>
+				<td colspan="4" align="center">操作</td>
+			</tr>
+
+			<!-- BEGIN Row -->
+			<tr bgcolor="#FFFFFF" class="{listStyle}">
+				<td>{supaId}<input id="supaId[]" name="supaId[]" type="hidden"
+					style="width: 0px; height: 0px" value="{supaId}" /></td>
+				<td>{refNo}<input id="refNo[]" name="refNo[]" type="hidden"
+					style="width: 0px; height: 0px" value="{refNo}" /></td>
+				<td>{routeNo}<input id="routeNo[]" name="routeNo[]"
+					type="hidden" style="width: 0px; height: 0px" value="{routeNo}" />
+					<input id="busId[]" name="busId[]" type="hidden"
+					style="width: 0px; height: 0px" value="{busId}" /> <input
+					id="schNo[]" name="schNo[]" type="hidden"
+					style="width: 0px; height: 0px" value="{schNo}" /> <input
+					id="schType[]" name="schType[]" type="hidden"
+					style="width: 0px; height: 0px" value="{schType}" /></td>
+				<td>{type}</td>
+				<td>{surveyDate}<input id="surveyDate[]" name="surveyDate[]"
+					type="hidden" style="width: 0px; height: 0px" value="{surveyDate}" /></td>
+				<td>{surveyPeriod}<input id="surveyPeriodStart[]"
+					name="surveyPeriodStart[]" type="hidden"
+					style="width: 0px; height: 0px" value="{surveyPeriodStart}" /> <input
+					id="surveyPeriodEnd[]" name="surveyPeriodEnd[]" type="hidden"
+					style="width: 0px; height: 0px" value="{surveyPeriodEnd}" /></td>
+				<td>{location}<input id="location[]" name="location[]"
+					type="hidden" style="width: 0px; height: 0px" value="{location}" /></td>
+				<td>{bounds}<input id="bounds[]" name="bounds[]" type="hidden"
+					style="width: 0px; height: 0px" value="{bounds}" /></td>
+				<td>{userName}</td>
+				<td><a href="data_view.php?supaId={supaId}" target="_blank"><img
+						src="images/Preview.jpg" width="15" height="17" border="0"
+						alt="Preview"></a></td>
+				<td>&nbsp;</td>
+				<td><a style="display: none"
+					href="survey_input_download.php?supaId={supaId}"><img
+						src="images/excel.jpg" alt="excel" width="15" height="17"
+						border="0" title="Excel Download" /></a></td>
+				<td><a href="" style="display: none"><img
+						src="images/Delete.gif" alt="Delete" width="11" height="11"
+						border="0"></a></td>
+			</tr>
+			<!-- END Row -->
+		</table>
+
+		<table width="100%" height="30" border="0" cellpadding="0"
+			cellspacing="0" class="PrintTable">
+			<tr class="PrintTable" height="0">
+				<td width="10%">&nbsp;</td>
+				<td width="10%">&nbsp;</td>
+				<td width="10%">&nbsp;</td>
+				<td width="10%">&nbsp;</td>
+				<td width="10%">&nbsp;</td>
+				<td width="10%">&nbsp;</td>
+				<td width="10%">&nbsp;</td>
+				<td width="10%">&nbsp;</td>
+				<td width="10%">&nbsp;</td>
+				<td width="10%">&nbsp;</td>
+				<td width="10%">&nbsp;</td>
+			</tr>
+			<tr class="PrintTable" height="0">
+				<td height="30">&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td align="center"><input type="submit" name="Submit"
+					id="Submit" value="撤消合併(UnMerge)" /></td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

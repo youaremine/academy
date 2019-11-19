@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>統計曲線圖</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" type="text/javascript">
+function GetChart()
+{
+	var url = "";
+	url = "progress_chart.php?";
+	url = url + "distId=" + $('ddlDistId').value;
+	//Received Hours
+	if($('chkReceivedHours').checked == true)
+	{
+		url = url + "&chkReceivedHours=1";
+	}
+	//Forms Prepared
+	if($('chkFormsPrepared').checked == true)
+	{
+		url = url + "&chkFormsPrepared=1";
+	}
+	//Arranged Hours 
+	if($('chkArrangedHours').checked == true)
+	{
+		url = url + "&chkArrangedHours=1";
+	}
+	//Surveyed Hours
+	if($('chkSurveyedHours').checked == true)
+	{
+		url = url + "&chkSurveyedHours=1";
+	}
+	//Received Forms
+	if($('chkReceivedForms').checked == true)
+	{
+		url = url + "&chkReceivedForms=1";
+	}
+	//Reported Hours
+	if($('chkReportedHours').checked == true)
+	{
+		url = url + "&chkReportedHours=1";
+	}
+	//Week Start
+	url = url + "&txtWeekStart=" + $('txtWeekStart').value;
+	url = url + "&txtWeekEnd=" + $('txtWeekEnd').value;
+	
+	$('imgProgressChart').src = url;
+
+}
+</script>
+</head>
+
+<body>
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">主列表 &gt;&gt;&gt; 統計曲線圖</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>District</td>
+								<td>{ddlDistIdSelect}</td>
+								<td style="display: none;">Line</td>
+								<td style="display: none;">
+									<input name="chkReceivedHours" type="checkbox" id="chkReceivedHours" value="1" checked="checked" /> Received Hours
+									<input name="chkFormsPrepared" type="checkbox" id="chkFormsPrepared" value="1" />Forms Prepared
+									<input name="chkArrangedHours" type="checkbox" id="chkArrangedHours" value="1" checked="checked" />Arranged Hours
+									<input name="chkSurveyedHours" type="checkbox" id="chkSurveyedHours" value="1" />Surveyed Hours
+									<input name="chkReceivedForms" type="checkbox" id="chkReceivedForms" value="1" />Received Forms
+									<input name="chkReportedHours" type="checkbox" id="chkReportedHours" value="1" />Reported Hours
+								</td>
+								<td style="">Week:</td>
+								<td style=""><input name="txtWeekStart" type="text"
+									id="txtWeekStart" value="{txtWeekStart}" size="6" /> - <input
+									name="txtWeekEnd" type="text" id="txtWeekEnd"
+									value="{txtWeekEnd}" size="6" /></td>
+								<td>&nbsp;</td>
+								<td><input class="ButtonIdea" type="button"
+									onclick="GetChart();" value="查看(View)" /></td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" cellspacing="3" cellpadding="0">
+			<tr>
+				<td align="center" style="font-size: 14px;"><img
+					id="imgProgressChart" name="imgProgressChart" alt="progress chart"
+					src="" /></td>
+			</tr>
+		</table>
+	</form>
+	<script language="javascript" type="text/javascript">
+GetChart();
+
+</script>
+</body>
+</html>

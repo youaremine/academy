@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>My Profile</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/prototype.js"></script>
+</head>
+<body bgcolor="#FFFFFF">
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20"><table width="100%" align="center">
+						<tr>
+							<td height="20">&gt;&gt;帳單查詢:</td>
+							<td width="120">帳單查詢</td>
+							<td width="120"><a style="{styleOtherSalary}" href="surveyor_other_salary.php?surveyorId={survId}">其它賬單</a></td>
+							<td width="120"><a href="surveyor_calendar.php?surveyorId={survId}">我的日曆</a></td>
+							<td width="120"><a href="./account/jobs.php">選取工作</a></td>
+							<td width="120" style=""><a
+								href="surveyor_change_password.php"><img
+									src="images/change_passowrd.gif" alt="change password"
+									width="27" height="25" border="0" />更改密碼</a></td>
+							<td width="100" style=""><a href="surveyor_login.php"><img
+									src="images/logout.gif" alt="logout" width="15" height="15"
+									border="0" />登出</a></td>
+						</tr>
+					</table></td>
+			</tr>
+		</table>
+		<table width="100%" height="35" border="0" align="center"
+			cellpadding="0" cellspacing="1">
+			<tr style="background-color: #CDE7E7">
+				<td width="13%" align="center">Code : {survId} <input
+					name="surveyorId" id="surveyorId" type="hidden" value="{survId}"
+					style="width: 0px; height: 0px;" /></td>
+				<td width="13%" align="center">Name : <strong>{engName}</strong></td>
+				<td width="13%" align="center">Contact : {contact}</td>
+				<td width="13%" align="center">Home : {survHome}</td>
+				<td width="13%" align="center">District : {dipaCode}</td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="0" bgcolor="#99CECE">
+			<tr>
+				<td width="30%">&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td width="30%">&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td><select name="ddlMonth" id="ddlMonth">
+						<!-- BEGIN MonthRow -->
+						<option value="{rowMonth}">{rowMonth}</option>
+						<!-- END MonthRow -->
+				</select><span style="font-weight: bold; color: #FF0000;{historyStyle}">History</span></td>
+				<td><input class="ButtonIdea" type="submit" id="submit"
+					value="查詢(Inquiry)" /></td>
+				<td>&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+		<br />
+		<fieldset>
+			<legend>工資單</legend>
+			<table width="100%" border="0" align="center" cellpadding="0"
+				cellspacing="0" style="font-size: 16px;">
+				<tr>
+					<td width="25%">&nbsp;</td>
+					<td>&nbsp;</td>
+					<td align="right" style="font-weight: bold; color: #FF0000">{privMonth}</td>
+					<td width="25%" align="right">&nbsp;</td>
+				</tr>
+				<tr style="font-weight: bold;">
+					<td>&nbsp;</td>
+					<td>總工時</td>
+					<td>{AD}</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr style="font-weight: bold;">
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr style="font-weight: bold;">
+					<td>&nbsp;</td>
+					<td>工資</td>
+					<td>{AR}</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr style="font-weight: bold;">
+					<td>&nbsp;</td>
+					<td>可報銷交通費</td>
+					<td>+{AY}</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;額外交通津貼</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{AUAV}</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;交通津貼</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{AWAX}</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr style="font-weight: bold;">
+					<td>&nbsp;</td>
+					<td>車上調查車費</td>
+					<td>+ {ASAT}</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td colspan="4"><hr /> &nbsp;</td>
+				</tr>
+				<tr style="font-weight: bold;">
+					<td>&nbsp;</td>
+					<td>實際可得月薪<br /></td>
+					<td>${AZ}</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
+		</fieldset>
+		<br />
+		<fieldset>
+			<legend>工資單明細</legend>
+			<table width="100%" cellpadding="0" cellspacing="1">
+				<tr class="DgHeaderStyle" style="display:none;">
+					<td style="" nowrap="nowrap">Job No.</td>
+					<td width="70">Planned Survey Date</td>
+					<td>Survey Time (Hours)</td>
+					<td>Survey Location</td>
+					<td>Route / Items</td>
+					<td>Estimated Man-hour</td>
+					<td colspan="2">Period 1</td>
+					<td colspan="2">Period 2</td>
+					<td>Total Wages</td>
+					<td colspan="2">On Board Cost</td>
+					<td colspan="4">Transport Allowance</td>
+					<td>TA Total</td>
+					<td>Wages + TA + On Board</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr class="DgHeaderStyle">
+					<td style="" nowrap="nowrap">編號</td>
+					<td>調查日期</td>
+					<td>調查時間</td>
+					<td>地點</td>
+					<td>路線</td>
+					<td>調查鍾數</td>
+					<td colspan="2">時段1</td>
+					<td colspan="2">時段2</td>
+					<td>總共工資</td>
+					<td colspan="2">車資</td>
+					<td colspan="4">車津</td>
+					<td>總車津</td>
+					<td>實際可得工資</td>
+					<td>&nbsp;</td>
+				</tr>
+				<!-- BEGIN Row -->
+				<tr class="{listStyle}"
+					onmouseover="this.className='DgSelectedItemStyle'"
+					onmouseout="this.className='{listStyle}'">
+					<td>{jobNo}</td>
+					<td>{plannedSurveyDate}</td>
+					<td>{surveyTimeHours}</td>
+					<td>{surveyLocation}</td>
+					<td>{routeItems}</td>
+					<td>{estimatedManHour}</td>
+					<td>{periodHour_1}</td>
+					<td>{periodWagesHr_1}</td>
+					<td>{periodHour_2}</td>
+					<td>{periodWagesHr_2}</td>
+					<td>{totalWages}</td>
+					<td>{onBoardCostFare}</td>
+					<td>{noOfTrips}</td>
+					<td>{transportAllowanceAm}</td>
+					<td>{transportAllowanceNoon}</td>
+					<td>{transportAllowancePm}</td>
+					<td>{transportAllowanceOvernight}</td>
+					<td>{taTotal}</td>
+					<td>{wagesTaOnBoard}</td>
+					<td>{rawFile}</td>
+				</tr>
+				<!-- END Row -->
+			</table>
+			<br />
+			<table style="{otherSalaryStyle}" width="100%" border="0" align="center" cellpadding="0"
+				cellspacing="1" bgcolor="#000000">
+				<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+					<td align="center">Project</td>
+					<td align="center">Survey Date</td>
+					<td align="center">Start Time</td>
+					<td align="center">End Time</td>
+					<td align="center">Rest Hour</td>
+					<td align="center">Hour</td>
+					<td align="center">Wages</td>
+					<td align="center">TE</td>
+					<td align="center">Total</td>
+					<td align="center">Remarks</td>
+				</tr>
+				<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+					<td align="center">項目</td>
+					<td align="center">調查日期</td>
+					<td align="center">開始時間</td>
+					<td align="center">結束時間</td>
+					<td align="center">休息時間(小時)</td>
+					<td align="center">工時(小時)</td>
+					<td align="center">工資</td>
+					<td align="center">交通津貼</td>
+					<td align="center">總工資</td>
+					<td align="center">備註</td>
+				</tr>
+				<!-- BEGIN OtherRow -->
+				<tr class="{listStyle}"
+					onmouseover="this.className='DgSelectedItemStyle'"
+					onmouseout="this.className='{listStyle}'"
+					onclick=" SelectRow(this);">
+					<td>{projectName}</td>
+					<td>{surveyDate}</td>
+					<td>{startTime}</td>
+					<td>{endTime}</td>
+					<td>{restHour}</td>
+					<td>{surveyHour}</td>
+					<td>{wages}</td>
+					<td>{transportExpenses}</td>
+					<td>{total}</td>
+					<td>{remarks}</td>
+				</tr>
+				<!-- END OtherRow -->
+			</table>
+			<br />
+		</fieldset>
+	</form>
+	<script language="javascript" type="text/javascript">
+	$('ddlMonth').value = '{privMonth}';
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>天氣說明</title>
+</head>
+<body>
+	<p class=MsoNormal
+		style='mso-layout-grid-align: none; text-autospace: none'>
+		<span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>1=<span
+			style='mso-spacerun: yes'>  </span>Sunny<span
+			style='mso-spacerun: yes'>   </span>(晴天) <o:p></o:p>
+		</span>
+	</p>
+	<p class=MsoNormal
+		style='mso-layout-grid-align: none; text-autospace: none'>
+		<span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>2=<span
+			style='mso-spacerun: yes'>  </span>Cloudy (陰天/多雲) <o:p></o:p>
+		</span>
+	</p>
+	<p class=MsoNormal
+		style='mso-layout-grid-align: none; text-autospace: none'>
+		<span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>3=<span
+			style='mso-spacerun: yes'>  </span>Raining<span
+			style='mso-spacerun: yes'>     </span>(雨天) <o:p></o:p>
+		</span>
+	</p>
+	<p class=MsoNormal
+		style='mso-layout-grid-align: none; text-autospace: none'>
+		<span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>4=<span
+			style='mso-spacerun: yes'>  </span>Typhoon Signal No.1 (一號風暴) <o:p></o:p>
+		</span>
+	</p>
+	<p class=MsoNormal
+		style='mso-layout-grid-align: none; text-autospace: none'>
+		<span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>5=<span
+			style='mso-spacerun: yes'>  </span>Typhoon
+		</span><span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-fareast-font-family: 宋体; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW; mso-fareast-language: ZH-CN'>
+		</span><span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>Signal
+			No.3 (三號風暴) <o:p></o:p>
+		</span>
+	</p>
+	<p class=MsoNormal
+		style='mso-layout-grid-align: none; text-autospace: none'>
+		<span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>6=<span
+			style='mso-spacerun: yes'>  </span>Typhoon
+		</span><span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-fareast-font-family: 宋体; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW; mso-fareast-language: ZH-CN'>
+		</span><span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>Signal
+			No. 8 (八號風暴) <o:p></o:p>
+		</span>
+	</p>
+	<p class=MsoNormal
+		style='mso-layout-grid-align: none; text-autospace: none'>
+		<span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>7=<span
+			style='mso-spacerun: yes'>  </span>Typhoon
+		</span><span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-fareast-font-family: 宋体; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW; mso-fareast-language: ZH-CN'>
+		</span><span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>Signal
+			No. 9 (九號風暴) <o:p></o:p>
+		</span>
+	</p>
+	<p class=MsoNormal
+		style='mso-layout-grid-align: none; text-autospace: none'>
+		<span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>8=<span
+			style='mso-spacerun: yes'>  </span>Typhoon Signal No. 10 (十號風暴) <o:p></o:p>
+		</span>
+	</p>
+	<p class=MsoNormal
+		style='mso-layout-grid-align: none; text-autospace: none'>
+		<span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>9=<span
+			style='mso-spacerun: yes'>  </span>Amber Rainstorm Warning (黃色暴雨警告) <o:p></o:p>
+		</span>
+	</p>
+	<p class=MsoNormal
+		style='mso-layout-grid-align: none; text-autospace: none'>
+		<span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>10=
+			Red Rainstorm Warning (紅色暴雨警告) <o:p></o:p>
+		</span>
+	</p>
+	<p class=MsoNormal
+		style='mso-layout-grid-align: none; text-autospace: none'>
+		<span lang=ZH-TW
+			style='font-size: 10.0pt; font-family: "PMingLiU", "serif"; mso-hansi-font-family: "Times New Roman"; mso-bidi-font-family: PMingLiU; mso-font-kerning: 0pt; mso-ansi-language: ZH-TW'>11=
+			Black Rainstorm Warning (黑色暴雨警告) <o:p></o:p>
+		</span>
+	</p>
+</body>
+</html>

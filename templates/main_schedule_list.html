@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>主列表</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery-function.js"></script>
+<script type="text/javascript" src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="js/function.js?t={SITEVESION}"></script>
+<script type="text/javascript" src="js/assign/surveyor-assign.js?t={SITEVESION}"></script>
+<script type="text/javascript" src="js/main_schedule_list.js?t={SITEVESION}"></script>
+<script type="text/javascript" src="./js/jquery.leanModal.min.js"></script>
+<link href="./css/jquery.leanModal.css" rel="stylesheet" type="text/css" />
+<link href="./css/main_schedule_list.css?t={SITEVESION}" rel="stylesheet" type="text/css" />
+</head>
+<body bgcolor="#FFFFFF">
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr class="DgHeaderStyle">
+				<td height="20">主列表 &gt;&gt;&gt; 課程列表</td>
+			</tr>
+		</table>
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="3" cellpadding="0">
+							<tr>
+								<td>上學日期:</td>
+								<td><input name="txtPlannedSurveyDateStart" type="text"
+									id="txtPlannedSurveyDateStart" class="Wdate"
+									onclick="WdatePicker({})" value="{txtPlannedSurveyDateStart}"
+									size="10" /> - <input name="txtPlannedSurveyDateEnd"
+									type="text" id="txtPlannedSurveyDateEnd" class="Wdate"
+									onclick="WdatePicker({})" value="{txtPlannedSurveyDateEnd}"
+									size="10" /></td>
+								<td>課堂編號:</td>
+								<td><input name="txtJobNoNew" type="text" id="txtJobNoNew"
+									value="{txtJobNoNew}" size="8" /></td>
+								<td>Route No:</td>
+								<td><input name="txtRouteNo" type="text" id="txtRouteNo"
+									value="{txtRouteNo}" size="8" /></td>
+								<td>學員編號:</td>
+								<td><input name="txtSurveyorCode" type="text"
+									id="txtSurveyorCode" value="{txtSurveyorCode}" size="8" /></td>
+								<td style="{readOnlyStyle}">District:</td>
+								<td style="{readOnlyStyle}">{ddlDistIdSelect}</td>
+								<td><input class="ButtonIdea" type="submit" name="submit"
+									id="submit" value="搜索(Search)" /></td>
+								<td></td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<span>當前頁面總時間: {totalEstimatedManHour}</span>
+        <span style="float:right; padding-right:10px;">
+        	<a href="main_schedule_list.php?isSelected=true" style="padding-right:10px;">學員已選取</a>
+        	<a href="main_schedule_list.php?isAssigned=false">No Assign</a></span>
+		<table width="100%" cellpadding="0" cellspacing="1">
+			<tr class="DgHeaderStyle">
+				<td nowrap="nowrap" style="" class="printHide"><input type="checkbox" name="chkAll" id="chkAll" /></td>
+				<td nowrap="nowrap" style="">&nbsp;</td>
+				<td style="display:none;" nowrap="nowrap">&nbsp;</td>
+				<td style="" nowrap="nowrap">星期</td>
+				<td style="" nowrap="nowrap">課堂編號<!--Request No.--><br /><a style="padding-left:25px;" id="openJobChange_All" href="#openJobDialog" rel="leanModal" title="批量開放調查"><img class="printHide" src="images/open_sign.png" width="32" border="0" /></a></td>
+				<td>課堂日期<!--Planned Survey Date--><a id="plannedSurveyDateChange_All" href="#plannedSurveyDateDialog" rel="leanModal" title="Assign plannedSurveyDate"><img class="printHide" style="{plannedSurveyDateStyle}" src="images/kontact_date.png" width="24" border="0"></a></td>
+				<td><!--TD File No--></td>
+				<td>建立日期<!--Received Date--></td>
+				<td>報名期限<!--Due Date--></td>
+				<td>公司<!--From (TD)--></td>
+				<td>時間<!--Survey Time (Hours)--></td>
+				<td>班別<!--Survey Type--></td>
+				<td>球場類型<!--Vehicle--></td>
+				<td>&nbsp;</td>
+				<td>上學地點<!--Survey Location--></td>
+				<td>內容<!--Bounds--></td>
+				<td>&nbsp;<!--Route / Items--></td>
+				<td>小時<!--Man-hour--></td>
+				<td>&nbsp;</td>
+				<td>付款日期<!--Receive Date--></td>
+				<td>入數紙<!--Report--></td>
+				<td style="display: none;">Bonus</td>
+				<td colspan="3" align="center" style="{readOnlyStyle}">學員<!--Surveyor--></td>
+			</tr>
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onmouseover="this.className='DgSelectedItemStyle'"
+				onmouseout="this.className='{listStyle}'"
+				onclick=" SelectRow(this);">
+				<td class="printHide">
+					<input type="checkbox" id="chkRowNo_{i}" name="chkRowNo" value="{i}" />
+				</td>
+				<td><a href="{blankdataLink}" target="_blank">
+					<img class="printHide" src="images/excel.png" width="24" border="0" /></a></td>
+				<td style="display:none;"><input type="hidden" id="mscId_{i}" value="{mscId}" />
+					<input type="hidden" id="company_code_{i}" value="{companyCode}" />
+					<span id="company_name_{i}">{companyName}</span></td>
+				<td>
+					{weekNo}<br>
+					<a href="post/single.php?jobNoNew={jobNoNew}" target="_blank">
+						<img class="printHide" src="images/message.png" width="24" border="0" alt="聊天記錄" />
+					</a>
+				</td>
+				<td><span id="jobNoNew_{i}">{jobNoNew}</span>
+                	<br /><a id="openJobChange_{i}" href="#openJobDialog" rel="leanModal" title="開放給調查自助選擇" style="{openJobSyle}" >
+						<img class="printHide" src="images/open_sign.png" width="32" border="0" /></a>
+					<img id="openJobDisable_{i}" class="printHide" src="images/open_sign_disable.png" width="32" border="0" style="{openJobSyleDisable}" title="{openJobSyleDisableTitle}" />{applySurvId}</td>
+				<td style="white-space: nowrap;"><span
+					id="plannedSurveyDate_{i}">{plannedSurveyDate}</span><br />{plannedSurveyDateAssign}</td>
+				<td>{tdFileNo}</td>
+				<td style="white-space: nowrap;">{receivedDate}</td>
+				<td style="white-space: nowrap;">{dueDate}</td>
+				<td>{fromTD}</td>
+				<td>{surveyTimeHours}</td>
+				<td>{surveyType}</td>
+				<td>{vehicle}</td>
+				<td>{isHoliday}</td>
+				<td>{surveyLocation}</td>
+				<td>{direction}</td>
+				<td>{routeItems}</td>
+				<td>{estimatedManHour}</td>
+				<td style="white-space: nowrap;">{rawFile}</td>
+				<td style="white-space: nowrap;">{receiveDate}</td>
+				<td>{report}</td>
+				<td style="display: none;">{bonus}</td>
+				<td style="{readOnlyStyle}"><span id="surveyorCode_{jobNoNew}">{surveyorCode}</span>{assignUserInfo}
+					<br /> <input class="ButtonIdea printHide" type="button" style="{unAssignStyle}" id="UnAssign_{jobNoNew}" value="UnAssign"
+					onClick="DelAssignSurveyor('{jobNoNew}','surveyorCode_{jobNoNew}|surveyorName_{jobNoNew}|surveyorTelephone_{jobNoNew}')" />
+					<input class="ButtonIdea printHide" type="button" style="{assignStyle}" id="Assign_{jobNoNew}" value="Assign"
+					onClick="openSurveyorModalDialog('{jobNoNew}','assign/can_assign_surveyor_list.php?jobNoNew={jobNoNew}&txtSurvId={surveyorCode}',640,480,'surveyorCode_{jobNoNew}|surveyorName_{jobNoNew}|surveyorTelephone_{jobNoNew}')" />
+				</td>
+				<td style="{readOnlyStyle}" id="surveyorName_{jobNoNew}" style="">{surveyorName}</td>
+				<td style="{readOnlyStyle}" id="surveyorTelephone_{jobNoNew}" style="">{surveyorTelephone}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<table width="100%" border="0" cellspacing="0" cellpadding="2">
+			<tr>
+				<td align="right">{pageSetting}</td>
+			</tr>
+		</table>
+		<br />
+	</form>
+	<!--assign company start-->
+	<div id="signup">
+		<div id="signup-ct">
+			<div id="signup-header">
+				<h2>Assign Contractor</h2>
+				<a class="modal_close" href="#"></a>
+			</div>
+			<div class="txt-fld">
+				<input type="hidden" id="signup_id" /> <label for="company">Contractor:</label>
+				<select id="company" name="company">
+					<option value="">--</option>
+					<!-- BEGIN CompanyRow -->
+					<option value="{companyCode}">{companyName}</option>
+					<!-- END CompanyRow -->
+				</select>
+			</div>
+			<div class="btn-fld">
+				<span id='error-message' class="txt-error"></span>
+				<button type="button" id="btnSignupSubmit">Submit &raquo;</button>
+			</div>
+		</div>
+	</div>
+	<!--assign company end-->
+
+	<!--assign plannedSurveyDate start-->
+	<div id="plannedSurveyDateDialog">
+		<div id="signup-ct">
+			<div id="signup-header">
+				<h2>更改課程日期</h2>
+				<a class="modal_close" href="#"></a>
+			</div>
+			<div class="txt-fld">
+				<label for="plannedSurveyDate">課程日期:</label> <input name="plannedSurveyDate" type="text"
+					id="plannedSurveyDate" class="Wdate" onclick="WdatePicker({})"
+					size="10" />
+			</div>
+			<div class="btn-fld">
+				<span id='error-message' class="txt-error"></span>
+				<button type="button" id="btnPlannedSurveyDateSubmit">Submit
+					&raquo;</button>
+			</div>
+		</div>
+	</div>
+	<!--assign plannedSurveyDate end-->
+    
+    <!--openJob start-->
+	<div id="openJobDialog">
+		<div id="signup-ct">
+			<div id="signup-header">
+				<h2>確認開放此課程編號(<span id="openJobJobNoNew" style="word-break: break-all;"></span>)?</h2>
+				<a class="modal_close" href="#"></a>
+				<input type="hidden" id="rowNo" />
+			</div>
+			<div id="divRelationJobNoNew1" class="txt-fld">
+				 <label for="relationJobNoNew1">關聯的課程編號1:</label> <input name="relationJobNoNew[]" type="text" id="relationJobNoNew1" size="20" />
+			</div>
+			<div id="divRelationJobNoNew2" class="txt-fld">
+				 <label for="relationJobNoNew2">關聯的課程編號2:</label> <input name="relationJobNoNew[]" type="text" id="relationJobNoNew2" size="20" />
+			</div>
+			<div id="divRelationJobNoNew3" class="txt-fld">
+				<label for="relationJobNoNew3">關聯的課程編號3:</label> <input name="relationJobNoNew[]" type="text" id="relationJobNoNew3" size="20" />
+			</div>
+			<div class="btn-fld">
+				<span id='open-job-error-message' class="txt-error"></span>
+				<button type="button" id="btnOpenJobSubmit">提交
+					&raquo;</button>
+			</div>
+		</div>
+	</div>
+	<!--openJob end-->
+
+	<script language="javascript" type="text/javascript">
+$('#ddlDistId').val("{ddlDistId}");
+</script>
+</body>
+</html>

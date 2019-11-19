@@ -1,0 +1,381 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>新增帳戶</title>
+<link href="css/css.css" rel="stylesheet" type="text/css">
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" src="js/language.js"></script>
+<script language="javascript" src="js/function.js"></script>
+<script language="javascript">
+	function CheckForm() {
+		var isValid = true;
+		if ($('userName').value == "") {
+			alert(Lang_UserNameEmpty);
+			$('userName').focus();
+			isValid = false;
+			return;
+		}
+		if ($('password').value == "") {
+			alert(Lang_PasswordEmpty);
+			$('password').focus();
+			isValid = false;
+			return;
+		} else {
+			if ($('password').value != $('confirmPassword').value) {
+				alert(Lang_PasswordConfirm);
+				$('confirmPassword').focus();
+				isValid = false;
+				return;
+			}
+		}
+		if ($F('dipaId') == "") {
+			alert(Lang_UserDistrictEmpty);
+			$('dipaId').focus();
+			isValid = false;
+			return;
+		}
+		var roleValue = "";
+		var roleId = $('input').roleId;
+		for (i = 0; i < roleId.length; i++) {
+			if (roleId[i].checked == true) {
+				roleValue = roleId[i].value;
+			}
+		}
+		if (roleValue == "") {
+			alert(Lang_UserPermissionEmpty);
+			isValid = false;
+			return;
+		}
+		if (isValid) {
+			$('input').submit();
+		}
+	}
+</script>
+</head>
+
+<body>
+	<table width="98%" align="center">
+		<tr class="DgHeaderStyle">
+			<td height="20">帳戶管理 &gt;&gt;&gt; 新增帳戶</td>
+		</tr>
+	</table>
+	<table width="98%" align="center">
+		<tr>
+			<td>
+				<form action="user_entry_press.php" method="post" name="input" id="input">
+				<table width="60%" align="center" class="TableNone">
+						<tr bgcolor="#FFFFFF">
+							<td align="right">帳戶名稱:</td>
+							<td><input name="userName" type="text"
+								class="IdeaTextBoxOnBlur" id="userName" size="32"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">密碼:</td>
+							<td><input name="password" type="password"
+								class="IdeaTextBoxOnBlur" id="password" size="32"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">確認密碼:</td>
+							<td><input name="confirmPassword" type="password"
+								class="IdeaTextBoxOnBlur" id="confirmPassword" size="32"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">有效期至:</td>
+							<td><select name="validLoginTimeYear"
+								id="validLoginTimeYear">
+									<!-- BEGIN Rowyear -->
+									<option value="{years}">{years}</option>
+									<!-- END Rowyear -->
+							</select> <select name="validLoginTimeMonth" id="validLoginTimeMonth">
+									<option value="">--</option>
+									<option value="01" selected>Jan</option>
+									<option value="02">Feb</option>
+									<option value="03">Mar</option>
+									<option value="04">Apr</option>
+									<option value="05">May</option>
+									<option value="06">June</option>
+									<option value="07">July</option>
+									<option value="08">Aug</option>
+									<option value="09">Sept</option>
+									<option value="10">Oct</option>
+									<option value="11">Nov</option>
+									<option value="12">Dec</option>
+							</select> <select name="validLoginTimeDay" id="validLoginTimeDay">
+									<option value="">--</option>
+									<option value="01" selected>01</option>
+									<option value="02">02</option>
+									<option value="03">03</option>
+									<option value="04">04</option>
+									<option value="05">05</option>
+									<option value="06">06</option>
+									<option value="07">07</option>
+									<option value="08">08</option>
+									<option value="09">09</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<option value="13">13</option>
+									<option value="14">14</option>
+									<option value="15">15</option>
+									<option value="16">16</option>
+									<option value="17">17</option>
+									<option value="18">18</option>
+									<option value="19">19</option>
+									<option value="20">20</option>
+									<option value="21">21</option>
+									<option value="22">22</option>
+									<option value="23">23</option>
+									<option value="24">24</option>
+									<option value="25">25</option>
+									<option value="26">26</option>
+									<option value="27">27</option>
+									<option value="28">28</option>
+									<option value="29">29</option>
+									<option value="30">30</option>
+									<option value="31">31</option>
+							</select>&nbsp; <select name="validLoginTimeHour" id="validLoginTimeHour">
+									<option value="">--</option>
+									<option value="00" selected>00</option>
+									<option value="01">01</option>
+									<option value="02">02</option>
+									<option value="03">03</option>
+									<option value="04">04</option>
+									<option value="05">05</option>
+									<option value="06">06</option>
+									<option value="07">07</option>
+									<option value="08">08</option>
+									<option value="09">09</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<option value="13">13</option>
+									<option value="14">14</option>
+									<option value="15">15</option>
+									<option value="16">16</option>
+									<option value="17">17</option>
+									<option value="18">18</option>
+									<option value="19">19</option>
+									<option value="20">20</option>
+									<option value="21">21</option>
+									<option value="22">22</option>
+									<option value="23">23</option>
+							</select> <select name="validLoginTimeMinute" id="validLoginTimeMinute">
+									<option value="">--</option>
+									<option value="00" selected>00</option>
+									<option value="01">01</option>
+									<option value="02">02</option>
+									<option value="03">03</option>
+									<option value="04">04</option>
+									<option value="05">05</option>
+									<option value="06">06</option>
+									<option value="07">07</option>
+									<option value="08">08</option>
+									<option value="09">09</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<option value="13">13</option>
+									<option value="14">14</option>
+									<option value="15">15</option>
+									<option value="16">16</option>
+									<option value="17">17</option>
+									<option value="18">18</option>
+									<option value="19">19</option>
+									<option value="20">20</option>
+									<option value="21">21</option>
+									<option value="22">22</option>
+									<option value="23">23</option>
+									<option value="24">24</option>
+									<option value="25">25</option>
+									<option value="26">26</option>
+									<option value="27">27</option>
+									<option value="28">28</option>
+									<option value="29">29</option>
+									<option value="30">30</option>
+									<option value="31">31</option>
+									<option value="32">32</option>
+									<option value="33">33</option>
+									<option value="34">34</option>
+									<option value="35">35</option>
+									<option value="36">36</option>
+									<option value="37">37</option>
+									<option value="38">38</option>
+									<option value="39">39</option>
+									<option value="40">40</option>
+									<option value="41">41</option>
+									<option value="42">42</option>
+									<option value="43">43</option>
+									<option value="44">44</option>
+									<option value="45">45</option>
+									<option value="46">46</option>
+									<option value="47">47</option>
+									<option value="48">48</option>
+									<option value="49">49</option>
+									<option value="50">50</option>
+									<option value="51">51</option>
+									<option value="52">52</option>
+									<option value="53">53</option>
+									<option value="54">54</option>
+									<option value="55">55</option>
+									<option value="56">56</option>
+									<option value="57">57</option>
+									<option value="58">58</option>
+									<option value="59">59</option>
+							</select> <select name="validLoginTimeSecond" id="validLoginTimeSecond">
+									<option value="">--</option>
+									<option value="00" selected>00</option>
+									<option value="01">01</option>
+									<option value="02">02</option>
+									<option value="03">03</option>
+									<option value="04">04</option>
+									<option value="05">05</option>
+									<option value="06">06</option>
+									<option value="07">07</option>
+									<option value="08">08</option>
+									<option value="09">09</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<option value="13">13</option>
+									<option value="14">14</option>
+									<option value="15">15</option>
+									<option value="16">16</option>
+									<option value="17">17</option>
+									<option value="18">18</option>
+									<option value="19">19</option>
+									<option value="20">20</option>
+									<option value="21">21</option>
+									<option value="22">22</option>
+									<option value="23">23</option>
+									<option value="24">24</option>
+									<option value="25">25</option>
+									<option value="26">26</option>
+									<option value="27">27</option>
+									<option value="28">28</option>
+									<option value="29">29</option>
+									<option value="30">30</option>
+									<option value="31">31</option>
+									<option value="32">32</option>
+									<option value="33">33</option>
+									<option value="34">34</option>
+									<option value="35">35</option>
+									<option value="36">36</option>
+									<option value="37">37</option>
+									<option value="38">38</option>
+									<option value="39">39</option>
+									<option value="40">40</option>
+									<option value="41">41</option>
+									<option value="42">42</option>
+									<option value="43">43</option>
+									<option value="44">44</option>
+									<option value="45">45</option>
+									<option value="46">46</option>
+									<option value="47">47</option>
+									<option value="48">48</option>
+									<option value="49">49</option>
+									<option value="50">50</option>
+									<option value="51">51</option>
+									<option value="52">52</option>
+									<option value="53">53</option>
+									<option value="54">54</option>
+									<option value="55">55</option>
+									<option value="56">56</option>
+									<option value="57">57</option>
+									<option value="58">58</option>
+									<option value="59">59</option>
+							</select></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">英文名:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="engName"
+								type="text" id="engName" size="32"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">中文名:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="chiName"
+								type="text" id="chiName" size="32"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">性別:</td>
+							<td><label> <select name="sex" id="sex">
+										<option value="M" selected="selected">male</option>
+										<option value="F">female</option>
+								</select>
+							</label></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">手提:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="moblie"
+								type="text" id="moblie" size="32"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">電話:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="telephone"
+								type="text" id="telephone" size="32"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">郵箱:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="eMail"
+								type="text" id="eMail" size="32"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">住址:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="userHome"
+								type="text" id="userHome" size="32"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">地區:</td>
+							<td><select name="dipaId" id="dipaId">
+									<option value="">----</option>
+									<!-- BEGIN DistPartRow -->
+									<option value="{distPartId}">{distPartEngName}</option>
+									<!-- END DistPartRow -->
+							</select></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">可管理課堂</td>
+							<td>
+								<!-- BEGIN DistrictRow -->
+								 <label> <input name="chkDoDistrict{DistrictCode}" type="checkbox" id="chkDoDistrict{DistrictCode}" value="{DistrictCode}">
+									{DistrictName}</label> 
+								<!-- END DistrictRow -->
+							</td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">備註:</td>
+							<td><input class="IdeaTextBoxOnBlur" name="userRemark"
+								type="text" id="userRemark" size="32"></td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td align="right">角色:</td>
+							<td>
+								<!-- BEGIN RoleRow -->
+								<input type="radio" name="roleId" id="roleId" value="{RoleId}"> <label>{RoleName}</label>
+								<!-- END RoleRow -->
+							</td>
+						</tr>
+						<tr bgcolor="#FFFFFF">
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+
+
+						<tr bgcolor="#FFFFFF">
+							<td>&nbsp;</td>
+							<td><input class="ButtonIdea" type="button"
+								onClick="CheckForm();" name="Submit" id="Submit"
+								value="提交(Submit)"></td>
+						</tr>
+				</table>
+				</form>
+			</td>
+		</tr>
+	</table>
+	<table width="98%" border="0" align="center" cellpadding="0"
+		cellspacing="0">
+		<tr>
+			<td bgcolor="#FFB263" height="2"></td>
+		</tr>
+	</table>
+</body>
+</html>

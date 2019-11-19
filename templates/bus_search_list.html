@@ -1,0 +1,69 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>bus list</title>
+<link href="./css/css.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="js/prototype.js"></script>
+<script language="javascript" src="/My97DatePicker/WdatePicker.js"></script>
+</head>
+<base target="_self" />
+<body>
+	<form id="myForm" name="myForm" method="get" action="">
+		<table width="100%" align="center">
+			<tr>
+				<td height="20"><fieldset>
+						<legend>Search</legend>
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>Route No</td>
+								<td><label> <input name="txtRouteNo" type="text"
+										id="txtRouteNo" value="{txtRouteNo}" size="15" />
+								</label></td>
+								<td><input class="ButtonIdea" type="submit" id="submit"
+									value="搜索(Search)" /></td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+						</table>
+					</fieldset></td>
+			</tr>
+		</table>
+		<table width="100%" border="0" align="center" cellpadding="0"
+			cellspacing="1" bgcolor="#000000">
+			<tr bgcolor="#FFFFFF" class="DgHeaderStyle">
+				<td height="20"></td>
+				<td align="center">Route No</td>
+				<td align="center">Type</td>
+				<td align="center">Bounds</td>
+				<td align="center">Bus</td>
+				<td align="center">S Of S Date</td>
+				<td align="center" style="">Inputer</td>
+			</tr>
+
+			<!-- BEGIN Row -->
+			<tr class="{listStyle}"
+				onMouseOver="this.className='DgSelectedItemStyle'"
+				onMouseOut="this.className='{listStyle}'" bgcolor="#FFFFFF"
+				onDblClick="var selValue = '{busId}|{routeNo}|{typeId}|{bounds}|{distCode}|{amSchNo}|{pmSchNo}|{allSchNo}';if(window.opener){window.opener.returnValue = selValue;}window.returnValue=selValue;self.close();"
+				style="cursor: pointer;">
+				<td>{busId}</td>
+				<td>{routeNo}</td>
+				<td>{type}</td>
+				<td>{bounds}</td>
+				<td>{distCode}</td>
+				<td>{sofsDate}</td>
+				<td style="">{inputEngName}</td>
+			</tr>
+			<!-- END Row -->
+		</table>
+		<table width="100%" border="0" cellspacing="3" cellpadding="0">
+			<tr>
+				<td align="right" style="font-size: 14px;">{pageSetting}</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

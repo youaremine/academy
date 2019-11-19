@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="../../favicon.ico">
+<title>課堂列表</title>
+
+<!-- Bootstrap core CSS -->
+<link href="../js/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap theme -->
+<link href="../js/bootstrap-3.3.5/css/bootstrap-theme.min.css" rel="stylesheet">
+<!-- Css -->
+<link href="../css/account.css" rel="stylesheet">
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+      <a class="navbar-brand" href="#">課堂列表</a> </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="./">個人中心</a></li>
+        <li><a href="./salary.php">查詢學費</a></li>
+        <li class="active"><a href="./jobs.php">選取課堂</a></li>
+      </ul>
+    </div>
+    <!--/.nav-collapse --> 
+  </div>
+</nav>
+<div class="container">
+  <ul class="nav nav-pills" role="tablist">
+    <li role="presentation" {assignedStyle}><a href="jobs.php?type=assigned">已確認<span class="badge">{assignedNum}</span></a></li>
+    <li role="presentation" {appliedStyle}><a href="jobs.php?type=applied">已選取</a></li>
+    <li role="presentation" {openingStyle}><a href="jobs.php?type=opening">搜尋課堂</a></li>
+  </ul>
+  <div class="jobs-filter" data-example-id="single-button-dropdown" style="{filterStyle}">
+    <div class="btn-group">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">全部時間 <span class="caret"></span> </button>
+      <ul class="dropdown-menu">
+      	<!-- BEGIN FilterDate --> 
+        <li {filterDateClass}><a href="jobs.php?type={type}&filterDateType={filterDateType}&filterDistrict={filterDistrictCodeGet}">{filterDateShow}</a></li>
+        <!-- END FilterDate --> 
+        <li><a href="jobs.php?type={type}&filterDistrict={filterDistrictCodeGet}">全部時間</a></li>
+      </ul>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">所有區域 <span class="caret"></span> </button>
+      <ul class="dropdown-menu">
+      	<!-- BEGIN FilterDistrict --> 
+        <li {filterDistrictClass}><a href="jobs.php?type={type}&filterDateType={filterDateTypeGet}&filterDistrict={filterDistrictCode}">{filterDistrictCode}<span class="badge" style="display:none">{filterDistrictTotal}</span></a></li>
+        <!-- END FilterDistrict -->
+        <li><a href="jobs.php?type={type}&filterDateType={filterDateTypeGet}">所有區域</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6"> 
+      <!-- BEGIN JobRow --> 
+      <a href="job-detail.php?jobNoNew={jobNoNew}&type={type}">
+      <table class="table table-bordered">
+        <tr>
+          <td><em>{jobNoNew}</em> : {surveyLocationCn} <em>{routeItems}</em></td>
+        </tr>
+        <tr>
+          <td>{plannedSurveyDate} {surveyTimeHours},總共{estimatedManHour}小時</td>
+        </tr>
+      </table>
+      </a> 
+      <!-- END JobRow --> 
+    </div>
+  </div>
+  <div class="footer"> © Ozzo Technology (HK) Ltd </div>
+</div>
+<!-- /.container --> 
+
+<!-- Bootstrap core JavaScript
+    ================================================== --> 
+<!-- Placed at the end of the document so the pages load faster --> 
+<script src="../js/bootstrap-3.3.5/js/jquery.min.js"></script> 
+<script src="../js/bootstrap-3.3.5/js/bootstrap.min.js"></script> 
+<script src="../js/account/jobs.js"></script>
+</body>
+</html>
