@@ -148,7 +148,7 @@ class PostsAccess
     function getDeletedItem($jobNoNew,$limitTime = false){
         $limitTime = $limitTime == false?date('Y-m-d H:i:s',strtotime('-7 day')):$limitTime;
         $sql = "SELECT sp.postId,sp.delUserId,sp.delTime,ss.chiName as deluser_chiName,ss.engName as deluser_engName  FROM Survey_Posts as sp LEFT JOIN Survey_Users as ss on sp.delUserId = ss.userId".
-            " WHERE 1=1 AND sp.jobNoNew = '{$jobNoNew}' AND sp.delFlag = 'yes' AND sp.delTime >= '{$limitTime}'";
+            " WHERE 1=1 AND sp.jobNoNew = '{$jobNoNew}' AND sp.delFlag = 'yes' AND sp.delTime >= '{$limitTime}' ORDER BY sp.delTime asc";
 
         $this->db->query($sql);
         $rows = array();

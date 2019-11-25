@@ -13,6 +13,11 @@ $(function() {
     $.getJSON('../api/post.php?q=getList&jobNoNew='+jobNoNew, function(data) {
         var _html = template('tpl_chat_history', data);
         $('#chat_history_list').html(_html);
+        setTimeout(function(){
+            var scrollHeight = $('body').prop("scrollHeight");
+            $(document).scrollTop(scrollHeight);
+        },200)
+
     });
 
     $("#btnSend").on("click",function(){

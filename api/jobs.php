@@ -329,6 +329,7 @@ sscp2.path as confirm_pdf,ssc.confirm_pdf as confirm_pdfid, ss.chiName as confir
 FROM Survey_SurveyorClassRecord as ssc 
 left Join Survey_MainSchedule as sm on sm.jobNoNew=ssc.jobNoNew
 left Join Survey_Surveyor as ss on ss.survId=ssc.confirm_pdf_create_by
+
 left Join Survey_SurveyorClassPDF as sscp2 on sscp2.id=ssc.confirm_pdf
 left Join (select * from Survey_SurveyorClassPDF where id in (select max(id) from Survey_SurveyorClassPDF group by class_record_id)) as sscp on sscp.class_record_id=ssc.id 
 WHERE ";
