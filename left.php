@@ -84,28 +84,8 @@ if (!UserLogin::IsLogin()) {
                         <td>
                             <table cellSpacing="0" cellPadding="0" align="right"
                                    border="0" style="width: 179px">
-                                <?php
-                                if (UserLogin::HasPermission('progress_view')) {
-                                    ?>
-                                    <tr>
-                                        <td class="TdButtonC">
-                                            <a href="progress_view.php" target="mainFrame"><span class="TdButtonCText">統計曲線圖</span></a>
-                                        </td>
-                                    </tr>
-                                    <?php
-                                }
-                                ?>
-                                <?php
-                                if (UserLogin::HasPermission('up_to_date_bar_chart_view')) {
-                                    ?>
-                                    <tr>
-                                        <td class="TdButtonC">
-                                            <a href="up_to_date_bar_chart_view.php" target="mainFrame"><span class="TdButtonCText">統計柱形圖</span></a>
-                                        </td>
-                                    </tr>
-                                    <?php
-                                }
-                                ?>
+
+
                                 <?php
                                 if (UserLogin::HasPermission('bar_chart_time_user')) {
                                     ?>
@@ -118,26 +98,17 @@ if (!UserLogin::IsLogin()) {
                                     <?php
                                 }
                                 ?>
-                                <?php
-                                if (UserLogin::HasPermission('different_surveyor_list')) {
-                                    ?>
-                                    <tr>
-                                        <td class="TdButtonC"><a href="different_surveyor_list.php"
-                                                                 target="mainFrame"><span class="TdButtonCText">出席檢查</span></a></td>
-                                    </tr>
-                                    <?php
-                                }
-                                ?>
-                                <?php
-                                if (UserLogin::HasPermission('different_surveyor_list')) {
-                                    ?>
+
+                               <!-- <?php
+/*                                if (UserLogin::HasPermission('different_surveyor_list')) {
+                                    */?>
                                     <tr>
                                         <td class="TdButtonC"><a href="self_select_list.php" target="mainFrame">
                                                 <span class="TdButtonCText">自選日程</span></a></td>
                                     </tr>
-                                    <?php
-                                }
-                                ?>
+                                    --><?php
+/*                                }
+                                */?>
                                 <?php
                                 if (UserLogin::HasPermission('main_schedule_list')) {
                                     ?>
@@ -198,17 +169,7 @@ if (!UserLogin::IsLogin()) {
                                     <?php
                                 }
                                 ?>
-                                <?php
-                                if (UserLogin::HasPermission('user_history_list')) {
-                                    ?>
-                                    <tr>
-                                        <td class="TdButtonC">
-                                            <a href="user_history_list.php" target="mainFrame"><span class="TdButtonCText">帳戶歷史</span></a>
-                                        </td>
-                                    </tr>
-                                    <?php
-                                }
-                                ?>
+
                                 <?php
                                 if (UserLogin::HasPermission('user_role_list')) {
                                     ?>
@@ -259,72 +220,14 @@ if (!UserLogin::IsLogin()) {
                                     <?php
                                 }
                                 ?>
-                                <?php
-                                if (UserLogin::HasPermission('surveyor_list_schedule')) {
-                                    ?>
-                                    <tr>
-                                        <td class="TdButtonC">
-                                            <a href="surveyor_list_schedule.php" target="mainFrame">
-                                                <span class="TdButtonCText">學員日程</span></a></td>
-                                    </tr>
-                                    <?php
-                                }
-                                ?>
+
                             </table>
                         </td>
                     </tr>
                     <?php
                 }
                 ?>
-                <?php
-                if (UserLogin::HasOnePermission(array('survey_salary', 'other_project_list', 'other_salary_entry', 'other_salary_entry'))) {
-                    ?>
-                    <tr onClick="ShowRow(9)">
-                        <td class="TdButtonF"><span class="TdButtonFText">學費管理</span></td>
-                    </tr>
-                    <tr id="Tr9" style="display: none">
-                        <td>
-                            <table cellSpacing="0" cellPadding="0" align="right"
-                                   border="0" style="width: 179px">
-                                <?php
-                                if (UserLogin::HasPermission('survey_salary')) {
-                                    ?>
-                                    <tr>
-                                        <td class="TdButtonC">
-                                            <a href="salary/survey_salary.php" target="mainFrame"><span class="TdButtonCText">學員學費</span></a>
-                                        </td>
-                                    </tr>
-                                    <?php
-                                }
-                                ?>
-                                <?php
-                                if (UserLogin::HasPermission('other_salary_entry')) {
-                                    ?>
-                                    <tr style="display: none">
-                                        <td class="TdButtonC"><a
-                                                href="salary/other-salary-entry.php?survType=surveyor"
-                                                target="mainFrame"><span
-                                                    class="TdButtonCText">新增其它費用</span></a></td>
-                                    </tr>
-                                <?php
-                                }
-                                ?>
-                                <?php
-                                if (UserLogin::HasPermission('other_salary_list')) {
-                                    ?>
-                                    <tr style="display: none">
-                                        <td class="TdButtonC">
-                                            <a href="salary/other-salary-list.php" target="mainFrame"><span class="TdButtonCText">其他費用列表</span></a></td>
-                                    </tr>
-                                    <?php
-                                }
-                                ?>
-                            </table>
-                        </td>
-                    </tr>
-                    <?php
-                }
-                ?>
+
                 <tr>
                     <td class="TdButtonF"><a href="logout.php" id="logoutBtn" target="mainFrame"><span
                                 class="TdButtonFText">登出</span></a></td>

@@ -219,15 +219,21 @@ class SurveyorAccess
 			$query .= " AND survType = '{$obj->survType}'";
 		
 		$sql = "SELECT * FROM Survey_Surveyor " . " WHERE 1=1 ";
+
 		$sql = $sql . $query;
 		$this->db->query($sql);
-		if ($this->db->num_rows() > 0)
+
+		$had = false;
+
+		if ($rs = $this->db->next_record() )
 		{
-			$rs = $this->db->next_record();
+            $had = true;
 			return $rs["survId"];
 		}
-		else
-			return -1;
+		else{
+            return $had;
+        }
+
 	}
 	
 	/**

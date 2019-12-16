@@ -69,17 +69,6 @@ switch ($data['q']) {
     case 'batchEditJobs':
         batchEditJobs($data);
         break;
-    case 'tmp_add':
-        /*for($i=0;$i<200;$i++){
-            echo $i,"~";
-            echo $bb = int_to_chr_2($i);
-            echo "~";
-            echo chr_to_int($bb);
-            echo "\n";
-        }
-        exit;*/
-        //tmp_add($data);
-        break;
     case "batchOpenJob":
         batchOpenJob($data);
         break;
@@ -335,7 +324,7 @@ left Join (select * from Survey_SurveyorClassPDF where id in (select max(id) fro
 WHERE ";
 
     if($start_time !== false && $end_time !== false ){
-        $sql .= "ssc.record_time >= '$start_time' and ssc.record_time <= '$end_time' and ";
+        $sql .= "sm.plannedSurveyDate >= '$start_time' and sm.plannedSurveyDate <= '$end_time' and ";
     }
     $sql .= "ssc.surveyor_id = '{$survId}' and ssc.is_del = 0 order by ssc.id desc";
     $db->query ( $sql );
@@ -1021,6 +1010,11 @@ function batchEditJobs($data){
             $rsData['mascId'] = $ja->updateByJobNo($sqlData,$data['jobNo']);
         }
 
+        $title = '新消息通知';
+        $content = '管理員修改了 '.$jobNo.' 的課堂信息';
+        $type = 2;
+        addNotifition($title,$content,$type);
+
         $message = array (
             'status' => 'success',
             'msg' => '',
@@ -1375,6 +1369,13 @@ function batchOpenJob($data){
         $mso->jobNoNew = $v;
         $msoa->Add($mso);
     }
+
+    $title = '新消息通知';
+    $content = '開放新課堂啦';
+    $type = 1;
+    addNotifition($title,$content,$type);
+
+
     $message = array (
         'status' => 'success',
         'msg' => '',
@@ -1382,6 +1383,27 @@ function batchOpenJob($data){
     );
     die(json_encode($message));
 }
+
+
+/**
+ * 添加通知记录
+ *
+ * */
+function addNotifition($title,$content,$type){
+    global $db;
+
+    $create_time = date('Y-m-d H:i:s');
+    $messageModel = new MessagesNew();
+    $messageAccess = new MessagesNewAccess($db);
+
+    $messageModel->content = $content;
+    $messageModel->title = $title;
+    $messageModel->type = $type;
+    $messageModel->create_time = $create_time;
+
+    return $messageAccess->Add($messageModel);
+}
+
 
 /**
  * 批量刪除（根據jobNo）

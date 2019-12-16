@@ -10,6 +10,8 @@ include_once ("../includes/config.plugin.inc.php");
 
 $btnDetailConfirmStatus = 'disabled="disabled"';
 $btnDetailConfirmText = '聯繫Whatsapp:<br />92091806開通';
+$btnClass = 'btn-danger';
+$successBtnStyle = 'display:none';
 // 检查是否登录
 if (SurveyorLogin::IsLogin())
 {
@@ -51,14 +53,36 @@ $tmpcount = strlen($conf['auth']['slat']);
 if(isset($_GET['random']) && $_GET['random'] == true){
     if(isset($_GET['jobno']) && !empty($_GET['jobno'])){
 
-        $get_empty_sql = "SELECT jobNoNew FROM Survey_MainSchedule where jobNo = '{$_GET['jobno']}' and surveyorName = '' ";
+        //获取该课堂类型的选取情况
+        $get_empty_sql = "SELECT jobNoNew,surveyorCode FROM Survey_MainSchedule where jobNo = '{$_GET['jobno']}' ";
         if(isset($_GET['vehicle']) && !empty($_GET['vehicle'])){
             $get_empty_sql .= " and vehicle = '{$_GET['vehicle']}'";
         }
+
+        $surveyorCodes = array();
+
         $db->query ( $get_empty_sql );
         while ( $rs = $db->next_record () ) {
-            $jobNoNew = $rs['jobNoNew'];
+            $surveyorCodes[$rs['jobNoNew']] = $rs['surveyorCode'];
         }
+        //判断是否有选本课堂
+        $jobNoNew = '';
+        $myClass = false;
+        if(in_array($surveyorCode,$surveyorCodes)){
+            $getJobNoNewArr = array_flip($surveyorCodes);
+            $jobNoNew = $getJobNoNewArr[$surveyorCode];
+            $myClass = true;
+        }else{
+
+            //判断该课堂是否已全部被选完
+            foreach($surveyorCodes as $sk=>$sv){
+                if($sv == ''){
+                    $jobNoNew = $sk;
+                    break;
+                }
+            }
+        }
+
         $type = 'opening';
         if(empty($jobNoNew)){
             $t->set_file("HdIndex", "job-detail2.html");
@@ -118,18 +142,28 @@ if(count($rs) > 0){
 			"estimatedManHour" => $v->estimatedManHour,
 			"pdfLink" => $pdfLink.$conf['districtName'][$v->complateJobNo].'/'.$v->jobNo.'/'.$v->jobNoNew.'.pdf'
 	) );
-	if(empty($v->plannedSurveyDate)) {
-		$confirmBtnStyle = "display:none;";
-	}
 
-	//檢測是否已經有同一時間段的Job
-    //if($v->plannedSurveyDate != '0000-00-00'){
+	if($myClass == false){
+        if(empty($v->plannedSurveyDate)) {
+            $confirmBtnStyle = "display:none;";
+        }
+
+        //檢測是否已經有同一時間段的Job
+        //if($v->plannedSurveyDate != '0000-00-00'){
         $isBusy = $msa->IsBusyTime($surveyorCode,$v->plannedSurveyDate,$v->startTime_1,$v->endTime_1);
         if($isBusy && $btnDetailConfirmStatus == ''){
             $btnDetailConfirmStatus = 'disabled="disabled"';
             $btnDetailConfirmText = '課堂時間與<br />已選取的衝突';
         }
-    //}
+        //}
+    }else{
+        $confirmBtnStyle = "display:none;";
+        $btnClass = 'btn-success';
+        $successBtnStyle = '';
+        $btnDetailConfirmStatus = '';
+        $btnDetailConfirmText = '已選取本課堂';
+    }
+
 
 	//判斷是否有關聯調查項目多个
 	if(!empty($mso->batchNumber)){
@@ -196,6 +230,7 @@ if(count($rs) > 0){
 $t->set_var("confirmBtnStyle",$confirmBtnStyle);
 $t->set_var("btnDetailConfirmStatus",$btnDetailConfirmStatus);
 $t->set_var("btnDetailConfirmText",$btnDetailConfirmText);
-
+$t->set_var("btnClass",$btnClass);
+$t->set_var("successBtnStyle",$successBtnStyle);
 $t->pparse("Output", "HdIndex");
 ?>

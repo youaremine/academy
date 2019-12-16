@@ -138,6 +138,12 @@ switch ($data['q']) {
 		}
 		$m->plannedSurveyDateStart = $data['startDate'];
 
+
+        //如果有传jobNoNew 参数返回对应jobNoNew的单个记录
+        if(array_key_exists('jobNoNew',$data)){
+            $m->jobNoNew = $data['jobNoNew'];
+        }
+
 		$rs = $ma->GetListSearch($m,$m->surveyorCode);
 		$jsonArr = array();
 		foreach($rs as $obj){
@@ -249,9 +255,139 @@ switch ($data['q']) {
 		die(json_encode($message));
 		break;
 
+    //新版,根据postId
+    case 'getMessagesNew':
+        if(!array_key_exists('msgId',$data)){
+            $message = array (
+                'status' => 'failed',
+                'msg' => 'msgId is required.',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
+        if(empty($data['sign'])){
+            $message = array (
+                'status' => 'failed',
+                'msg' => 'sign is null.',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
+
+        $filename = $conf["path"]["sign"].$data['sign'];
+        $survId = file_get_contents($filename);
+        if(!$survId){
+
+            $message = array (
+                'status' => 'failed',
+                'msg' => 'Sign Not Found',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
+        $s = new Surveyor();
+
+        $s->survId = $survId;
+        $sa = new SurveyorAccess($db);
+        $rs = $sa->GetListSearch($s);
+        $userInfo = $rs[0];//获取通知的人的信息
+        $m = new MessagesNew();
+        $ma = new MessagesNewAccess($db);
+        $jsonArr = array();
+        if($userInfo->survType == 'admin' || $userInfo->survType == 'teach'){
+            //管理员与教练获取到的通知
+
+            $messageModel = new MessagesNew();
+            $messageAccess = new MessagesNewAccess($db);
+            $messageModel->msgId = $data['msgId'];
+
+
+            //查詢是否有新增付款憑證
+            $sql = "SELECT * FROM Survey_MessagesNew ".
+                " WHERE 1=1 ";
+            if($data['msgId'] > 0){
+                $query = "AND msgId > ".$data['msgId'] . " AND type = 3 order by msgId desc limit 0,1";
+            }else{
+                $query = "AND type = 3 order by msgId desc limit 0,1";
+            }
+
+            $sql = $sql.$query;
+            $db->query($sql);
+
+            if($rs = $db->next_record()){
+                $dr['msgId'] = $rs['msgId'];
+                $dr['title'] = $rs['title'];
+                $dr['content'] = $rs['content'];
+                $dr['create_time'] = $rs['create_time'];
+                $dr['type'] = $rs['type'];
+                $jsonArr[] = $dr;
+            }
+
+            $message = array (
+                'status' => 'success',
+                'msg' => '',
+                'data' => $jsonArr
+            );
+
+
+        }else{
+            //学员获取到的通知
+            //查詢是否有修改課堂通知
+            $sql = "SELECT * FROM Survey_MessagesNew ".
+                " WHERE 1=1 ";
+            if($data['msgId'] > 0){
+                $query = "AND msgId > ".$data['msgId'] . " AND type = 2 order by msgId desc limit 0,1";
+            }else{
+                $query = "AND type = 2 order by msgId desc limit 0,1";
+            }
+
+            $sql = $sql.$query;
+            $db->query($sql);
+            if($rs = $db->next_record()){
+                $dr['msgId'] = $rs['msgId'];
+                $dr['title'] = $rs['title'];
+                $dr['content'] = $rs['content'];
+                $dr['create_time'] = $rs['create_time'];
+                $dr['type'] = $rs['type'];
+                $jsonArr[] = $dr;
+            }
+
+            //查詢是否有開放課堂通知
+            $sql = "SELECT * FROM Survey_MessagesNew ".
+                " WHERE 1=1 ";
+            if($data['msgId'] > 0){
+                $query = "AND msgId > ".$data['msgId'] . " AND type = 1 order by msgId desc limit 0,1";
+            }else{
+                $query = "AND type = 1 order by msgId desc limit 0,1";
+            }
+
+            $sql = $sql.$query;
+            $db->query($sql);
+
+            if($rs = $db->next_record()){
+                $dr['msgId'] = $rs['msgId'];
+                $dr['title'] = $rs['title'];
+                $dr['content'] = $rs['content'];
+                $dr['create_time'] = $rs['create_time'];
+                $dr['type'] = $rs['type'];
+                $jsonArr[] = $dr;
+            }
+
+            $message = array (
+                'status' => 'success',
+                'msg' => '',
+                'data' => $jsonArr
+            );
+
+        }
+        usort($message['data'], "cmp");
+        die(json_encode($message));
+
+
+
+    //旧版
 	case 'getMessages':
-		$m = new Messages();
-		$ma = new MessagesAccess($db);
+
 		if(empty($data['sign'])){
 			$message = array (
 					'status' => 'failed',
@@ -278,11 +414,11 @@ switch ($data['q']) {
         }
 
         /*
-         * 检查是否有新工作
+         * 检查是否有PDF
          * */
-        $inputTime = date("Y-m-d H:i:s",(time()));
+        $inputTime = date("Y-m-d H:i:s",(time()-3600));
         $plannedSurveyDate = date("Y-m-d");
-        if($userInfo->survType == 'admin' || $userInfo->survType == 'teach'){
+        /*if($userInfo->survType == 'admin' || $userInfo->survType == 'teach'){
             $sql1 = "SELECT COUNT(*) AS total,id as pdfid FROM Survey_SurveyorClassPDF sscp
 		WHERE is_set_class=0 and sscp.is_del = 0";
 
@@ -292,7 +428,7 @@ switch ($data['q']) {
                 if($result['total'] > 0) {
                     //判断1小时内是否已经提示过
                     $sql = "SELECT COUNT(*) AS total FROM Survey_Messages
-					WHERE msgType='open' AND survId='{$m->survId}' AND inputTime>'{$inputTime}'";
+					WHERE msgType='pdf' AND survId='{$m->survId}' AND inputTime>'{$inputTime}'";
 
                     $db->query($sql);
                     if($result = $db->next_record()){
@@ -308,15 +444,7 @@ switch ($data['q']) {
                     }
                 }
             }
-
-
-        }
-
-
-
-
-
-
+        }*/
 
         /*
          * 检查是否有新工作
@@ -422,6 +550,11 @@ switch ($data['q']) {
         getRecordById($data);
 	default:
 		break;
+}
+
+function cmp($a, $b)
+{
+    return ($a['msgId'] < $b['msgId']) ? -1 : 1;
 }
 
 function getRecordById($data){
@@ -738,7 +871,7 @@ function getPDFbyDate($data){
         $sql = "SELECT ssp.*,ss1.chiName,ss1.engName,ss2.engName as upload_surveyor_engName,ss2.chiName as upload_surveyor_chiName FROM Survey_SurveyorClassPDF as ssp 
 left join Survey_Surveyor as ss1 on ss1.survId = ssp.surveyor_id 
 left join Survey_Surveyor as ss2 on ss2.survId = ssp.upload_surveyor_id
-WHERE upload_pdf_time >= '$startDate' and upload_pdf_time <= '$endDate' and is_del = 0 ";
+WHERE jobNoNew != '0' and upload_pdf_time >= '$startDate' and upload_pdf_time <= '$endDate' and is_del = 0 ";
         if($surveyor_id !=0 ){
             $sql .= " AND ssp.surveyor_id = '{$surveyor_id}' ";
         }
@@ -862,9 +995,9 @@ function setClassPDF($data){
         if(empty($pdfid)){
             $firstTime = true;
             $nowTime = date('Y-m-d H:i:s');
-            $default_path = '';//default PDF
+            $default_path = '/cache/paymentPDF/default/default.pdf';//default PDF
 
-            $sql = "INSERT into Survey_SurveyorClassPDF(surveyor_id,class_record_id,jobNoNew,path,upload_surveyor_id,upload_pdf_time) values ('$surveyor_id','$class_record_id','$jobNoNew','$default_path','0','$nowTime')";
+            $sql = "INSERT into Survey_SurveyorClassPDF(surveyor_id,class_record_id,jobNoNew,path,upload_surveyor_id,upload_pdf_time) values ('$surveyor_id','$class_record_id','$jobNoNew','$default_path',$survId,'$nowTime')";
             $res = $db->query($sql);
             $sql2 = "SELECT last_insert_id() ";
             $db->query($sql2);
@@ -1203,7 +1336,7 @@ function getClassInfo($data){
         $used_class_num = $class_num - $rs['class_num_sql'];
     }*/
 
-    $payment_log_sql = "SELECT ss.engName,ss.chiName,ssc.id,ssc.money,ssc.money_time,ssc.payment_type,ssc.class,ssc.remark,ssc.end_date,ssc.start_date FROM Survey_SurveyorClass ssc,Survey_Surveyor ss " . " WHERE 1=1  AND ssc.surveyor_id = ".$data['surveyorId'] ." AND ss.survId = ssc.admin_id AND ssc.is_del=0 " . " ORDER BY DATEDIFF(ssc.end_date,now()) asc";
+    $payment_log_sql = "SELECT ss.engName,ss.chiName,ssc.id,ssc.money,ssc.money_time,ssc.payment_type,ssc.class,ssc.remark,ssc.end_date,ssc.start_date FROM Survey_SurveyorClass ssc,Survey_Surveyor ss " . " WHERE 1=1  AND ssc.surveyor_id = ".$data['surveyorId'] ." AND ss.survId = ssc.admin_id AND ssc.is_del=0 " . " ORDER BY ssc.create_time desc";
     $db->query ( $payment_log_sql );
     $payment_log = array();
     while ( $rs = $db->next_record () ) {
@@ -2021,13 +2154,14 @@ function addInfo($data){
 		$s->updateTime = date('Y-m-d H:i:s');
         $s->vip_level = $data['vip_level'];
         $s->avatar = isset($data['avatar'])?$data['avatar']:'';
+
 		if (empty($s->survId))
 		{
-			$surveyorCheck = new Surveyor();
-			$surveyorCheck->survId = $s->survId;
-			$surveyorCheck->contact = $s->contact;
+            $surveyorCheck = new Surveyor();
+            $surveyorCheck->survId = $s->survId;
+            $surveyorCheck->contact = $s->contact;
 
-			$surveyId = $sa->IsExist($surveyorCheck);
+            $surveyId = $sa->IsExist($surveyorCheck);
 			if ($surveyId > 0)
 			{
 				$message = array (
@@ -2044,7 +2178,29 @@ function addInfo($data){
 		}
 		else
 		{
-			$sa->Update($s);
+
+            $surs = new Surveyor();
+            $surs->survId = $data['survId'];
+            $sursa = new SurveyorAccess($db);
+            $rs = $sursa->GetListSearch($surs);
+		    if($rs[0]->contact == $data['contact']){
+                $sa->Update($s);
+            }else{
+                $surveyorCheck = new Surveyor();
+                $surveyorCheck->survId = '';
+                $surveyorCheck->contact = $s->contact;
+                $surveyId = $sa->IsExist($surveyorCheck);
+                if($surveyId){
+                    $message = array (
+                        'status' => 'failed',
+                        'msg' => '號碼已存在',
+                        'data' => ''
+                    );
+                    die(json_encode($message));
+                }else{
+                    $sa->Update($s);
+                }
+            }
 		}
 
 		$message = array (

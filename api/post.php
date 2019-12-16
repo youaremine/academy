@@ -73,20 +73,42 @@ switch ($data['q']) {
 }
 
 
+
+
+
 /*
  * 删除留言
  *
  * */
 function delPost($data){
-    global $db;
+    global $db,$conf;
     if(!isset($data['userId']) || $data['userId'] <= 0){
-        $message = array (
-            'status' => 'failed',
-            'msg' => 'Permission Denied',
-            'data' => array()
-        );
-        die(json_encode($message));
+        if(empty($data['sign'])){
+            $message = array (
+                'status' => 'failed',
+                'msg' => 'Permission denied',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
+        $filename = $conf["path"]["sign"].$data['sign'];
+        $survId = @file_get_contents($filename);
+        $s = new Surveyor();
+        $s->survId = $survId;
+        $s->status = '';
+        $sa = new SurveyorAccess($db);
+        $rs = $sa->GetListSearch($s);
+        $info = $rs[0];
+        if($info->survType != 'teach' && $info->survType != 'admin'){
+            $message = array (
+                'status' => 'failed',
+                'msg' => 'Permission denied.',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
     }
+
     if(!isset($data['postId']) || empty($data['postId'])){
         $message = array (
             'status' => 'failed',
@@ -499,10 +521,13 @@ function getList_hadDel($data){
             $dr['voiceTime'] = $obj->voiceTime;
         }
         $dr['survId'] = $obj->survId;
+
         if(!empty($obj->survId)){
             $surveyorObj->survId = $obj->survId;
+            $surveyorObj->status = '';
             $_rs = $surveyorAccessObj->GetListSearch($surveyorObj);
-            $dr['survName'] = empty($_rs[0]->chiName)?$_rs[0]->engName:$_rs[0]->chiName;
+            $dr['survName'] = $_rs[0]->chiName;
+            $dr['survEngName'] = $_rs[0]->engName;
             $dr['profilePhoto'] = $_rs[0]->profilePhoto;
         }
         $dr['userId'] = $obj->userId;
@@ -593,10 +618,14 @@ function getList($data){
             $dr['voiceTime'] = $obj->voiceTime;
         }
         $dr['survId'] = $obj->survId;
+
         if(!empty($obj->survId)){
             $surveyorObj->survId = $obj->survId;
+            $surveyorObj->status = '';
             $_rs = $surveyorAccessObj->GetListSearch($surveyorObj);
-            $dr['survName'] = empty($_rs[0]->chiName)?$_rs[0]->engName:$_rs[0]->chiName;
+
+            $dr['survName'] = $_rs[0]->chiName;
+            $dr['survEngName'] = $_rs[0]->engName;
             $dr['profilePhoto'] = $_rs[0]->profilePhoto;
         }
         $dr['userId'] = $obj->userId;
@@ -671,6 +700,7 @@ function getReplyList($data,$type="all"){
         $dr['format'] = $obj->format;
         $dr['s_chiName'] = empty($obj->s_chiName)?'':$obj->s_chiName;
         $dr['s_engName'] = empty($obj->s_engName)?'':$obj->s_engName;
+        $dr['s_survId'] = empty($obj->s_survId)?'':$obj->s_survId;
 		$jsonArr[] = $dr;
 	}
 

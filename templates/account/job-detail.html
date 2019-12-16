@@ -61,16 +61,6 @@
     </nav>-->
 
     <div class="container">
-      <?php
-    if($jobNoNew == '111111'){
-
-    ?>
-
-
-      <?php
-    }else{
-
-?>
       <div class="row">
         <div class="col-md-6">
           <table class="table table-bordered">
@@ -107,8 +97,10 @@
           </tr>-->
           </table>
 
+
           <div id="checkS" >
-            <button id="btnDetailConfirm" style="width: 80%;" type="button" class="btn btn-lg btn-danger search-salary" style="{confirmBtnStyle}" {btnDetailConfirmStatus}>{btnDetailConfirmText}</button>
+            <a  href="ozzoacademy-jobnonew://students.app/?jobNo={jobNo}&refNo={jobNoNew}&surveyType={surveyType}" style="width: 80%; height:80px;line-height:60px ;{successBtnStyle}" type="button" class="btn btn-lg {btnClass} search-salary " {btnDetailConfirmStatus}>{btnDetailConfirmText}</a>
+            <button id="btnDetailConfirm"  type="button" class="btn btn-lg {btnClass} search-salary {btnClass}"  style="{confirmBtnStyle} width: 80%;" {btnDetailConfirmStatus}>{btnDetailConfirmText}</button>
           </div>
 
           <table class="table table-bordered">

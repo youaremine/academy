@@ -74,9 +74,15 @@ if ($_GET ["ddlDistId"] != "") {
 if (!empty($_REQUEST['isAssigned'])) {
     $ms->isAssigned = $_REQUEST ['isAssigned'] == 'true' ? true : false;
 }
-if (!empty($_REQUEST ['isSelected'])) {
-    $ms->isSelected = $_REQUEST ['isSelected'] == 'true' ? true : false;
+$bmType = 2;
+if (array_key_exists('bmType',$_REQUEST)) {
+    $bmType = $_REQUEST['bmType'];
+    $ms->isSelected = $_REQUEST ['bmType'];
 }
+
+$bmTypeHtml = getbmTypeHtml($bmType);
+$t->set_var("bmTypeHtml", $bmTypeHtml);
+
 $readOnlyStyle = "";
 if (UserLogin::IsReadOnly()) {
     $readOnlyStyle = "display:none;";
@@ -85,6 +91,7 @@ if (UserLogin::IsReadOnly()) {
     $ddlDistIdSelect = GetdoDistrictSelect();
     $t->set_var("ddlDistIdSelect", $ddlDistIdSelect);
 }
+
 
 //
 $plannedSurveyDateStyle = 'display:none;';
@@ -153,7 +160,6 @@ $osa = new OtherSalaryAccess($db);
 $bonusResult = $osa->GetListByJobNoNews($jobNoNews);
 
 $blankdataLink = $conf ["plugin"] ["download_pdf_host"].'pdf/blankdata/';
-
 $rsNum = count($rs);
 $totalEstimatedManHour = 0;
 
@@ -169,9 +175,9 @@ for ($i = 0; $i < $rsNum; $i++) {
         $listStyle = "DgItemStyle";
     $ms = $rs [$i];
     $rawFile = "<a href='javascript:void(0);'><img class='printHide' border='0' width='24' src='images/pdf-disable.jpg' /></a>";
-    if ($ms->rawFile != "") {
+    if ($ms->pdfLink != "") {
         $ms->rawFile = str_replace("../", $conf ["plugin"] ["download_pdf_host"], $ms->rawFile);
-        $downUrl = "plugin/raw_pdf_download_prc.php?userId=" . $_SESSION ['userId'] . "&jobNoNew=" . $ms->jobNoNew . "&downloadUrl=" . $ms->rawFile;
+        $downUrl = '/academy/'.$ms->pdfLink;
         $rawFile = "<a href='{$downUrl}' target='_blank'><img class='printHide' border='0' width='24' src='images/pdf.jpg' /></a>";
     }
     if (!UserLogin::IsAdministrator()) {
@@ -313,13 +319,12 @@ for ($i = 0; $i < $rsNum; $i++) {
         "surveyorName" => $ms->surveyorName,
         "surveyorTelephone" => $ms->surveyorTelephone,
         "rawFile" => $rawFile,
-        "contractorAssign" => $contractorAssign,
         "plannedSurveyDateAssign" => $plannedSurveyDateAssign,
         "assignStyle" => $assignStyle,
         "unAssignStyle" => $unAssignStyle,
         "assignUserInfo" => $assignUserInfo,
         "direction" => $ms->direction,
-        "blankdataLink" => $blankdataLink.$conf['districtName'][$ms->complateJobNo].'/'.$ms->jobNo.'/'.$ms->jobNoNew.'.pdf'
+        "pdfLink" => $ms->pdfLink
     ));
     $t->parse("Rows", "Row", true);
 }
@@ -327,4 +332,26 @@ $totalEstimatedManHour = round($totalEstimatedManHour, 1);
 $t->set_var("totalEstimatedManHour", $totalEstimatedManHour);
 
 $t->pparse("Output", "HdIndex");
+/**
+ * 获取报名状态该
+ */
+function getbmTypeHtml($type){
+
+    $select2 = '';
+    $select1 = '';
+    $select0 = '';
+    if($type == 0){
+        $select0 = 'selected';
+    }elseif($type == 1){
+        $select1 = 'selected';
+    }elseif($type == 2){
+        $select2 = 'selected';
+    }
+    $bmTypeHtml = "<select name='bmType'>".
+        "<option value ='2' $select2>全部</option>".
+        "<option value ='1' $select1>已報名</option>".
+        "<option value='0' $select0>未報名</option>".
+        "</select>";
+    return $bmTypeHtml;
+}
 ?>

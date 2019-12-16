@@ -998,6 +998,7 @@ class MainScheduleAccess
         $sql = $sql . $query;
 
         $this->db->query($sql);
+
 //         echo "{$sql}<br>";
         $rows = array();
         while ($rs = $this->db->next_record()) {
@@ -1074,8 +1075,8 @@ class MainScheduleAccess
             $obj->diy_name = $rs ["diy_name"];
             $obj->diy_value = $rs ["diy_value"];
             $obj->class_record_id = $rs ["class_record_id"];
-            $obj->isopen = is_null($rs['jop'])?'yse':'no';
-            $obj->checkIn = is_null($rs['checkIn'])?'no':'yse';
+            $obj->isopen = is_null($rs['jop'])?'yes':'no';
+            $obj->checkIn = is_null($rs['checkIn'])?'no':'yes';
             $rows [] = $obj;
         }
         return $rows;

@@ -233,12 +233,34 @@ function uploadPDFForm($data){
     $jobNoNew = $class_record['jobNoNew'];
     if(isset($data['surveyor_id'])){
         $surveyor_id = $data['surveyor_id'];
+        $ss = new Surveyor();
+        $ss->survId = $surveyor_id;
+        $ssa = new SurveyorAccess($db);
+        $rs = $ssa->GetListSearch($ss);
+        $info = $rs[0];
+        if(!empty($info)){
+            if(strpos($info->engName,$info->chiName) === false){
+                $content = $info->chiName.' 上傳了新的付款證明。';
+            }else{
+                $content = $info->engName.' 上傳了新的付款證明。';
+            }
+
+
+        }else{
+            returnJson('failed','','surveyor_id Not Found');
+        }
     }else{
         $surveyor_id = $surInfo->survId;
+        if(strpos($surInfo->engName,$surInfo->chiName) === false){
+            $content = $surInfo->chiName.' 上傳了新的付款證明。';
+        }else{
+            $content = $surInfo->engName.' 上傳了新的付款證明。';
+        }
     }
 
     if($surveyor_id != $surInfo->survId){
         if($surInfo->survType != 'admin' && $surInfo->survType != 'teach'){
+
             returnJson('failed','','Permission Error');
         }
     }
@@ -248,6 +270,9 @@ function uploadPDFForm($data){
     $ma = new MainScheduleAccess($db);
     $m->jobNoNewSigle = $jobNoNew;
     $m->surveyorCode = $surveyor_id;
+
+
+    file_put_contents('/tmp/wkktest.logg','jobNoNew:'.$jobNoNew."\n".'data:'.json_encode($data)."\n".'surveyor_id:'.$surveyor_id,FILE_APPEND);
 
     $rs = $ma->GetListSearch($m);
     if(isset($rs[0]) && !empty($rs[0])){
@@ -283,11 +308,39 @@ function uploadPDFForm($data){
                 addClassPDF($surveyor_id,$jobNoNew,$urlPath.$fileName,$surInfo->survId,$class_record_id);
             }
         }
+
+        $title = '新消息通知';
+
+        $type = 3;
+        addNotifition($title,$content,$type);
+
         returnJson('success','','');
 
     }else{
-        returnJson('failed','','沒有找到對應的課堂資料'.$surveyor_id);
+        returnJson('failed','','沒有找到對應的課堂資料');
     }
+}
+
+
+
+
+/**
+ * 添加通知记录
+ *
+ * */
+function addNotifition($title,$content,$type){
+    global $db;
+
+    $create_time = date('Y-m-d H:i:s');
+    $messageModel = new MessagesNew();
+    $messageAccess = new MessagesNewAccess($db);
+
+    $messageModel->content = $content;
+    $messageModel->title = $title;
+    $messageModel->type = $type;
+    $messageModel->create_time = $create_time;
+
+    return $messageAccess->Add($messageModel);
 }
 
 function addClassPDF($surveyor_id,$jobNoNew,$path,$upload_surveyor_id,$class_record_id){

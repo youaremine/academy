@@ -174,7 +174,7 @@ class PostsAccess
 		$sql1 = "SELECT jobNo FROM Survey_MainSchedule where";
 
 		$lastMonthDay = date("Y-m-d",strtotime("-1 month"));
-		$sql = "SELECT ss2.chiName as s_chiName, ss2.engName as s_engName,sm.surveyType as type,sm2.surveyType as type2,p.*,ss.chiName,ss.engName FROM Survey_Posts p left join Survey_Surveyor ss on ss.survId=p.survId
+		$sql = "SELECT ss2.chiName as s_chiName,ss2.survId as s_survId, ss2.engName as s_engName,sm.surveyType as type,sm2.surveyType as type2,p.*,ss.chiName,ss.engName FROM Survey_Posts p left join Survey_Surveyor ss on ss.survId=p.survId
             left join Survey_Surveyor ss2 on p.jobNoNew = ss2.contact
 			INNER JOIN (
 			SELECT jobNoNew,MAX(postId) AS maxPostId FROM Survey_Posts
@@ -212,6 +212,7 @@ class PostsAccess
             $obj->voiceTime = $rs["voiceTime"];
             $obj->chiName = $rs["chiName"];
             $obj->engName = $rs["engName"];
+            $obj->s_survId = $rs["s_survId"];
             $obj->s_chiName = $rs["s_chiName"];
             $obj->s_engName = $rs["s_engName"];
 			$rows[] = $obj;
