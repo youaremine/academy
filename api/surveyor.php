@@ -2178,7 +2178,6 @@ function addInfo($data){
 		}
 		else
 		{
-
             $surs = new Surveyor();
             $surs->survId = $data['survId'];
             $sursa = new SurveyorAccess($db);
