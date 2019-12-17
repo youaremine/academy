@@ -5,6 +5,7 @@
  * @author Xiaoqiang.Wu <jamblues@gmail.com>
  * @version 1.01 , 2018-2-12
  */
+
 set_time_limit(0);
 include_once ("../includes/config.inc.php");
 
@@ -28,7 +29,7 @@ switch ($data['q']) {
     case 'tmpInitData233':
         tmpInitData233();
 	case 'saveJobs':
-		saveJobs($data);
+        saveJobs($data);
 		break;
 	case 'getInfo':
 		getInfo($data);
@@ -118,6 +119,7 @@ switch ($data['q']) {
         setUnsignLimitTime($data);
         break;
 	default:
+	    echo 'error';
 		break;
 }
 
@@ -1539,6 +1541,7 @@ function saveJobs($data){
 	global $conf,$db;
 	if(empty($data['sign'])){
 		$message = array (
+
 				'status' => 'failed',
 				'msg' => 'sign is null.',
 				'data' => array()
@@ -1546,7 +1549,7 @@ function saveJobs($data){
 		die(json_encode($message));
 	}
 	$filename = $conf["path"]["sign"].$data['sign'];
-	$survId = file_get_contents($filename);
+        $survId = file_get_contents($filename);
 	if(empty($survId)){
 		$message = array (
 				'status' => 'failed',
@@ -1563,6 +1566,10 @@ function saveJobs($data){
 		);
 		die(json_encode($message));
 	}
+	//判断是否接收到了图片的url
+	if(empty($data['imgUrl'])){
+	    $data['imgUrl']='';
+    }
 	$sqlData = array();
 	$sqlData['weekNo'] = $data['weekNo'];
 	$sqlData['jobNoShort'] = $data['jobNoShort'];
@@ -1631,6 +1638,8 @@ function saveJobs($data){
     $sqlData['map_address'] = $data['map_address'];
     $sqlData['diy_name'] = $data['diy_name'];
     $sqlData['diy_value'] = $data['diy_value'];
+    $sqlData['img_url']=$data['imgUrl'];
+
 
 	$ja = new JobsAccess($db);
 	$mascId = intval($data['mascId']);

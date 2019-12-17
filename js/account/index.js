@@ -6,7 +6,8 @@ $(function() {
        document.location = './salary.php';
     });
     $('#btnSearchJobs').on('click',function(){
-        document.location = './jobs.php';
+        //document.location = './jobs_3.php';
+        document.location='../templates/account/jobs_4.html';
     });
     $('#btnMyCalendar').on('click',function(){
         document.location = '../surveyor_calendar.php';
