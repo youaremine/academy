@@ -283,7 +283,6 @@ class JobsAccess{
 //        echo $sql."<br />";
     }
 
-
     function getList2($filter,$other='',$limit=''){
         global $conf;
         $where = makeSql($filter,'where');
@@ -416,9 +415,6 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
         }
         return $result;
     }
-
-
-
 
     function getJobNoNewList($filter,$other='',$limit=''){
         global $conf;
@@ -635,6 +631,20 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
             }
         }
         return $result;
+    }
+
+    /**获取物品的内容资料
+     * @return false|string
+     */
+    function getObtainUrl(){
+        global $conf;
+        $sql="SELECT `jobNoShort`,`jobNoNew`,`img_url`,`surveyType`,`vehicle` FROM 
+{$conf['table']['prefix']}MainSchedule WHERE `img_url` IS NOT NULL GROUP BY `jobNoShort`";
+        $datas=$this->db->query($sql);
+        while($data=mysqli_fetch_assoc($datas)){
+            $arr[]=$data;
+        }
+        return json_encode($arr,JSON_UNESCAPED_UNICODE);
     }
 
 }

@@ -5,6 +5,14 @@
       <webServer id="1fcd1b2d-cb84-4bc1-b32c-5fcfa4c74cab" name="apache" url="http://localhost">
         <fileTransfer port="0" accessType="LOCAL" />
       </webServer>
+      <webServer id="04a066d8-e43e-4e67-b332-10553e7442e5" name="sandbox" url="http://47.75.165.42">
+        <fileTransfer host="47.75.165.42" port="22" rootFolder="/data0/htdocs/www.ozzotec.com/academy" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>
