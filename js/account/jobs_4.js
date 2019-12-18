@@ -1,6 +1,5 @@
 $(document).ready(function(){
    var data= getInfo();
-   console.log(data);
    if (data!=="" && data!==null){
         var length=data.length;
         for (var i=0;i<length;i++){
@@ -65,6 +64,11 @@ function goodsStyle(goods){
     titleDiv.innerHTML = goods.jobNoShort+"-"+goods.surveyType;
     conDiv.innerHTML=goods.vehicle;
     button.innerHTML="加入购物车";
+//添加URL
+    var urlArr=goods.img_url.split(",");
+    img.setAttribute("src", ".."+urlArr[0]);
+    var urlDetails="./goods_details.php?jobNoShort="+goods.jobNoShort;
+    infoA.setAttribute("href", urlDetails);
 //添加节点
     imgDiv.appendChild(img);
     buttonDiv.appendChild(button);
@@ -75,7 +79,4 @@ function goodsStyle(goods){
     boxDiv.appendChild(buttonDiv);
     infoA.appendChild(boxDiv);
     $('.box').append(infoA);
-//添加内容和URL
-    var urlArr=goods.img_url.split(",");
-    img.setAttribute("src", ".."+urlArr[0]);
 }

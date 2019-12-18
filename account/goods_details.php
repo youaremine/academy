@@ -1,8 +1,7 @@
 <?php
 /**
- *  功能 :获取数据库数据，并传递给前端页面，
+ * 显示物品详情页面
  */
-
 include_once ("../includes/config.inc.php");
 include_once ("../includes/config.plugin.inc.php");
 
@@ -18,12 +17,16 @@ else
     exit();
 }
 
+$jobNoShort=filter_input(INPUT_GET,'jobNoShort');
 $type=filter_input(INPUT_POST,TYPE);
-if($type=="q"){
+include_once("../templates/account/goods_details.html");
+if ($type=='q'){
+    if(!empty($jobNoShort)){
     $ja = new JobsAccess($db);
-    $arr=$ja->getGoodsUrl(1);
+    $arr=$ja->getGoodsUrl(2,$jobNoShort);
     echo $arr;
     return;
 }
-include_once("../templates/account/jobs_4.html");
+}
+
 
