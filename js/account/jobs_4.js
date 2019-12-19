@@ -1,9 +1,13 @@
 $(document).ready(function(){
-   var data= getInfo();
+   let data= getInfo();
    if (data!=="" && data!==null){
-        var length=data.length;
-        for (var i=0;i<length;i++){
+       let length=data.length;
+        for (let i=0;i<length;i++){
             goodsStyle(data[i]);
+            if(i!==length-1){
+                let hr = document.createElement("hr"); //分割线
+                $('.box').append(hr);
+            }
         }
    }
 })
@@ -47,21 +51,21 @@ function goodsStyle(goods){
     var button=document.createElement("button");//购物车按键
 //赋类
     boxDiv.setAttribute("class", "row mt-2");
-    imgDiv.setAttribute("class", "col-5 border border-danger p-1 text-center");
-    infoDiv.setAttribute("class", "col-5");
-    buttonDiv.setAttribute("class", "col-2");
-    button.setAttribute("class", "btn btn-info ");
+    imgDiv.setAttribute("class", "col-5 p-1 text-center");
+    infoDiv.setAttribute("class", "col-4");
+    buttonDiv.setAttribute("class", "col-3");
+    button.setAttribute("class", "btn btn-primary");
     img.setAttribute("class", "img-fluid img-thumbnail");
     titleDiv.setAttribute("class", "font-weight-bold text-monospace");
-    conDiv.setAttribute("class", "text-primary");
+    conDiv.setAttribute("class", "text-primary text-truncate");
 //css样式
     boxDiv.setAttribute("style", "height:18rem;");
     titleDiv.setAttribute("style", "font-size:2rem;");
-    conDiv.setAttribute("style", "font-size:1rem;text-indent:2em;");
+    conDiv.setAttribute("style", "font-size:2rem;text-indent:2em;");
     img.setAttribute("style", "width: 18rem;height: 18rem");
-    buttonDiv.setAttribute("style", "margin-top: 8rem");
+    buttonDiv.setAttribute("style", "margin-top: 7rem;");
 //赋内容
-    titleDiv.innerHTML = goods.jobNoShort+"-"+goods.surveyType;
+    titleDiv.innerHTML = "商品编号:"+goods.jobNoShort+"<br/>商品名:"+goods.surveyType;
     conDiv.innerHTML=goods.vehicle;
     button.innerHTML="加入购物车";
 //添加URL

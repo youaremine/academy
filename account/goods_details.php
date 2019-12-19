@@ -19,14 +19,16 @@ else
 
 $jobNoShort=filter_input(INPUT_GET,'jobNoShort');
 $type=filter_input(INPUT_POST,TYPE);
-include_once("../templates/account/goods_details.html");
-if ($type=='q'){
-    if(!empty($jobNoShort)){
+if(!empty($jobNoShort)){
     $ja = new JobsAccess($db);
     $arr=$ja->getGoodsUrl(2,$jobNoShort);
-    echo $arr;
+    setcookie("ImgUrl",$arr,time()+10);
+}else if($type=="q"){
+    $img_url=$_COOKIE['ImgUrl'];
+    echo $img_url;
     return;
 }
-}
+include_once("../templates/account/goods_details.html");
+
 
 
