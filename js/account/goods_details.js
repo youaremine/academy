@@ -16,12 +16,12 @@ $(document).ready(function () {
 function getInfo() {
     let result;
     $.ajax({
-        url: "../account/goods_details.php",
+        url: "../account/jobs_4_bak.php",
         type: "post",
         dataType: "JSON",
         async: false,
         data: {
-            TYPE: "q"
+            REQUEST: "w"
         },
         success: function (e) {
             result = e;
@@ -64,7 +64,7 @@ function imgPage(url, i) {
     let divElement = document.createElement("div");
     let imgElement = document.createElement("img");
 //赋类
-    if (i == 1) {
+    if (i == 0) {
         liElement.setAttribute("class", "active");
         divElement.setAttribute("class", "carousel-item active");
     } else {
@@ -82,6 +82,7 @@ function imgPage(url, i) {
     $('.img-inner').append(divElement);
     touchSwitch(imgElement);
 }
+
 
 /**
  * 返回上一页
@@ -112,10 +113,10 @@ function touchMove(e) {
         var moveX = e.touches[0].clientX - startX;//触摸滑动距离
         if(moveX < -25) { //向左滑动
             e.preventDefault(); //浏览器不要执行与事件关联的默认动作
-            $('.carousel').carousel('prev')
+            $('.carousel').carousel('prev')//向左滑动执行事件
         } else if(moveX > 25) { //向右滑动
             e.preventDefault(); //浏览器不要执行与事件关联的默认动作
-            $('.carousel').carousel('next')
+            $('.carousel').carousel('next')//向左滑动执行事件
         }
     }
 }

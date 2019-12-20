@@ -103,12 +103,10 @@ if($type == 'opening'){
 
     $msa->order = 'ORDER BY MS.plannedSurveyDate ASC';
     $confirmed_job = $msa->GetListSearch($ms);
-
     $ms->surveyorCode = '';
     $msoa->order = 'ORDER BY plannedSurveyDate ASC ';
     $applied_job = $msoa->GetListSearchOpening($ms,'applied',$surveyorCode);
     $rs = $msoa->GetListSearchOpening($ms,'opening',$surveyorCode);
-
     $rs = check_repeat_job($confirmed_job,$applied_job,$rs);
 
 }elseif($type == 'applied'){

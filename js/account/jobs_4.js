@@ -1,5 +1,6 @@
 $(document).ready(function(){
-   let data= getInfo();
+   let data= getInfo('q');
+   console.log(data);
    if (data!=="" && data!==null){
        let length=data.length;
         for (let i=0;i<length;i++){
@@ -13,18 +14,18 @@ $(document).ready(function(){
 })
 
 /**
- * 向后端发送请求，获取物品信息
+ * 向后端发送请求，获取信息
  * @returns {*} 返回一个JSON对象
  */
-function getInfo(){
+function getInfo(n){
     var result;
     $.ajax({
-        url:"../account/jobs_4.php",
+        url:"../account/jobs_4_bak.php",
         type:"post",
         dataType:"JSON",
         async:false,
         data:{
-            TYPE:"q"
+            REQUEST:n
         },
         success:function(e){
             result=e;
@@ -57,11 +58,11 @@ function goodsStyle(goods){
     button.setAttribute("class", "btn btn-primary");
     img.setAttribute("class", "img-fluid img-thumbnail");
     titleDiv.setAttribute("class", "font-weight-bold text-monospace");
-    conDiv.setAttribute("class", "text-primary text-truncate");
+    conDiv.setAttribute("class", "text-dark text-truncate");
 //css样式
     boxDiv.setAttribute("style", "height:18rem;");
     titleDiv.setAttribute("style", "font-size:2rem;");
-    conDiv.setAttribute("style", "font-size:2rem;text-indent:2em;");
+    conDiv.setAttribute("style", "font-size:2rem;");
     img.setAttribute("style", "width: 18rem;height: 18rem");
     buttonDiv.setAttribute("style", "margin-top: 7rem;");
 //赋内容
@@ -73,6 +74,8 @@ function goodsStyle(goods){
     img.setAttribute("src", ".."+urlArr[0]);
     var urlDetails="./goods_details.php?jobNoShort="+goods.jobNoShort;
     infoA.setAttribute("href", urlDetails);
+//添加事件
+    button.setAttribute("onclick","addPlan(this)");
 //添加节点
     imgDiv.appendChild(img);
     buttonDiv.appendChild(button);
@@ -83,4 +86,13 @@ function goodsStyle(goods){
     boxDiv.appendChild(buttonDiv);
     infoA.appendChild(boxDiv);
     $('.box').append(infoA);
+}
+
+/**
+ * 加入购物车事件
+ * @param event
+ */
+function addPlan(event){
+    alert(1);
+    return false;
 }
