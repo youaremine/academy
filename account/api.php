@@ -78,7 +78,15 @@ WHERE 1=1 and config_name = 'chargedLimit' ";
         $jobNoNew2 = $_REQUEST['jobNoNew2'];
         $jobNoNew3 = $_REQUEST['jobNoNew3'];
         $jobNoNew4 = $_REQUEST['jobNoNew4'];
+        if($_REQUEST['identifier']=='0'){
+            $identifier=false;
+        }else{
+            $identifier=true;
+        }
+        //调用此处检测是否加入购物车
         $jobNoNewArr = array($jobNoNew,$jobNoNew2,$jobNoNew3,$jobNoNew4);
+
+        if($identifier){
         //检测是否有冲突
         $isBusy = false;
         $currJobNoNews = array();
@@ -86,6 +94,7 @@ WHERE 1=1 and config_name = 'chargedLimit' ";
             if (!empty($item)) {
                 $currJobNoNews[] = $item;
                 $_tmpIsBusy = _checkIsBusy($db,$surveyorCode,$item);
+
                 if($_tmpIsBusy) {
                     $isBusy = $_tmpIsBusy;
                     break;
@@ -100,11 +109,12 @@ WHERE 1=1 and config_name = 'chargedLimit' ";
             );
             die(json_encode($message));
         }
-
+        }
         if (!empty($s))
         {
             $sur = $rs[0];
         }
+        if($identifier){
         //檢查項目是否已經被人領取
         $msoa = new MainScheduleOpenAccess($db);
 
@@ -123,6 +133,7 @@ WHERE 1=1 and config_name = 'chargedLimit' ";
                 'message' => '抱歉，該課堂已被其他學員搶先一步。'
             );
             die(json_encode($message));
+        }
         }
 
         //檢查通過, 直接插入數據.
@@ -167,12 +178,12 @@ function _checkIsBusy($db,$surveyorCode,$jobNoNew) {
     //if($v->plannedSurveyDate != '0000-00-00'){
         $isBusy = $msa->IsBusyTime($surveyorCode,$v->plannedSurveyDate,$v->startTime_1,$v->endTime_1);
     //}
-
     return $isBusy;
 }
 
 function autoAssign($sur, $jobNoNew,$record_surveyor = false)
 {
+
     global $db;
     $assignHour = 0;
     $delSql = "UPDATE Survey_SurveyorMainSchedule SET delFlag='yes' WHERE ";
@@ -200,6 +211,7 @@ function autoAssign($sur, $jobNoNew,$record_surveyor = false)
     }
     $delSql .= $delSqlWhere;
 // 		echo $delSql;exit();
+
     $db->query($delSql);
     $db->query($sql);
 
@@ -207,7 +219,7 @@ function autoAssign($sur, $jobNoNew,$record_surveyor = false)
     $ms = new MainSchedule();
     $ms->jobNoNew = $jobNoNew;
     $msa = new MainScheduleAccess($db);
-    $msa->Assign2Surveyor($sur, $jobNoNew,true,$sur);
+    $msa->Assign2Surveyor($sur, $jobNoNew,true,$sur);//写入住数据库计划
 
     $assignHour = $msa->GetEstimatedManHour($ms);
     $assignHour = 0 - $assignHour;

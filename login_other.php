@@ -209,7 +209,7 @@ class LoginOauth {
 
 
 
-$type = $_GET['type'];
+        $type = $_GET['type'];
 $identifier = $_GET['identifier'];
 $a = new LoginOauth($type,$identifier,$conf["dbConnectStr"]["BusSurvey"]);
 

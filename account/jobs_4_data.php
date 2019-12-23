@@ -3,20 +3,30 @@
 include_once ("../includes/config.inc.php");
 include_once ("../includes/config.plugin.inc.php");
 
-$request=filter_input(INPUT_POST,REQUEST);
+$request=filter_input(INPUT_POST,'REQUEST');
 $jobNoShort=filter_input(INPUT_GET,'jobNoShort');
+$iden=filter_input(INPUT_POST,'IDEN');
+
+$ja = new JobsAccess($db);
+
 
 
 if(!empty($jobNoShort)){
-    $ja = new JobsAccess($db);
     $arr=$ja->getGoodsUrl(2,$jobNoShort);
     setcookie("ImgUrl",$arr,time()+10);
-}else if($request=="w"){
-    $img_url=$_COOKIE['ImgUrl'];
-    echo $img_url;
-    return;
+}
+if($request=="w"){
+    if(!empty($iden)){
+        $userId=$_SESSION['surveyorId'];
+        $arr=$ja->getGoodsUrl(3,$iden,$userId);
+        echo $arr;
+        return;
+    }else{
+        $img_url=$_COOKIE['ImgUrl'];
+        echo $img_url;
+        return;
+    }
 }else if($request=="q"){
-    $ja = new JobsAccess($db);
     $arr=$ja->getGoodsUrl(1);
     echo $arr;
     return;

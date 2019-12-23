@@ -4,7 +4,10 @@ $(document).ready(function () {
         let iden = data[0].jobNoNew;
         let info = data[0].vehicle;
         let imgUrl = data[0].img_url;
-        analysisDate(iden, info, imgUrl);
+        let total=data[0].total;
+        let surplus=data[0].surplus;
+         judgePlan(iden);
+        analysisDate(iden, info, imgUrl,total,surplus);
     }
 
 })
@@ -13,15 +16,16 @@ $(document).ready(function () {
  * 向后端发送请求，获取物品信息
  * @returns {*} 返回一个JSON对象
  */
-function getInfo() {
+function getInfo(iden=null) {
     let result;
     $.ajax({
-        url: "../account/jobs_4_bak.php",
+        url: "../account/jobs_4_data.php",
         type: "post",
         dataType: "JSON",
         async: false,
         data: {
-            REQUEST: "w"
+            REQUEST: "w",
+            IDEN:iden
         },
         success: function (e) {
             result = e;
@@ -36,20 +40,29 @@ function getInfo() {
  * @param iden 传回的物品编号
  * @param info 传回的详细内容
  * @param imgUrl 传回的图片url
+ * @param total 传回的物品总数
+ * @param surplus 传回剩余物品数量
  */
-function analysisDate(iden, info, imgUrl) {
-    let urlArr = imgUrl.split(",");
+function analysisDate(iden, info, imgUrl,total,surplus) {
     $(".info-table tr:first>td:nth-of-type(2)").text(iden);
     $(".info-table tr:nth-of-type(2)>td:nth-of-type(2)").text(info);
-    let length = urlArr.length;
-    for (let i = 0; i < length; i++) {
-        if (i == length - 1) {
-            var numb = urlArr[i].indexOf('.');
-            if (numb == -1) {
-                break;
+    $(".info-table tr:nth-of-type(3)>td:nth-of-type(2)").text(total);
+    $(".info-table tr:nth-of-type(4)>td:nth-of-type(2)").text(surplus);
+
+    if(imgUrl!==null && imgUrl!==""){
+        let urlArr = imgUrl.split(",");
+        let length = urlArr.length;
+        for (let i = 0; i < length; i++) {
+            if (i == length - 1) {
+                var numb = urlArr[i].indexOf('.');
+                if (numb == -1) {
+                    break;
+                }
             }
+            imgPage(urlArr[i], i);
         }
-        imgPage(urlArr[i], i);
+    }else{
+        imgPage("/images/goods/20191220150910-5dfc739692f10.jpg",0);
     }
 }
 
@@ -118,5 +131,40 @@ function touchMove(e) {
             e.preventDefault(); //浏览器不要执行与事件关联的默认动作
             $('.carousel').carousel('next')//向左滑动执行事件
         }
+    }
+}
+
+/**
+ * 加入购物车
+ * @param event
+ */
+function addPlan(event){
+    var num= $(".info-table tr:first>td:nth-of-type(2)").text();
+    $.ajax({
+        type : "GET",
+        url : "./api.php",
+        data : "q=selectJob&jobNoNew=" +num+"&identifier=0",
+        dataType : "json",
+        success : function(msg) {
+            if(msg.success){
+                event.innerHTML="已添加";
+                event.setAttribute('class','btn btn-danger');
+                event.setAttribute('onclick','');
+            }
+        }
+    });
+}
+
+/**
+ * 更改已购买的样式
+ * @param iden
+ */
+function judgePlan(iden){
+    iden=iden.substring(0,4);
+    var judgeInfo=getInfo(iden);
+    if (judgeInfo!==null && judgeInfo!==""){
+        $('.table-button button:first').attr('class','btn btn-danger');
+        $('.table-button button:first').attr('onclick','');
+        $('.table-button button:first').text('已购买');
     }
 }

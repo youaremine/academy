@@ -652,24 +652,67 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
     }
 
     /**
-     * @param $case 参数为1是，获取物品ID唯一资料，参数为2时，获取指定物品ID资料
-     * @param null $jobNoShort 当参数为2时，此参数才有意义，代表指定的物品ID
+     * @param $case 参数为1是，获取开放的物品资料，参数为2时，获取指定物品ID资料，参数3时获取已购买物品资料
+     * @param null $jobNoShort 当参数1等于2时，此参数代表指定的物品ID。当参数1等于3是,此参数代表用户id
+     * @param null $userId 用户id;
      * @return false|string
      */
-    function getGoodsUrl($case, $jobNoShort = null)
+    function getGoodsUrl($case, $jobNoShort = null,$userId=null)
     {
         global $conf;
         switch ($case) {
             case 1:
-                $sql = "SELECT `jobNoShort`,`jobNoNew`,`img_url`,`surveyType`,`vehicle` FROM 
-{$conf['table']['prefix']}MainSchedule WHERE `img_url` IS NOT NULL GROUP BY `jobNoShort`";
+                $sql = "SELECT
+    `jobNoShort`,
+    min(`jobNoNew`) as `jobNoNew`,
+    `img_url`,
+    `surveyType`,
+    `vehicle`
+FROM
+    Survey_MainSchedule
+WHERE
+    1 = 1 AND jobNoNew NOT LIKE '%ss' AND jobNoNew NOT LIKE '%tt' AND jobNoNew NOT LIKE '%uu' AND jobNoNew IN(
+    SELECT
+        `jobNoNew`
+    FROM
+        Survey_MainScheduleOpen
+    WHERE
+        delFlag = 'no' AND applySurvId = 0 
+) AND is_image = 1 AND `surveyorCode` = '' AND `surveyorName` = '' AND `surveyorTelephone` = ''
+GROUP BY `jobNoShort` ASC";
                 break;
             case 2:
-                $sql = "SELECT `jobNoNew`,`vehicle`,`img_url` FROM {$conf['table']['prefix']}MainSchedule WHERE
-                    `jobNoNew` =(SELECT `jobNoNew` FROM {$conf['table']['prefix']}MainSchedule WHERE 
-                    `jobNoShort` = '{$jobNoShort}' AND `surveyorCode`=''AND `surveyorName` =''AND 
-                    `surveyorTelephone` ='' GROUP BY `jobNoNew` LIMIT 1)";
+                $sql = "SELECT
+    `jobNoNew`,
+    `vehicle`,
+    `img_url`,
+    (SELECT COUNT(*) FROM Survey_MainSchedule WHERE `jobNoShort` = '{$jobNoShort}') as 'total',
+    (SELECT COUNT(*) FROM Survey_MainSchedule WHERE `jobNoShort` = '{$jobNoShort}' AND `surveyorCode` = '' AND `surveyorName` = '' AND `surveyorTelephone` = '') as 'surplus'
+FROM
+    Survey_MainSchedule
+WHERE
+        `jobNoShort` = '{$jobNoShort}' AND `surveyorCode` = '' AND `surveyorName` = '' AND `surveyorTelephone` = ''
+    GROUP BY
+        `jobNoNew`
+    LIMIT 1
+";
                 break;
+            case 3:
+                $sql="SELECT
+    `jobNo`,
+    `jobNoNew`
+FROM
+      `Survey_MainSchedule`
+WHERE
+    `jobNo` = '{$jobNoShort}' AND `surveyorTelephone` IN(
+    SELECT
+        `contact`
+    FROM
+        `Survey_Surveyor`
+    WHERE
+        `survId` = '{$userId}'
+)
+                ";
         }
         $datas = $this->db->query($sql);
         while ($data = mysqli_fetch_assoc($datas)) {

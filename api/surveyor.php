@@ -76,6 +76,7 @@ switch ($data['q']) {
 				$message['sign'] = $sign;
 				//写入到文件中
 				$filename = $conf["path"]["sign"].$sign;
+
 				file_put_contents($filename,$s->survId);
 			}
 		} else {

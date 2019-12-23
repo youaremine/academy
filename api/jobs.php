@@ -1078,7 +1078,9 @@ function insert_Class($jobNo,$insert_num,$insert_data,$countStart = 0){
         $sqlData['map_address'] = $insert_data['map_address'];
         $sqlData['diy_name'] = $insert_data['diy_name'];
         $sqlData['diy_value'] = $insert_data['diy_value'];
-        $sqlData['img_url']=$insert_data['imgUrl'];
+        $sqlData['img_url'] = array_key_exists('imgUrl',$insert_data)?$insert_data['imgUrl']:'';//TODO
+        $sqlData['is_image'] = array_key_exists('isImage',$insert_data)?$insert_data['isImage']:0;//TODO
+
         $insrtData[] = $sqlData;
     }
     foreach($insrtData as $k=>$v){
