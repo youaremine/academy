@@ -40,10 +40,12 @@ switch ($data['q']) {
         editClass($data);
         break;
 	case 'login' :
+
+
 		$username = $data['username'];
 		$password = $data['password'];
 		$login = new SurveyorLogin ( $db );
-		if ($login->Login ( $username, $password )) {
+		if ($login->Login ( $username, $password )) {//判断密码是否正确
 			$s = new Surveyor ();
 			$s->company = '';
 			$s->status = 'active';

@@ -1,92 +1,123 @@
 <?php
 
-include_once("./config.inc.php");
+include("../includes/config.inc.php");
+class UserAuto
+{
 
-class UserAuto{
+    private $type, $token, $user_id, $surveyor;
 
-    private  $type,$token,$user_id,$contact,$surveyor;
-        public function __construct($type,$token,$user_id){
-            $this->type=$type;
-            $this->token=$token;
-            $this->user_id=$user_id;
-        }
-
-    /**设置属性
-     * @param $type 第三方账号类型
-     * @param $token 第三方账号标识
-     * @param null $user_id 用户ID
-     * @param null $contact 用户电话
-     */
-        public function setInfo($type,$token,$user_id=null,$contact=null){
-            $this->type=$type;
-            $this->token=$token;
-            $this->user_id=$user_id;
-            $this->contact=$contact;
-        }
-
+    public function setInfo($type, $token, $user_id = null){
+        $this->type = $type;
+        $this->token = $token;
+        $this->user_id = $user_id;
+    }
+    public function setUserId($user_id){
+        $this->user_id = $user_id;
+    }
+    public function getUserId(){
+        return $this->user_id;
+    }
     /**验证第三方登录
      * @return bool
      */
-        public function verify(){
-            global $conf;
-            $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
-            $sql="SELECT
-                    COUNT(id) AS `num`
+    public function verify()
+    {
+        global $conf;
+        $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
+        $sql = "SELECT
+                    `user_id`
                     FROM
-                     `survey_user_auth`
+                     `Survey_User_Auth`
                     WHERE
                      `type` = '{$this->type}' AND `auto_token` = '{$this->token}'
                      ";
-            $data=$db->query($sql);
-            if($data['num']>0){
-                return true;
-            }else{
-                return false;
-            }
+        $datas = $db->query($sql);
+        $data=mysqli_fetch_array($datas);
+        $num=mysqli_num_rows($datas);
+        if ($num > 0) {
+            $this->setUserId($data['user_id']);
+            $arr=array(
+                'status'=>true,
+                'info'=>$data
+            );
+            return $arr;
+        } else {
+            return false;
         }
+    }
 
     /**绑定第三方账号
      * @return bool
      */
-        public function bindUser(){
-            global $conf;
-            $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
-            $sql="INSERT INTO `survey_user_auth` VALUE `user_id`={$this->user_id},`contact`='{$this->contact}',`type`='{$this->type}',`auto_token`='{$this->token}'";
-            $data=$db->query($sql);
-            if ($data){
-                return true;
-            }else{
-                return false;
-            }
-
+    public function bindUser()
+    {
+        global $conf;
+        $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
+        $sql = "INSERT INTO `Survey_User_Auth` VALUE `user_id`='{$this->user_id}',`type`='{$this->type}',`auto_token`='{$this->token}'";
+        $data = $db->query($sql);
+        if ($data) {
+            return true;
+        } else {
+            return false;
         }
+
+    }
 
     /**
-     * 注册第三方账号
+     * 查询手机是否为原先账户
      */
-        public function register(){
+    public function register(){
 
-        }
+    }
+
     /**
      * 将登录后的信息保存到session.
      *
      * @access private
      */
-   public function SaveSession()
+    public function SaveSession()
     {
         $_SESSION['surveyorId'] = $this->user_id;
-        $_SESSION['surveyor']=$this->surveyor;
+        $_SESSION['surveyor'] = $this->surveyor;
     }
 
-    /**获取账号信息
-     * @return false|string 返回false或者json信息
+    /**登陆成功后获取账户信息
+     * @return array 返回用户信息数组
      */
     public function inpuierUser(){
         global $conf;
         $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
-       $sql="SELECT * FROM `Survey_Surveyor` WHERE  `contact`='{$this->contact}'";
-       $data=$db->query($sql);
-       return json_encode($data,JSON_UNESCAPED_UNICODE);
+        $sql = "SELECT
+    s.*,
+    u.engName AS inputUsername,
+    u2.engName AS updateUsername
+FROM
+    Survey_Surveyor s
+LEFT JOIN Survey_Users u ON
+    s.inputUserId = u.userId
+LEFT JOIN Survey_Users u2 ON
+    s.updateUserId = u2.userId
+WHERE
+    1 = 1 AND s.survId ='{$this->getUserId()}'";
+        $datas = $db->query($sql);
+        while ($data = mysqli_fetch_assoc($datas)) {
+            $arr[] = $data;
+        }
+        $surveyor['survId'] = $arr[0]['survId'];
+        $surveyor['upSurvId'] = $arr[0]['upSurvId'];
+        $surveyor['chiName'] = $arr[0]['chiName'];
+        $surveyor['engName'] = $arr[0]['engName'];
+        $surveyor['contact'] = $arr[0]['contact'];
+        $surveyor['dipaCode'] = $arr[0]['dipaCode'];
+        $surveyor['survType'] = $arr[0]['survType'];
+        $surveyor['profilePhoto'] = $arr[0]['profilePhoto'];
+        $surveyor['vip_level'] = $arr[0]['vip_level'];
+        $message = array (
+            'status' => 'success',
+            'msg' => '',
+            'surveyor' => $surveyor
+        );
+        return $message;
     }
 }
 
