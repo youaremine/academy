@@ -4,16 +4,24 @@ include_once("./config.inc.php");
 
 class UserAuto{
 
-    private  $type,$token,$user_id;
+    private  $type,$token,$user_id,$contact,$surveyor;
         public function __construct($type,$token,$user_id){
             $this->type=$type;
             $this->token=$token;
             $this->user_id=$user_id;
         }
-        public function setInfo($type,$token,$user_id=null){
+
+    /**设置属性
+     * @param $type 第三方账号类型
+     * @param $token 第三方账号标识
+     * @param null $user_id 用户ID
+     * @param null $contact 用户电话
+     */
+        public function setInfo($type,$token,$user_id=null,$contact=null){
             $this->type=$type;
             $this->token=$token;
             $this->user_id=$user_id;
+            $this->contact=$contact;
         }
 
     /**验证第三方登录
@@ -43,7 +51,7 @@ class UserAuto{
         public function bindUser(){
             global $conf;
             $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
-            $sql="INSERT INTO `survey_user_auth` VALUE `contact`='{$this->user_id}',`type`='{$this->type}',`auto_token`='{$this->token}'";
+            $sql="INSERT INTO `survey_user_auth` VALUE `user_id`={$this->user_id},`contact`='{$this->contact}',`type`='{$this->type}',`auto_token`='{$this->token}'";
             $data=$db->query($sql);
             if ($data){
                 return true;
@@ -59,5 +67,26 @@ class UserAuto{
         public function register(){
 
         }
+    /**
+     * 将登录后的信息保存到session.
+     *
+     * @access private
+     */
+   public function SaveSession()
+    {
+        $_SESSION['surveyorId'] = $this->user_id;
+        $_SESSION['surveyor']=$this->surveyor;
+    }
+
+    /**获取账号信息
+     * @return false|string 返回false或者json信息
+     */
+    public function inpuierUser(){
+        global $conf;
+        $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
+       $sql="SELECT * FROM `Survey_Surveyor` WHERE  `contact`='{$this->contact}'";
+       $data=$db->query($sql);
+       return json_encode($data,JSON_UNESCAPED_UNICODE);
+    }
 }
 

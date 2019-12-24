@@ -93,7 +93,7 @@ function imgPage(url, i) {
     divElement.appendChild(imgElement);
     $('.img-indicator').append(liElement);
     $('.img-inner').append(divElement);
-    touchSwitch(imgElement);
+    // touchSwitch(imgElement);
 }
 
 
@@ -101,7 +101,7 @@ function imgPage(url, i) {
  * 返回上一页
  */
 function returnTop() {
-    history.go(-1);
+    top.location='./jobs_4.php';
 }
 
 /**

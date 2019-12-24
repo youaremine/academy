@@ -56,26 +56,30 @@ function goodsStyle(goods,sign){
     // imgDiv.setAttribute("class", "col-5 p-1 text-center");
     // infoDiv.setAttribute("class", "col-4");
     imgDiv.setAttribute("class", "col-7 p-1 text-center");
-    infoDiv.setAttribute("class", "col-5");
-    buttonDiv.setAttribute("class", "col-3");
+    infoDiv.setAttribute("class", "col-5 p-0 pt-1 pl-1");
+    infoA.setAttribute('class','col-10 row');
+    buttonDiv.setAttribute("class", "col-2 p-0");
     img.setAttribute("class", "img-fluid img-thumbnail");
-    titleDiv.setAttribute("class", "font-weight-bold text-monospace");
+    titleDiv.setAttribute("class", " ");
     conDiv.setAttribute("class", "text-dark text-truncate");
     if(sign){
         button.setAttribute("class", "btn btn-danger");
     }else{
         button.setAttribute("class", "btn btn-primary");
     }
-    infoA.setAttribute('class','col-9 row');
 //css样式
-    boxDiv.setAttribute("style", "height:18rem;");
-    titleDiv.setAttribute("style", "font-size:2rem;");
-    conDiv.setAttribute("style", "font-size:2rem;");
-    img.setAttribute("style", "width: 18rem;height: 18rem");
-    buttonDiv.setAttribute("style", "margin-top: 7rem;");
+    boxDiv.setAttribute("style", "height:9rem;");
+    titleDiv.setAttribute("style", "font-size:0.8rem;");
+    conDiv.setAttribute("style", "font-size:0.8rem;");
+    img.setAttribute("style", "width: 9rem;height: 9rem");
+    buttonDiv.setAttribute("style", "line-height:9rem;");
 //赋内容
     titleDiv.innerHTML = "商品编号:"+goods.jobNoShort+"<br/>商品名:"+goods.surveyType;
-    conDiv.innerHTML=goods.vehicle;
+    if(goods.vehicle!== null && goods.vehicle !==""){
+        conDiv.innerHTML="详情:"+goods.vehicle;
+    }else{
+        conDiv.innerHTML="详情:暂无";
+    }
     if(sign){
         button.innerHTML="已添加";
     }else{
@@ -109,6 +113,7 @@ function goodsStyle(goods,sign){
     imgDiv.appendChild(img);
     buttonDiv.appendChild(button);
     infoDiv.appendChild(titleDiv);
+    infoDiv.appendChild(conDiv);
     infoDiv.appendChild(imgDiv);
     infoA.appendChild(imgDiv);
     infoA.appendChild(infoDiv);
