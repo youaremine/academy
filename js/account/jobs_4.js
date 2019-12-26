@@ -44,24 +44,22 @@ function goodsStyle(goods,sign){
 //新建元素
     var infoA = document.createElement("a"); //存储整个信息a标签
     var boxDiv=document.createElement("div");//外层div
-    var imgDiv=document.createElement("div");//图片div
+    var imgDiv=document.createElement("div");//左侧div
+    var img=document.createElement("img")//图片img
+
+    var rightDiv=document.createElement("div");//右侧div
     var infoDiv=document.createElement("div");//信息div
     var titleDiv=document.createElement("div");//标题div
     var conDiv=document.createElement("div");//内容div
     var buttonDiv=document.createElement("div");//按键div
-    var img=document.createElement("img")//图片img
     var button=document.createElement("button");//购物车按键
 //赋类
     boxDiv.setAttribute("class", "row mt-2");
-    // imgDiv.setAttribute("class", "col-5 p-1 text-center");
-    // infoDiv.setAttribute("class", "col-4");
-    imgDiv.setAttribute("class", "col-7 p-1 text-center");
-    infoDiv.setAttribute("class", "col-5 p-0 pt-1 pl-1");
-    infoA.setAttribute('class','col-10 row');
-    buttonDiv.setAttribute("class", "col-2 p-0");
-    img.setAttribute("class", "img-fluid img-thumbnail");
-    titleDiv.setAttribute("class", " ");
+    imgDiv.setAttribute("class", "col-6 p-1 text-center");
+    rightDiv.setAttribute('class','col-6 p-0');
     conDiv.setAttribute("class", "text-dark text-truncate");
+    img.setAttribute("class", "img-fluid img-thumbnail");
+    infoDiv.setAttribute("class", "p-1");
     if(sign){
         button.setAttribute("class", "btn btn-danger");
     }else{
@@ -72,18 +70,19 @@ function goodsStyle(goods,sign){
     titleDiv.setAttribute("style", "font-size:0.8rem;");
     conDiv.setAttribute("style", "font-size:0.8rem;");
     img.setAttribute("style", "width: 9rem;height: 9rem");
-    buttonDiv.setAttribute("style", "line-height:9rem;");
+    infoDiv.setAttribute("style", "height:6rem");
+    buttonDiv.setAttribute("style", "line-height:3rem;height:3rem;text-align:center");
 //赋内容
-    titleDiv.innerHTML = "商品编号:"+goods.jobNoShort+"<br/>商品名:"+goods.surveyType;
+    titleDiv.innerHTML = "商品編號:"+goods.jobNoShort+"<br/>商品名:"+goods.surveyType;
     if(goods.vehicle!== null && goods.vehicle !==""){
-        conDiv.innerHTML="详情:"+goods.vehicle;
+        conDiv.innerHTML="詳情:"+goods.vehicle;
     }else{
-        conDiv.innerHTML="详情:暂无";
+        conDiv.innerHTML="詳情:暫無";
     }
     if(sign){
         button.innerHTML="已添加";
     }else{
-        button.innerHTML="加入购物车";
+        button.innerHTML="加入購物車";
     }
     button.setAttribute('data-num',goods.jobNoNew);
 //添加URL
@@ -97,29 +96,20 @@ function goodsStyle(goods,sign){
     infoA.setAttribute("href", urlDetails);
 //添加事件
     if(!sign){
-        button.setAttribute("onclick","addPlan(this)");
+        // button.setAttribute("onclick","addPlan(this)");
     }
-//添加节点
-//     imgDiv.appendChild(img);
-//     buttonDiv.appendChild(button);
-//     boxDiv.appendChild(imgDiv);
-//     infoDiv.appendChild(titleDiv);
-//     infoDiv.appendChild(conDiv);
-//     boxDiv.appendChild(infoDiv);
-//     boxDiv.appendChild(buttonDiv);
-//     infoA.appendChild(boxDiv);
-//     $('.box').append(infoA);
     //添加节点
     imgDiv.appendChild(img);
     buttonDiv.appendChild(button);
     infoDiv.appendChild(titleDiv);
+    infoDiv.appendChild(titleDiv);
     infoDiv.appendChild(conDiv);
-    infoDiv.appendChild(imgDiv);
-    infoA.appendChild(imgDiv);
-    infoA.appendChild(infoDiv);
-    boxDiv.appendChild(infoA);
-    boxDiv.appendChild(buttonDiv);
-    $('.box').append(boxDiv);
+    rightDiv.appendChild(infoDiv);
+    rightDiv.appendChild(buttonDiv);
+    boxDiv.appendChild(imgDiv);
+    boxDiv.appendChild(rightDiv);
+    infoA.appendChild(boxDiv);
+    $('.box').append(infoA);
 
 }
 
@@ -128,6 +118,9 @@ function goodsStyle(goods,sign){
  * @param event
  */
 function addPlan(event){
+    var aEvent=event.parentNode.parentNode.parentNode.parentNode;
+    var aHerf= aEvent.getAttribute("href");
+    aEvent.setAttribute("href", 'javascript:void(0)');
     var num=event.getAttribute('data-num');
     $.ajax({
         type : "GET",
@@ -139,6 +132,7 @@ function addPlan(event){
                event.innerHTML="已添加";
                event.setAttribute('class','btn btn-danger');
                event.setAttribute('onclick','');
+               aEvent.setAttribute("href", aHerf);
            }
         }
     });
@@ -156,4 +150,16 @@ function judgePlan(iden){
     }else{
         return false;
     }
+}
+
+/**
+ * 模态框
+ * @param event
+ */
+function modal(event){
+    var aEvent=event.parentNode.parentNode.parentNode.parentNode;
+    var aHerf= aEvent.getAttribute("href");
+    aEvent.setAttribute("href", 'javascript:void(0)');
+    $('#exampleModalCenter').modal('show');
+    aEvent.setAttribute("href", aHerf);
 }

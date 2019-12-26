@@ -9,7 +9,8 @@ $(document).ready(function () {
          judgePlan(iden);
         analysisDate(iden, info, imgUrl,total,surplus);
     }
-
+    let url="ozzomonitoringsurvey://chat.app/?jobNo="+data[0].jobNoShort+"&refNo="+data[0].jobNoNew+"&surveyType="+data[0].surveyType;
+    $('.serial').attr('href',url);
 })
 
 /**
@@ -44,7 +45,7 @@ function getInfo(iden=null) {
  * @param surplus 传回剩余物品数量
  */
 function analysisDate(iden, info, imgUrl,total,surplus) {
-    $(".info-table tr:first>td:nth-of-type(2)").text(iden);
+    $(".serial>em").text(iden);
     $(".info-table tr:nth-of-type(2)>td:nth-of-type(2)").text(info);
     $(".info-table tr:nth-of-type(3)>td:nth-of-type(2)").text(total);
     $(".info-table tr:nth-of-type(4)>td:nth-of-type(2)").text(surplus);
@@ -83,10 +84,14 @@ function imgPage(url, i) {
     } else {
         divElement.setAttribute("class", "carousel-item");
     }
-    imgElement.setAttribute("class", "d-block w-100");
+    imgElement.setAttribute("class", "d-block w-100 img-fluid");
 //添加方法
     liElement.setAttribute("data-target", "#carouselExampleIndicators");
     liElement.setAttribute("data-slide-to", i);
+//添加属性
+    divElement.setAttribute("style", "width:100%;height:18rem");
+    imgElement.setAttribute("style", "object-fit:contain");
+    liElement.setAttribute("style", "background-color:#088cf4");
 //添加url
     imgElement.setAttribute("src", "/academy" + url);
 //添加节点
@@ -139,13 +144,14 @@ function touchMove(e) {
  * @param event
  */
 function addPlan(event){
-    var num= $(".info-table tr:first>td:nth-of-type(2)").text();
+    var num=$(".serial>em").text();
     $.ajax({
         type : "GET",
         url : "./api.php",
         data : "q=selectJob&jobNoNew=" +num+"&identifier=0",
         dataType : "json",
         success : function(msg) {
+            console.log(msg);
             if(msg.success){
                 event.innerHTML="已添加";
                 event.setAttribute('class','btn btn-danger');

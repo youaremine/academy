@@ -4,17 +4,26 @@
 }
 
 .box {
-    width: 98%;
+    width: 100%;
     margin: auto;
     padding: 1rem;
 }
-
-td{
-    min-width:10rem;
-    width: 50%;
+.info-table tr td{
+    width: 65%;
     font-size: 0.8rem;
     line-height: 100%;
 }
+.info-table tr td:first-child{
+    width: 35%;
+    font-size: 0.8rem;
+    line-height: 100%;
+}
+/*td{*/
+/*    !*min-width:10rem;*!*/
+/*    width: 50%;*/
+/*    font-size: 0.8rem;*/
+/*    line-height: 100%;*/
+/*}*/
 .info-table tr:nth-of-type(2)>td:nth-of-type(2){
     word-wrap: break-word;
     word-break: break-all;
@@ -28,3 +37,4 @@ td{
     width:7rem ;
     height: 3rem;
 }
+

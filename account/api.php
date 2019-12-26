@@ -210,7 +210,6 @@ function autoAssign($sur, $jobNoNew,$record_surveyor = false)
         $delSqlWhere = " jobNoNew='{$jobNoNew}'";
     }
     $delSql .= $delSqlWhere;
-// 		echo $delSql;exit();
 
     $db->query($delSql);
     $db->query($sql);

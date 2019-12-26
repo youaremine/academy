@@ -301,7 +301,7 @@ class JobsAccess
         $where = makeSql($filter, 'where');
         $sql = "SELECT s1.jobNo,s1.class_record_id,s1.jobNoNew,s1.realClass,MIN(surveyType) AS surveyType,MIN(vehicle) AS vehicle
                     ,MIN(surveyTimeHours) AS surveyTimeHours,MIN(startTime_1) AS startTime,MIN(endTime_1) AS endTime,surveyLocationDistrict
-                    ,MIN(surveyLocation) AS surveyLocation,MIN(plannedSurveyDate) AS plannedSurveyDate,s2.isOpen2,s3.isOpen,s1.bookLat,s1.bookLong,s1.map_address,s1.diy_name,s1.diy_value
+                    ,MIN(surveyLocation) AS surveyLocation,MIN(plannedSurveyDate) AS plannedSurveyDate,s2.isOpen2,s3.isOpen,s1.bookLat,s1.bookLong,s1.map_address,s1.diy_name,s1.diy_value,s1.`img_url`
                 FROM {$conf['table']['prefix']}MainSchedule as s1
 left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen where delFlag='no' group by jobNoNew) as s2 on s2.jobNoNew=s1.jobNoNew
 left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFlag='no' group by jobNo) as s3 on s3.jobNo=s1.jobNo
@@ -310,6 +310,7 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
             {$other} {$limit}";
         $this->db->query($sql);
 //		 echo $sql."<br />";
+//		 exit();
         $result = array();
         $jobNoArray = array();
         $index = 0;
@@ -684,8 +685,10 @@ GROUP BY `jobNoShort` ASC";
             case 2:
                 $sql = "SELECT
     `jobNoNew`,
+    `jobNoShort`,
     `vehicle`,
     `img_url`,
+    `surveyType`,
     (SELECT COUNT(*) FROM Survey_MainSchedule WHERE `jobNoShort` = '{$jobNoShort}') as 'total',
     (SELECT COUNT(*) FROM Survey_MainSchedule WHERE `jobNoShort` = '{$jobNoShort}' AND `surveyorCode` = '' AND `surveyorName` = '' AND `surveyorTelephone` = '') as 'surplus'
 FROM
@@ -704,15 +707,9 @@ WHERE
 FROM
       `Survey_MainSchedule`
 WHERE
-    `jobNo` = '{$jobNoShort}' AND `surveyorTelephone` IN(
-    SELECT
-        `contact`
-    FROM
-        `Survey_Surveyor`
-    WHERE
-        `survId` = '{$userId}'
-)
+    `jobNo` = '{$jobNoShort}' AND `surveyorCode` = '{$userId}'
                 ";
+                break;
         }
         $datas = $this->db->query($sql);
         while ($data = mysqli_fetch_assoc($datas)) {

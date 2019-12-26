@@ -1750,6 +1750,7 @@ function deleteInfo($data){
  */
 function getJobs($data){
 	global $conf,$db;
+
 	if(empty($data['sign'])){
 		$message = array (
 				'status' => 'failed',

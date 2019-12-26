@@ -439,6 +439,8 @@ class MainScheduleOpenAccess
         $query = '';
         if($is_image == true){
             $query .= " AND is_image = 1";
+        }else{
+            $query .= " AND is_image = 0";
         }
         if ($obj->mascId != '')
             $query .= " AND mascId = '" . $obj->mascId . "'";
