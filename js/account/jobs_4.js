@@ -1,5 +1,6 @@
 $(document).ready(function(){
    let data= getInfo('q');
+   $("#emptyWrap").hide();
    if (data!=="" && data!==null){
        let length=data.length;
         for (let i=0;i<length;i++){
@@ -10,6 +11,9 @@ $(document).ready(function(){
                 $('.box').append(hr);
             }
         }
+   }else{
+       $("#emptyWrap").show();
+
    }
 })
 
@@ -80,7 +84,7 @@ function goodsStyle(goods,sign){
         conDiv.innerHTML="詳情:暫無";
     }
     if(sign){
-        button.innerHTML="已添加";
+        button.innerHTML="已購買";
     }else{
         button.innerHTML="加入購物車";
     }
@@ -129,7 +133,7 @@ function addPlan(event){
         dataType : "json",
         success : function(msg) {
            if(msg.success){
-               event.innerHTML="已添加";
+               event.innerHTML="已購買";
                event.setAttribute('class','btn btn-danger');
                event.setAttribute('onclick','');
                aEvent.setAttribute("href", aHerf);
@@ -153,13 +157,8 @@ function judgePlan(iden){
 }
 
 /**
- * 模态框
- * @param event
+ * 设置当物品数量为空时
  */
-function modal(event){
-    var aEvent=event.parentNode.parentNode.parentNode.parentNode;
-    var aHerf= aEvent.getAttribute("href");
-    aEvent.setAttribute("href", 'javascript:void(0)');
-    $('#exampleModalCenter').modal('show');
-    aEvent.setAttribute("href", aHerf);
+function emptyWrap(){
+    $('.emptyWrap').attr('display','block');
 }

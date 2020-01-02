@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,136 +20,149 @@
     <link href="../css/account.css?t={SITEVESION}" rel="stylesheet">
 
     <style>
-      body{
-        padding-top: 20px;
-      }
-      #checkS{
-        text-align: center;
-        border: 1px solid rgb(221, 221, 221);
-        padding: 10px 0px;
-        border-bottom:0px;
-      }
-      .checksc{
-        height: 80px;
-        line-height: 55px;
-        width: 95%;
-      }
+        body {
+            padding-top: 20px;
+        }
+
+        #checkS {
+            text-align: center;
+            border: 1px solid rgb(221, 221, 221);
+            padding: 10px 0px;
+            border-bottom: 0px;
+        }
+
+        .checksc {
+            height: 80px;
+            line-height: 55px;
+            width: 95%;
+        }
     </style>
-  </head>
+</head>
 
-  <body>
+<body>
 
-    <!--<nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">課堂詳細</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="./">個人中心</a></li>
-            <li><a href="../surveyor_profile.php">查詢學費</a></li>
-            <li class="active"><a href="./jobs.php">選取課堂</a></li>
-          </ul>
-        </div>&lt;!&ndash;/.nav-collapse &ndash;&gt;
-      </div>
-    </nav>-->
+<!--<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">課堂詳細</a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="./">個人中心</a></li>
+        <li><a href="../surveyor_profile.php">查詢學費</a></li>
+        <li class="active"><a href="./jobs.php">選取課堂</a></li>
+      </ul>
+    </div>&lt;!&ndash;/.nav-collapse &ndash;&gt;
+  </div>
+</nav>-->
 
-    <div class="container">
-      <div class="row">
+<div class="container">
+    <div class="row">
         <div class="col-md-6">
-          <table class="table table-bordered">
-            <tbody>
-              <tr>
-                <td nowrap="nowrap">課程編號：</td>
-                <td><a href="ozzomonitoringsurvey://chat.app/?jobNo={jobNo}&refNo={jobNoNew}&surveyType={surveyType}">
-                  <i class="icon-comments-alt icon-large"></i>
-                  <em>{jobNoNew}</em></a>
-                  <input type="hidden" id="txtJobNoNew" value="{jobNoNew}"/></td>
-              </tr>
-              <tr>
-                <td>課程日期：</td>
-                <td>{plannedSurveyDate}</td>
-              </tr>
-              <tr>
-                <td>課程時間：</td>
-                <td>{surveyTimeHours},總共{estimatedManHour}小時</td>
-              </tr>
-              <tr>
-                <td>上堂地點：</td>
-                <td>{surveyLocation}</td>
-              </tr>
-              <tr>
-                <td>課堂類型：</td>
-                <td>{surveyType}</td>
-              </tr>
-              <tr>
-                <td>訓練主題：</td>
-                <td>{surveyVehicle}</td>
-              </tr>
-          <!--<tr>
-            <td colspan="2" align="center"><button name="btnPdf" type="button" class="btn btn-lg btn-info search-salary" data-href='{pdfLink}'>PDF詳細表格</button></td>
-          </tr>-->
-          </table>
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <td nowrap="nowrap">事項編號：</td>
+                    <td>
+                        <a href="ozzomonitoringsurvey://chat.app/?jobNo={jobNo}&refNo={jobNoNew}&surveyType={surveyType}">
+                            <i class="icon-comments-alt icon-large"></i>
+                            <em>{jobNoNew}</em></a>
+                        <input type="hidden" id="txtJobNoNew" value="{jobNoNew}"/></td>
+                </tr>
+                <tr>
+                    <td>事項日期：</td>
+                    <td>{plannedSurveyDate}</td>
+                </tr>
+                <tr>
+                    <td>事項時間：</td>
+                    <td>{surveyTimeHours},總共{estimatedManHour}小時</td>
+                </tr>
+                <tr>
+                    <td>事項地點：</td>
+                    <td>{surveyLocation}</td>
+                </tr>
+                <tr>
+                    <td>事項類型：</td>
+                    <td>{surveyType}</td>
+                </tr>
+                <tr>
+                    <td>事項主題：</td>
+                    <td>{surveyVehicle}</td>
+                </tr>
+                <!--<tr>
+                  <td colspan="2" align="center"><button name="btnPdf" type="button" class="btn btn-lg btn-info search-salary" data-href='{pdfLink}'>PDF詳細表格</button></td>
+                </tr>-->
+            </table>
 
 
-          <div id="checkS" >
-            <a  href="ozzoacademy-jobnonew://students.app/?jobNo={jobNo}&refNo={jobNoNew}&surveyType={surveyType}" style="width: 80%; height:80px;line-height:60px ;{successBtnStyle}" type="button" class="btn btn-lg {btnClass} search-salary " {btnDetailConfirmStatus}>{btnDetailConfirmText}</a>
-            <button id="btnDetailConfirm"  type="button" class="btn btn-lg {btnClass} search-salary {btnClass}"  style="{confirmBtnStyle} width: 80%;" {btnDetailConfirmStatus}>{btnDetailConfirmText}</button>
-          </div>
+            <div id="checkS">
+                <a href="ozzoacademy-jobnonew://students.app/?jobNo={jobNo}&refNo={jobNoNew}&surveyType={surveyType}"
+                   style="width: 80%; height:80px;line-height:60px ;{successBtnStyle}" type="button"
+                   class="btn btn-lg {btnClass} search-salary " {btnDetailConfirmStatus}>{btnDetailConfirmText}</a>
+                <button id="btnDetailConfirm" type="button" class="btn btn-lg {btnClass} search-salary {btnClass}"
+                        style="{confirmBtnStyle} width: 80%;" {btnDetailConfirmStatus}>{btnDetailConfirmText}
+                </button>
+            </div>
 
-          <table class="table table-bordered">
-              <tr>
-                <td width="50%" style="text-align: center"><a class='btn btn-primary btn-lg checksc ' href="ozzoacademy://students.app/?jobNo={jobNo}&refNo={jobNoNew}&surveyType={surveyType}">已報名會員</a></td>
-                <td width="50%"><button id="btnDetailReturn" type="button" class="btn btn-lg btn-default search-salary" data-href='jobs_3.php?type={type}'>返回列表</button></td>
-              </tr>
-          </table>
+            <table class="table table-bordered">
+                <tr>
+                    <td width="50%" style="text-align: center"><a class='btn btn-primary btn-lg checksc '
+                                                                  href="ozzoacademy://students.app/?jobNo={jobNo}&refNo={jobNoNew}&surveyType={surveyType}">已報名會員</a>
+                    </td>
+                    <td width="50%">
+                        <button id="btnDetailReturn" type="button" class="btn btn-lg btn-default search-salary"
+                                data-href='jobs_3.php?type={type}'>返回列表
+                        </button>
+                    </td>
+                </tr>
+            </table>
         </div>
-      </div>
-      <?php }?>
+    </div>
+    <?php }?>
     <div class="footer">
-    	© Ozzo Technology (HK) Ltd
+        © Ozzo Technology (HK) Ltd
     </div>
 
-    </div><!-- /.container -->
+</div><!-- /.container -->
 
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../js/bootstrap-3.3.5/js/jquery.min.js"></script>
-    <script src="../js/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-    <script src="../js/account/job-detail.js?t={SITEVESION}"></script>
-  </body>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../js/bootstrap-3.3.5/js/jquery.min.js"></script>
+<script src="../js/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="../js/account/job-detail.js?t={SITEVESION}"></script>
+</body>
 </html>
 <script>
-  var browser={
-    versions:function(){
-      var u = window.navigator.userAgent;
-      return {
-        trident: u.indexOf('Trident') > -1, //IE内核
-        presto: u.indexOf('Presto') > -1, //opera内核
-        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
-        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
-        mobile: !!u.match(/AppleWebKit.*Mobile.*/)||!!u.match(/AppleWebKit/), //是否为移动终端
-        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
-        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
-        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
-        iPad: u.indexOf('iPad') > -1, //是否为iPad
-        webApp: u.indexOf('Safari') == -1 ,//是否为web应用程序，没有头部与底部
-        weixin: u.indexOf('MicroMessenger') == -1 //是否为微信浏览器
+    var browser = {
+        versions: function () {
+            var u = window.navigator.userAgent;
+            return {
+                trident: u.indexOf('Trident') > -1, //IE内核
+                presto: u.indexOf('Presto') > -1, //opera内核
+                webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+                mobile: !!u.match(/AppleWebKit.*Mobile.*/) || !!u.match(/AppleWebKit/), //是否为移动终端
+                ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+                iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+                iPad: u.indexOf('iPad') > -1, //是否为iPad
+                webApp: u.indexOf('Safari') == -1,//是否为web应用程序，没有头部与底部
+                weixin: u.indexOf('MicroMessenger') == -1 //是否为微信浏览器
 
-      };
-    }()
-  }
-  if(!browser.versions.ios && !browser.versions.android){
-    $("#checkS").hide();
-  }
+            };
+        }()
+    }
+    if (!browser.versions.ios && !browser.versions.android) {
+        $("#checkS").hide();
+    }
 
 
 </script>

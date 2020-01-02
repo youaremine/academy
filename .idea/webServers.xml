@@ -13,6 +13,14 @@
           <option name="port" value="22" />
         </fileTransfer>
       </webServer>
+      <webServer id="5528eb86-c71d-446c-815f-b92f60b7ce30" name="bni-hk-marvel" url="http://47.75.165.42">
+        <fileTransfer host="47.75.165.42" port="22" rootFolder="/data0/htdocs/www.ozzotec.com/bni-hk-marvel" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

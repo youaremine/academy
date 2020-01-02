@@ -19,7 +19,7 @@ if (SurveyorLogin::IsLogin())
 	//$selfBefore = $_SESSION['surveyorSelfBefore'];
 	//if(empty($selfBefore) || strtotime($selfBefore) < time()){
 		$btnDetailConfirmStatus = "";
-		$btnDetailConfirmText = '選取本課堂';
+		$btnDetailConfirmText = '選取本事項';
 	//}
 	$noCurrUser = "";
 }
@@ -153,7 +153,7 @@ if(count($rs) > 0){
         $isBusy = $msa->IsBusyTime($surveyorCode,$v->plannedSurveyDate,$v->startTime_1,$v->endTime_1);
         if($isBusy && $btnDetailConfirmStatus == ''){
             $btnDetailConfirmStatus = 'disabled="disabled"';
-            $btnDetailConfirmText = '課堂時間與<br />已選取的衝突';
+            $btnDetailConfirmText = '事項時間與<br />已選取的衝突';
         }
         //}
     }else{
@@ -161,7 +161,7 @@ if(count($rs) > 0){
         $btnClass = 'btn-success';
         $successBtnStyle = '';
         $btnDetailConfirmStatus = '';
-        $btnDetailConfirmText = '已選取本課堂';
+        $btnDetailConfirmText = '已選取本事項';
     }
 
 

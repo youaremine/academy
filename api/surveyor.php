@@ -41,7 +41,6 @@ switch ($data['q']) {
         break;
 	case 'login' :
 
-
 		$username = $data['username'];
 		$password = $data['password'];
 		$login = new SurveyorLogin ( $db );
@@ -63,8 +62,11 @@ switch ($data['q']) {
 			$surveyor['survType'] = $s->survType;
 			$surveyor['profilePhoto'] = $s->profilePhoto;
             $surveyor['vip_level'] = $s->vip_level;
+
 			if(!empty($surveyor['profilePhoto'])){
-				$surveyor['profilePhoto'] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.$surveyor['profilePhoto'];
+                if(strpos($surveyor['profilePhoto'],'images/profile-photo')){
+                    $surveyor['profilePhoto'] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.$surveyor['profilePhoto'];
+                }
 			}
 
 			$message = array (

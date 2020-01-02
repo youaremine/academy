@@ -299,24 +299,30 @@ function getClassRecord($data){
     $class_surId = getArrNoNull($data,'class_surId');
     $start_time = isset($data['start_time'])?$data['start_time'] :false;
     $end_time = isset($data['end_time'])?$data['end_time'] :false;
-    if($class_surId != $surInfo->survId){
-        if($surInfo->survType == 'admin' || $surInfo->survType == 'teach'){
+    $is_goods = isset($data['is_goods'])?$data['is_goods'] :false;
 
-            $res = _getClassRecord($class_surId,$start_time,$end_time);
+    if($class_surId != $surInfo->survId){
+
+        if($surInfo->survType == 'admin' || $surInfo->survType == 'teach'){
+            //管理员能查看所有人的
+            $res = _getClassRecord($class_surId,$start_time,$end_time,$is_goods);
         }else{
             returnJson('failed','','Permission Error');
         }
     }else{
-        $res = _getClassRecord($class_surId,$start_time,$end_time);
+        //学员自己只能查自己的
+        $res = _getClassRecord($class_surId,$start_time,$end_time,$is_goods);
     }
     returnJson('success',$res,'');
 }
 
-function _getClassRecord($survId,$start_time = false,$end_time = false){
+function _getClassRecord($survId,$start_time = false,$end_time = false,$is_goods = false){
     global $db;
+
+
     $sql = "SELECT ssc.id as id,ssc.surveyor_id,ssc.jobNoNew,ssc.use_class,ssc.class_remain,ssc.remark,ssc.record_surveyor_id,ssc.record_time,ssc.is_del,ssc.status,ssc.confirm_pdf_create_time,ssc.record_time,
 sm.plannedSurveyDate,sm.surveyType,sm.surveyorCode,sm.startTime_1,sm.jobNo,sm.endTime_1,sscp.id as pdfid,sscp.path as surveyor_pdf,sscp.upload_pdf_time as surveyor_pdf_create_time,sscp.is_set_class,
-sscp2.path as confirm_pdf,ssc.confirm_pdf as confirm_pdfid, ss.chiName as confirm_chiName, ss.engName as confirm_engName
+sscp2.path as confirm_pdf,ssc.confirm_pdf as confirm_pdfid, ss.chiName as confirm_chiName, ss.engName as confirm_engName,sm.is_image
 FROM Survey_SurveyorClassRecord as ssc 
 left Join Survey_MainSchedule as sm on sm.jobNoNew=ssc.jobNoNew
 left Join Survey_Surveyor as ss on ss.survId=ssc.confirm_pdf_create_by
@@ -328,7 +334,12 @@ WHERE ";
     if($start_time !== false && $end_time !== false ){
         $sql .= "sm.plannedSurveyDate >= '$start_time' and sm.plannedSurveyDate <= '$end_time' and ";
     }
+    if($is_goods){
+        $sql.="sm.is_image='1' and ";
+    }
     $sql .= "ssc.surveyor_id = '{$survId}' and ssc.is_del = 0 order by ssc.id desc";
+//    echo $sql;
+//    exit();
     $db->query ( $sql );
     $rows = array();
     while($rs = $db->next_record ()){
@@ -355,7 +366,10 @@ WHERE ";
         $tmp['is_own'] = 0;
         $tmp['pdfid'] = $rs['pdfid'];
         $tmp['confirm_pdfid'] = $rs['confirm_pdfid'];
-
+        $tmp['is_image'] = $rs['is_image'];
+        if(empty($rs['is_image'])){
+            $tmp['is_image']=0;
+        }
         if($rs['surveyorCode'] == $rs['surveyor_id']){
             $tmp['is_own'] = 1;
         }
@@ -976,7 +990,7 @@ function batchEditJobs($data){
         $sqlData['surveyTimeHours'] = $data['surveyTimeHours'];
         $sqlData['estimatedManHour'] = $data['estimatedManHour'];
         $sqlData['totalHours'] = $data['totalHours'];
-
+        $sqlData['img_url'] = $data['img_url'];
 
         foreach($sqlData as $k=>$v){
             if(is_null($v)){
@@ -1078,7 +1092,13 @@ function insert_Class($jobNo,$insert_num,$insert_data,$countStart = 0){
         $sqlData['map_address'] = $insert_data['map_address'];
         $sqlData['diy_name'] = $insert_data['diy_name'];
         $sqlData['diy_value'] = $insert_data['diy_value'];
-        $sqlData['img_url'] = array_key_exists('imgUrl',$insert_data)?$insert_data['imgUrl']:'';//TODO
+
+        if(array_key_exists('img_url',$insert_data)){
+            $sqlData['img_url'] = $insert_data['img_url'];
+        }else{
+            $sqlData['img_url'] = array_key_exists('imgUrl',$insert_data)?$insert_data['imgUrl']:'';//TODO
+        }
+
         $sqlData['is_image'] = array_key_exists('isImage',$insert_data)?$insert_data['isImage']:0;//TODO
 
         $insrtData[] = $sqlData;
@@ -1780,6 +1800,7 @@ function getJobs($data){
             }
         }
     }
+
     $message = array (
 			'status' => 'success',
 			'msg' => '',

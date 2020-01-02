@@ -41,8 +41,7 @@ class UserAuto{
     /**验证第三方登录
      * @return bool
      */
-    public function verify()
-    {
+    public function verify(){
         global $conf;
         $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
         $sql = "SELECT
@@ -66,11 +65,10 @@ class UserAuto{
     /**
      * 注册账户并存信息到用户表
      */
-    public function register()
-    {
+    public function register(){
         global $conf;
         $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
-        $sql = "INSERT INTO `Survey_Surveyor`(`chiName`,`engName`,`avatar`,`contact`) VALUE ('{$this->chi_name}','{$this->eng_name}','{$this->avatar}','{$this->getContact()}')";
+        $sql = "INSERT INTO `Survey_Surveyor`(`chiName`,`engName`,`profilePhoto`,`contact`) VALUE ('{$this->chi_name}','{$this->eng_name}','{$this->avatar}','{$this->getContact()}')";
         $data = $db->query($sql);
         if ($data) {
             return $this->inquire();
@@ -83,11 +81,10 @@ class UserAuto{
         }
     }
 
-    /**写入第三方账号
+    /**写入第三方账号信息
      * @return bool
      */
-    public function bindUser()
-    {
+    public function bindUser(){
         global $conf;
         $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
         $sql = "INSERT INTO `Survey_User_Auth`(`user_id`,`type`,`auto_token`) VALUE ('{$this->getUserId()}','{$this->type}','{$this->token}')";
@@ -103,8 +100,7 @@ class UserAuto{
     /**
      * 查询手机是否为原先账户,是则返回用户ID
      */
-    public function inquire()
-    {
+    public function inquire(){
         global $conf;
         $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
         $sql = "SELECT `survId`FROM `Survey_Surveyor` WHERE `contact`='{$this->getContact()}'";
@@ -132,8 +128,7 @@ class UserAuto{
      *
      * @access private
      */
-    public function SaveSession()
-    {
+    public function SaveSession(){
         $_SESSION['surveyorId'] = $this->user_id;
         $_SESSION['surveyor'] = $this->surveyor;
     }
@@ -141,8 +136,7 @@ class UserAuto{
     /**登陆成功后获取账户信息
      * @return array 返回用户信息数组
      */
-    public function inpuierUser($type = null)
-    {
+    public function inpuierUser($type = null){
         global $conf;
         $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
         $sql = "SELECT
@@ -158,6 +152,7 @@ LEFT JOIN Survey_Users u2 ON
 WHERE
     1 = 1 AND s.survId ='{$this->getUserId()}'";
         $datas = $db->query($sql);
+
         while ($data = mysqli_fetch_assoc($datas)) {
             $arr[] = $data;
         }
@@ -168,16 +163,15 @@ WHERE
         $surveyor['contact'] = $arr[0]['contact'];
         $surveyor['survType'] = $arr[0]['survType'];
         $surveyor['vip_level'] = $arr[0]['vip_level'];
-            $surveyor['vip_level'] = $arr[0]['vip_level'];
-        if (empty($arr[0]['dipaCode'])) {
-            $surveyor['profilePhoto'] = "";
-        } else {
-            $surveyor['profilePhoto'] = $arr[0]['profilePhoto'];
-        }
-        if (empty($arr[0]['dipaCode'])) {
-            $surveyor['dipaCode'] = "";
-        } else {
-            $surveyor['dipaCode'] = $arr[0]['dipaCode'];
+        $surveyor['dipaCode']='';//地区
+        if(!empty($arr[0]['profilePhoto'])){
+            if(strpos($arr[0]['profilePhoto'],'images/profile-photo')){
+                $surveyor['profilePhoto'] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.$surveyor['profilePhoto'];
+            }else{
+                $surveyor['profilePhoto']=$arr[0]['profilePhoto'];
+            }
+        }else {
+            $surveyor['profilePhoto'] = '';
         }
         if (!empty($type)) {
             $surveyor['password'] = $this->startPassword();
@@ -193,8 +187,10 @@ WHERE
         return $message;
     }
 
-    function startPassword()
-    {
+    /**
+     * @return false|string 获取初始化密码
+     */
+    function startPassword(){
         $firstCheck = substr(substr($this->getContact(), 0, 4) * 666, 0, 3);
         return $firstCheck;
     }

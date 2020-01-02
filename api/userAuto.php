@@ -37,11 +37,6 @@ if (empty($action_type)) {
 if (empty($channel)) {
     $channel = $_REQUEST ['channel'];
 }
-//$token = filter_input(INPUT_POST, 'TOKEN');// 授权ID
-//$user_type = filter_input(INPUT_POST, 'USERTYPE');//第三方类型 facebook
-//$info = filter_input(INPUT_POST, 'INFO');  //JSON格式，我这边转换为数组
-//$action_type = filter_input(INPUT_POST, 'q');//verify为验证 bind为绑定（注册）
-//$channel = filter_input(INPUT_POST, 'CHANNEL');//默认值为0  网页  1为安卓  2为苹果
 if (empty($contact)) {
     $contact = $_REQUEST ['contact'];
 }
@@ -151,9 +146,14 @@ switch ($action_type) {
         echo json_encode($message, JSON_UNESCAPED_UNICODE);
         break;
 }
-
-function login($user, $channel, $filename, $sign, $mark = null)
-{
+/**
+ * @param $user userAuto的实例对象
+ * @param $channel 安卓，苹果，pc端标识
+ * @param $filename
+ * @param $sign
+ * @param null $mark
+ */
+function login($user, $channel, $filename, $sign, $mark = null){
     $judge = $user->verify();
     if ($judge) {
         //登录成功
@@ -177,8 +177,7 @@ function login($user, $channel, $filename, $sign, $mark = null)
     }
 }
 
-function writeUser($user, $arr, $channel, $filename, $sign, $mark = null)
-{
+function writeUser($user, $arr, $channel, $filename, $sign, $mark = null){
     //创建成功
     $user->setUserId($arr['info']['survId']);
     $state = $user->bindUser();
@@ -196,11 +195,3 @@ function writeUser($user, $arr, $channel, $filename, $sign, $mark = null)
         echo json_encode($message, JSON_UNESCAPED_UNICODE);
     }
 }
-//
-//function judgeNull($arr){
-//    foreach ($arr as $key=>$value){
-//            if(empty($value)){
-//"$".$key=$value;
-//            }
-//    }
-//}

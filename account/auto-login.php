@@ -16,6 +16,8 @@ if ($_REQUEST['username'] != "") {
 	if ($login->Login($username, $password)) {
 	    if($_REQUEST['path'] == 'selectJobs'){
             header('location:jobs_3.php');
+        }elseif($_REQUEST['path'] == 'selectGoods'){
+            header('location:jobs_4.php');
         }else{
             header('location:index.php');
         }

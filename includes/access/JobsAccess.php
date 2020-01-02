@@ -301,7 +301,7 @@ class JobsAccess
         $where = makeSql($filter, 'where');
         $sql = "SELECT s1.jobNo,s1.class_record_id,s1.jobNoNew,s1.realClass,MIN(surveyType) AS surveyType,MIN(vehicle) AS vehicle
                     ,MIN(surveyTimeHours) AS surveyTimeHours,MIN(startTime_1) AS startTime,MIN(endTime_1) AS endTime,surveyLocationDistrict
-                    ,MIN(surveyLocation) AS surveyLocation,MIN(plannedSurveyDate) AS plannedSurveyDate,s2.isOpen2,s3.isOpen,s1.bookLat,s1.bookLong,s1.map_address,s1.diy_name,s1.diy_value,s1.`img_url`
+                    ,MIN(surveyLocation) AS surveyLocation,MIN(plannedSurveyDate) AS plannedSurveyDate,s2.isOpen2,s3.isOpen,s1.bookLat,s1.bookLong,s1.map_address,s1.diy_name,s1.diy_value,s1.`img_url`,s1.`is_image`
                 FROM {$conf['table']['prefix']}MainSchedule as s1
 left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen where delFlag='no' group by jobNoNew) as s2 on s2.jobNoNew=s1.jobNoNew
 left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFlag='no' group by jobNo) as s3 on s3.jobNo=s1.jobNo
@@ -339,6 +339,13 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
             $row['diy_name'] = $dr['diy_name'];
             $row['diy_value'] = $dr['diy_value'];
             $row['class_record_id'] = $dr['class_record_id'];
+            $row['is_image']=$dr['is_image'];
+            if(empty($dr['img_url'])){
+                $row['img_url']="";
+            }else{
+                $row['img_url'] = $dr['img_url'];
+            }
+
 
 
             if (!array_key_exists($dr['jobNo'], $jobNoIndex)) {
@@ -711,6 +718,7 @@ WHERE
                 ";
                 break;
         }
+
         $datas = $this->db->query($sql);
         while ($data = mysqli_fetch_assoc($datas)) {
             $arr[] = $data;

@@ -153,7 +153,7 @@ function addPlan(event){
         success : function(msg) {
             console.log(msg);
             if(msg.success){
-                event.innerHTML="已添加";
+                event.innerHTML="已購買";
                 event.setAttribute('class','btn btn-danger');
                 event.setAttribute('onclick','');
             }
@@ -171,6 +171,6 @@ function judgePlan(iden){
     if (judgeInfo!==null && judgeInfo!==""){
         $('.table-button button:first').attr('class','btn btn-danger');
         $('.table-button button:first').attr('onclick','');
-        $('.table-button button:first').text('已购买');
+        $('.table-button button:first').text('已購買');
     }
 }
