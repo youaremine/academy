@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>廣告圖上傳</title>
+    <script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/advertisement_photo.css">
+</head>
+<body>
+<div class="box">
+    <table>
+        <tr>
+            <th></th>
+            <th>位置</th>
+            <th>縮略圖</th>
+            <th>文件名</th>
+            <th>分辨率</th>
+        </tr>
+        <tr>
+            <td>
+                <img class='img' src="images/advertisementPhoto.png">
+                <input type="file" class="file-input" name="img_3" onchange="setThumbnail(this)"/>
+                <p>點擊選取圖片</p>
+            </td>
+            <td>第一張</td>
+            <td><img src="" class="thumbnail"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <img class='img' src="images/advertisementPhoto.png">
+                <input type="file" class="file-input" name="img_3" onchange="setThumbnail(this)"/>
+                <p>點擊選取圖片</p>
+            </td>
+            <td>第二張</td>
+            <td><img src="" class="thumbnail"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <img class='img' src="images/advertisementPhoto.png">
+                <input type="file" class="file-input" name="img_3" onchange="setThumbnail(this)"/>
+                <p>點擊選取圖片</p>
+            </td>
+            <td>第三張</td>
+            <td><img src="" class="thumbnail"></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <div class="box">
+        <button type="button" onclick="">上传</button>
+        <button type="button">重置</button>
+    </div>
+</div>
+<script src="js/advertisement_photo.js"></script>
+</body>
+</html>

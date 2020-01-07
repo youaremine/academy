@@ -2131,7 +2131,7 @@ function addInfo($data){
 		$sa = new SurveyorAccess($db);
 
 		$s->survId = $data['survId'];
-		$s->upSurvId = $data['upSurvId'];
+        $s->upSurvId = $data['upSurvId'];
 		$s->ozzoCode = $data['ozzoCode'];
 		$s->chiName = $data['chiName'];
 		$s->engName = $data['engName'];

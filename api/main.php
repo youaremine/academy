@@ -223,7 +223,7 @@ function adpic($data){
         $path = 'ios/'.$version.'/';
 
         $adpic = array();
-        $adpic[] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.'/cache/adpic/'.$path.'3_ad.png';
+        $adpic[] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.'/cache/adpic/'.$path.'2_ad1.png';
         $adpic[] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.'/cache/adpic/'.$path.'ad2.png';
         $adpic[] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.'/cache/adpic/'.$path.'ad3.png';
         $adpic[] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.'/cache/adpic/'.$path.'ad4.png';

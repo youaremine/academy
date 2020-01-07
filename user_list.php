@@ -6,7 +6,6 @@ include_once ("./includes/config.inc.php");
 
 // 检查是否登录
 if (! UserLogin::IsSuperAdministrator ()) {
-	// header("Location:login.php");
 	exit ();
 }
 

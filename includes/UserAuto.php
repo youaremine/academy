@@ -4,7 +4,7 @@ include("../includes/config.inc.php");
 
 class UserAuto{
 
-    private $type, $token, $user_id, $contact;
+    private $type, $token, $user_id, $contact,$pass;
     public $chi_name, $eng_name, $surv_type, $avatar;
     private $surveyor = array();
 
@@ -14,7 +14,12 @@ class UserAuto{
         $this->user_id = $user_id;
 
     }
-
+    public function setPass($pass){
+        $this->pass = $pass;
+    }
+    public function getPass(){
+        return $this->pass;
+    }
     public function setUserId($user_id){
         $this->user_id = $user_id;
     }
@@ -31,7 +36,7 @@ class UserAuto{
         return $this->contact;
     }
 
-    public function setUserInfo($chiName, $engName, $survType, $avatar){
+    public function setUserInfo($chiName, $engName, $survType, $avatar=null){
         $this->chi_name = $chiName;
         $this->eng_name = $engName;
         $this->surv_type = $survType;
@@ -65,10 +70,11 @@ class UserAuto{
     /**
      * 注册账户并存信息到用户表
      */
-    public function register(){
+    public function register($unimInfo){
         global $conf;
         $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
-        $sql = "INSERT INTO `Survey_Surveyor`(`chiName`,`engName`,`profilePhoto`,`contact`) VALUE ('{$this->chi_name}','{$this->eng_name}','{$this->avatar}','{$this->getContact()}')";
+        $sql = "INSERT INTO `Survey_Surveyor`(`chiName`,`engName`,`profilePhoto`,`contact`,`email`,`whatsAPP`,`remarks`,`survHome`,`birthday`,`dipaCode`,`vip_level`) 
+        VALUE ('{$this->chi_name}','{$this->eng_name}','{$this->avatar}','{$this->getContact()}','{$unimInfo->email}','{$unimInfo->whatsAPP}','{$unimInfo->remarks}','{$unimInfo->survHome}','{$unimInfo->birthday}','{$unimInfo->dipaCode}','{$unimInfo->vip_level}')";
         $data = $db->query($sql);
         if ($data) {
             return $this->inquire();
@@ -108,7 +114,7 @@ class UserAuto{
         $data = mysqli_fetch_array($datas);
         $num = mysqli_num_rows($datas);
         if ($num > 0) {
-            $this->setUserId($data['user_id']);
+            $this->setUserId($data['survId']);
             $arr = array(
                 'state' => true,
                 'info' => $data
@@ -133,7 +139,25 @@ class UserAuto{
         $_SESSION['surveyor'] = $this->surveyor;
     }
 
-    /**登陆成功后获取账户信息
+    /**
+     *  根据用户id(surveyorId)获取用户初始密码
+     *  $userId
+     * */
+    protected function getUserPw($userId,$contact){
+        global $db;
+        $edited = false;
+        $sql = "SELECT password FROM Survey_SurveyorPassword WHERE survId = $userId";
+        $datas = $db->query($sql);
+        if ($data = mysqli_fetch_assoc($datas)) {
+           $edited = $data['password'];
+        }
+        $firstPw = substr(substr($contact, 0, 4) * 666, 0, 3);
+        $pw = $edited == false?$firstPw:$edited;
+        return $pw;
+    }
+
+    /**获取用户信息，前置条件需要设置userAuto对象的user_id
+     * @param null $type 是否需要密码，默认不需要
      * @return array 返回用户信息数组
      */
     public function inpuierUser($type = null){
@@ -151,6 +175,7 @@ LEFT JOIN Survey_Users u2 ON
     s.updateUserId = u2.userId
 WHERE
     1 = 1 AND s.survId ='{$this->getUserId()}'";
+
         $datas = $db->query($sql);
 
         while ($data = mysqli_fetch_assoc($datas)) {
@@ -173,11 +198,23 @@ WHERE
         }else {
             $surveyor['profilePhoto'] = '';
         }
-        if (!empty($type)) {
-            $surveyor['password'] = $this->startPassword();
+
+        if($type == 'pass'){
+            $surveyor['password']=$this->getPass();
+        }else{
+            $surveyor['password'] = $this->getUserPw($surveyor['survId'],$surveyor['contact']);
+        }
+
+        /*if (!empty($type)) {
+            if($type=='initial'){
+                $surveyor['password'] = $this->startPassword();
+            }
+            if($type='pass'){
+                $surveyor['password']=$this->getPass();
+            }
         } else {
             $surveyor['password'] = '';
-        }
+        }*/
         $message = array(
             'status' => 'success',
             'msg' => '',
@@ -193,6 +230,25 @@ WHERE
     function startPassword(){
         $firstCheck = substr(substr($this->getContact(), 0, 4) * 666, 0, 3);
         return $firstCheck;
+    }
+
+    /**保存密码到数据表
+     * @return array
+     */
+    function getPassword(){
+        global $conf;
+        $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
+        $sql = "INSERT INTO `Survey_SurveyorPassword`(`survId`,`password`) VALUE ('{$this->getUserId()}','{$this->getPass()}')";
+        $data = $db->query($sql);
+        if ($data) {
+            return $this->inquire();
+        } else {
+            $arr = array(
+                'state' => false,
+                'info' => ''
+            );
+            return $arr;
+        }
     }
 }
 //
