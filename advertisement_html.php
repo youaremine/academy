@@ -1,3 +1,12 @@
+<?php
+
+include_once("./includes/config.inc.php");
+
+if (!UserLogin::IsLogin()) {
+        header("Location:login.php");
+        exit ();
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,12 +28,12 @@
                         <option>第三張</option>
                     </select>
                 </th>
+                <th>要求比率</th>
+                <th>是否必填</th>
                 <th>縮略圖</th>
                 <th>文件名</th>
                 <th>分辨率</th>
-                <th>图片比率</th>
-                <th>要求比率</th>
-                <th>是否必填</th>
+                <th>是否合格</th>
             </tr>
             <tr>
                 <td>
@@ -33,12 +42,12 @@
                     <p>點擊選取圖片</p>
                 </td>
                 <td>第一張</td>
+                <td>640*960 (2:3)</td>
+                <td>是</td>
                 <td><img src="" class="thumbnail"></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td>640*960 (2:3)</td>
-                <td>是</td>
+                <td class="ev"></td>
             </tr>
             <tr>
                 <td>
@@ -47,12 +56,12 @@
                     <p>點擊選取圖片</p>
                 </td>
                 <td>第一張</td>
-                <td><img src="" class="thumbnail"></td>
-                <td></td>
-                <td></td>
-                <td></td>
                 <td>1440*2560 (9:16)</td>
                 <td>是</td>
+                <td><img src="" class="thumbnail"></td>
+                <td></td>
+                <td></td>
+                <td class="ev"></td>
             </tr>
             <tr>
                 <td>
@@ -61,12 +70,12 @@
                     <p>點擊選取圖片</p>
                 </td>
                 <td>第一張</td>
-                <td><img src="" class="thumbnail"></td>
-                <td></td>
-                <td></td>
-                <td></td>
                 <td>1080*2160 (1:2)</td>
                 <td>是</td>
+                <td><img src="" class="thumbnail"></td>
+                <td></td>
+                <td></td>
+                <td class="ev"></td>
             </tr>
             <tr>
                 <td>
@@ -75,12 +84,12 @@
                     <p>點擊選取圖片</p>
                 </td>
                 <td>第一張</td>
-                <td><img src="" class="thumbnail"></td>
-                <td></td>
-                <td></td>
-                <td></td>
                 <td>1242*2688 (5:11)</td>
                 <td>是</td>
+                <td><img src="" class="thumbnail"></td>
+                <td></td>
+                <td></td>
+                <td class="ev"></td>
             </tr>
             <tr>
                 <td>
@@ -89,12 +98,12 @@
                     <p>點擊選取圖片</p>
                 </td>
                 <td>第一張</td>
-                <td><img src="" class="thumbnail"></td>
-                <td></td>
-                <td></td>
-                <td></td>
                 <td>1080*1776 (3:5)</td>
                 <td>否</td>
+                <td><img src="" class="thumbnail"></td>
+                <td></td>
+                <td></td>
+                <td class="ev"></td>
             </tr>
             <tr>
                 <td>
@@ -103,12 +112,12 @@
                     <p>點擊選取圖片</p>
                 </td>
                 <td>第一張</td>
+                <td>2040*1080 (17:9)</td>
+                <td>否</td>
                 <td><img src="" class="thumbnail"></td>
                 <td></td>
                 <td></td>
-                <td></td>
-                <td>2040*1080 (17:9)</td>
-                <td>否</td>
+                <td class="ev"></td>
             </tr>
         </table>
         <div class="box">
@@ -120,3 +129,4 @@
 <script src="js/advertisement_photo.js"></script>
 </body>
 </html>
+

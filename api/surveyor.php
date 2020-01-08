@@ -123,6 +123,7 @@ switch ($data['q']) {
 
 		$m = new MainSchedule();
 		$ma = new MainScheduleAccess($db);
+        $is_goods = isset($data['is_goods'])?$data['is_goods'] :false;
 		if(empty($data['sign'])){
 			$message = array (
 					'status' => 'failed',
@@ -149,7 +150,7 @@ switch ($data['q']) {
             $m->jobNoNew = $data['jobNoNew'];
         }
 
-		$rs = $ma->GetListSearch($m,$m->surveyorCode);
+		$rs = $ma->GetListSearch($m,$m->surveyorCode,$is_goods);
 		$jsonArr = array();
 		foreach($rs as $obj){
 			$dr = array();
@@ -176,6 +177,8 @@ switch ($data['q']) {
             $dr['checkIn'] = $obj->checkIn;
             $dr['class_record_id'] = $obj->class_record_id;
             $dr['realClass'] = $obj->realClass;
+            $dr['img_url']=$obj->img_url;
+            $dr['is_image']=$obj->is_image;
 			$jsonArr[] = $dr;
 		}
         foreach($jsonArr as $k =>$v){

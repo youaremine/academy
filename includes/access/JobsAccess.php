@@ -6,17 +6,14 @@
  * Date: 2018-02-13
  * Time: 00:25
  */
-class JobsAccess
-{
+class JobsAccess {
     var $db = '';
 
-    function JobsAccess($db)
-    {
+    function JobsAccess($db) {
         $this->db = $db;
     }
 
-    function singleDelete($jobNoNew)
-    {
+    function singleDelete($jobNoNew) {
         global $conf;
         $sql = "DELETE FROM {$conf['table']['prefix']}MainSchedule WHERE jobNoNew LIKE '{$jobNoNew}%'";
         $this->db->query($sql);
@@ -31,8 +28,7 @@ class JobsAccess
         $this->db->query($sql);
     }
 
-    function hadAssignSurveryor($jobNo, $jobNoNew = '')
-    {
+    function hadAssignSurveryor($jobNo, $jobNoNew = '') {
         if ($jobNoNew == '') {
             $sql = "SELECT jobNo FROM Survey_MainSchedule WHERE jobNo = '{$jobNo}' and surveyorCode != '' Limit 1";
             $this->db->query($sql);
@@ -46,8 +42,7 @@ class JobsAccess
         }
     }
 
-    function batchDelete($jobNo)
-    {
+    function batchDelete($jobNo) {
         global $conf;
         $sql = "DELETE FROM {$conf['table']['prefix']}MainSchedule WHERE jobNo LIKE '{$jobNo}%'";
         $this->db->query($sql);
@@ -65,8 +60,7 @@ class JobsAccess
         $this->db->query($sql);
     }
 
-    function isExistJobNo($jobNo)
-    {
+    function isExistJobNo($jobNo) {
         global $conf;
         $sql = "SELECT * FROM {$conf['table']['prefix']}MainSchedule WHERE jobNo='{$jobNo}' LIMIT 1;";
         $this->db->query($sql);
@@ -81,8 +75,7 @@ class JobsAccess
      * @param $data
      * @return array
      */
-    function getInfo($data)
-    {
+    function getInfo($data) {
         global $conf;
         $result = array();
         $sql = "SELECT * FROM {$conf['table']['prefix']}MainSchedule WHERE jobNoNew='{$data['jobNoNew']}' LIMIT 1;";
@@ -172,8 +165,7 @@ class JobsAccess
      * @param $data
      * @return array
      */
-    function getInfoByJobNo($data)
-    {
+    function getInfoByJobNo($data) {
         global $conf;
         $result = array();
         $sql = "SELECT * FROM {$conf['table']['prefix']}MainSchedule WHERE jobNo='{$data}'";
@@ -258,8 +250,7 @@ class JobsAccess
         return $result;
     }
 
-    function save($data)
-    {
+    function save($data) {
         global $conf;
         $sql = makeSql($data, 'insert');
         $sql = "INSERT INTO {$conf['table']['prefix']}MainSchedule {$sql}";
@@ -268,8 +259,7 @@ class JobsAccess
         return $this->db->last_insert_id();
     }
 
-    function update($data, $mascId)
-    {
+    function update($data, $mascId) {
         global $conf;
         $sql = makeSql($data, 'update');
         $sql = "UPDATE {$conf['table']['prefix']}MainSchedule SET {$sql} WHERE mascId={$mascId}";
@@ -277,8 +267,7 @@ class JobsAccess
 //        echo $sql."<br />";
     }
 
-    function updateByJobNo($data, $jobNo)
-    {
+    function updateByJobNo($data, $jobNo) {
         global $conf;
         $sql = makeSql($data, 'update');
         $sql = "UPDATE {$conf['table']['prefix']}MainSchedule SET {$sql} WHERE jobNo='{$jobNo}'";
@@ -286,8 +275,7 @@ class JobsAccess
 //        echo $sql."<br />";
     }
 
-    function delete($mascId)
-    {
+    function delete($mascId) {
         global $conf;
 
         $sql = "DELETE FROM {$conf['table']['prefix']}MainSchedule WHERE mascId={$mascId}";
@@ -295,8 +283,7 @@ class JobsAccess
 //        echo $sql."<br />";
     }
 
-    function getList2($filter, $other = '', $limit = '')
-    {
+    function getList2($filter, $other = '', $limit = '', $is_goods = false) {
         global $conf;
         $where = makeSql($filter, 'where');
         $sql = "SELECT s1.jobNo,s1.class_record_id,s1.jobNoNew,s1.realClass,MIN(surveyType) AS surveyType,MIN(vehicle) AS vehicle
@@ -305,9 +292,11 @@ class JobsAccess
                 FROM {$conf['table']['prefix']}MainSchedule as s1
 left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen where delFlag='no' group by jobNoNew) as s2 on s2.jobNoNew=s1.jobNoNew
 left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFlag='no' group by jobNo) as s3 on s3.jobNo=s1.jobNo
-                WHERE 1=1 {$where}
-            GROUP BY jobNo,vehicle
-            {$other} {$limit}";
+                WHERE 1=1 {$where}";
+        if ($is_goods) {
+            $sql .= " AND s1.is_image='1' ";
+        }
+        $sql .= "GROUP BY jobNo,vehicle {$other} {$limit}";
         $this->db->query($sql);
 //		 echo $sql."<br />";
 //		 exit();
@@ -339,13 +328,12 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
             $row['diy_name'] = $dr['diy_name'];
             $row['diy_value'] = $dr['diy_value'];
             $row['class_record_id'] = $dr['class_record_id'];
-            $row['is_image']=$dr['is_image'];
-            if(empty($dr['img_url'])){
-                $row['img_url']="";
-            }else{
+            $row['is_image'] = $dr['is_image'];
+            if (empty($dr['img_url'])) {
+                $row['img_url'] = "";
+            } else {
                 $row['img_url'] = $dr['img_url'];
             }
-
 
 
             if (!array_key_exists($dr['jobNo'], $jobNoIndex)) {
@@ -375,8 +363,7 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
         return $result;
     }
 
-    function getList($filter, $other = '', $limit = '')
-    {
+    function getList($filter, $other = '', $limit = '') {
         global $conf;
         $where = makeSql($filter, 'where');
         $sql = "SELECT jobNo,s1.jobNoNew,MIN(surveyType) AS surveyType,MIN(vehicle) AS vehicle
@@ -438,8 +425,7 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
         return $result;
     }
 
-    function getJobNoNewList($filter, $other = '', $limit = '')
-    {
+    function getJobNoNewList($filter, $other = '', $limit = '') {
         global $conf;
         $where = makeSql($filter, 'where', 'm');
         if (!empty($where)) {
@@ -475,8 +461,7 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
         return $result;
     }
 
-    function setDataEntry($data)
-    {
+    function setDataEntry($data) {
         global $conf;
         $signJobInfos = $data['signJobInfos'];
         $_tmpInfos = explode(',', $signJobInfos);
@@ -529,8 +514,7 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
         return true;
     }
 
-    function getFamilysInJob($jobNo, $phone)
-    {
+    function getFamilysInJob($jobNo, $phone) {
         $familys = array();
 
 
@@ -585,8 +569,7 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
         return $familys;
     }
 
-    function getDataEntryList($filter, $other = '', $limit = '')
-    {
+    function getDataEntryList($filter, $other = '', $limit = '') {
         global $conf;
         $where = makeSql($filter, 'where', 'm');
         if (!empty($where)) {
@@ -665,8 +648,7 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
      * @param null $userId 用户id;
      * @return false|string
      */
-    function getGoodsUrl($case, $jobNoShort = null,$userId=null)
-    {
+    function getGoodsUrl($case, $jobNoShort = null, $userId = null) {
         global $conf;
         switch ($case) {
             case 1:
@@ -708,7 +690,7 @@ WHERE
 ";
                 break;
             case 3:
-                $sql="SELECT
+                $sql = "SELECT
     `jobNo`,
     `jobNoNew`
 FROM
@@ -726,4 +708,12 @@ WHERE
         return json_encode($arr, JSON_UNESCAPED_UNICODE);
     }
 
+    function advImage($case,$arr){
+        global $conf;
+        switch ($case){
+            case 1:
+                $sql="INSERT INTO `Survey_AdvImage`(`path`,`file_name`,`resolution`,`rate`) VALUES ('{$arr['path']}','{$arr['file_name']}','{$arr['resolution']}','{$arr['rate']}')";
+                $this->db->query($sql);
+        }
+    }
 }

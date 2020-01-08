@@ -6,11 +6,16 @@ $(document).ready(function () {
         let imgUrl = data[0].img_url;
         let total=data[0].total;
         let surplus=data[0].surplus;
-         judgePlan(iden);
-        analysisDate(iden, info, imgUrl,total,surplus);
+        let judgeInfo=judgePlan(iden);
+        if(judgeInfo!==undefined){
+            analysisDate(judgeInfo[0].jobNoNew, info, imgUrl,total,surplus);
+            var url="ozzomonitoringsurvey://chat.app/?jobNo="+data[0].jobNoShort+"&refNo="+data[0].jobNoNew+"&surveyType="+data[0].surveyType;
+        }else{
+            analysisDate(iden, info, imgUrl,total,surplus);
+            var url="ozzomonitoringsurvey://chat.app/?jobNo="+data[0].jobNoShort+"&refNo="+data[0].jobNoNew+"&surveyType="+data[0].surveyType;
+        }
+        $('.serial').attr('href',url);
     }
-    let url="ozzomonitoringsurvey://chat.app/?jobNo="+data[0].jobNoShort+"&refNo="+data[0].jobNoNew+"&surveyType="+data[0].surveyType;
-    $('.serial').attr('href',url);
 })
 
 /**
@@ -162,7 +167,7 @@ function addPlan(event){
 }
 
 /**
- * 更改已购买的样式
+ * 判斷是否已經
  * @param iden
  */
 function judgePlan(iden){
@@ -172,5 +177,6 @@ function judgePlan(iden){
         $('.table-button button:first').attr('class','btn btn-danger');
         $('.table-button button:first').attr('onclick','');
         $('.table-button button:first').text('已購買');
+        return judgeInfo;
     }
 }

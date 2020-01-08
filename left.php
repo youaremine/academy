@@ -136,7 +136,7 @@ if (!UserLogin::IsLogin()) {
                                     ?>
                                     <tr>
                                         <td class="TdButtonC">
-                                            <a href="advertisement_photo.php" target="mainFrame">
+                                            <a href="advertisement_html.php" target="mainFrame">
                                                 <span class="TdButtonCText">上傳廣告圖</span></a>
                                         </td>
                                     </tr>

@@ -1779,6 +1779,7 @@ function getJobs($data){
 		);
 		die(json_encode($message));
 	}
+    $is_goods = isset($data['is_goods'])?$data['is_goods'] :false;
 	$filename = $conf["path"]["sign"].$data['sign'];
 	$survId = file_get_contents($filename);
 	if(empty($survId)){
@@ -1790,7 +1791,7 @@ function getJobs($data){
 		die(json_encode($message));
 	}
 	$ja = new JobsAccess($db);
-	$rs = $ja->getList2(array());
+	$rs = $ja->getList2(array(),'','',$is_goods);
     foreach($rs as $k =>$v){
         foreach($v as $kk=>$vv){
             if(is_string($vv)){

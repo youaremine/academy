@@ -65,37 +65,6 @@ $unimInfo=array(
     'vip_level'=>$vip_level
 );
 
-//if (empty($token)) {
-//    $token = $_REQUEST ['TOKEN'];
-//}
-//if (empty($user_type)) {
-//    $user_type = $_REQUEST ['USERTYPE'];
-//}
-//if (empty($action_type)) {
-//    $action_type = $_REQUEST ['q'];
-//}
-//if (empty($channel)) {
-//    $channel = $_REQUEST ['channel'];
-//}
-//if (empty($contact)) {
-//    $contact = $_REQUEST ['contact'];
-//}
-//if (empty($chiName)) {
-//    $chiName = $_REQUEST ['chiName'];
-//}
-//if (empty($engName)) {
-//    $engName = $_REQUEST ['engName'];
-//}
-//if (empty($survType)) {
-//    $survType = $_REQUEST ['survType'];
-//}
-//if (empty($avatar)) {
-//    $avatar = $_REQUEST ['avatar'];
-//}
-//if(empty($pass)){
-//    $pass=$_REQUEST ['pass'];
-//}
-
 $arrs=array(
     'contact'=>$contact,
     'chiName'=>$chiName,
