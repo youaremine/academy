@@ -461,6 +461,67 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
         return $result;
     }
 
+
+    /**
+     * 管理员设置学员状态（已到，缺席，迟到，替代者，病假）
+     * @param $data
+     */
+    function setDataEntryNew($data){
+        global $conf;
+        $signJobInfos = $data['signJobInfos'];
+        $_tmpInfos = explode(',',$signJobInfos);
+        $signInfos = array();
+        foreach($_tmpInfos as $v){
+            $signInfo = array();
+            $_tmpInfo = explode('|',$v);
+            $signInfo['jobNoNew'] = $_tmpInfo[0];
+            $signInfo['surveyorCode'] = $_tmpInfo[1];
+            $signInfos[] = $signInfo;
+        }
+        if(count($signInfos) <= 0){
+            return false;
+        }
+        $inputTime = date("Y-m-d H:i:s");
+        foreach($signInfos as $v){
+            $newData = array();
+            $newData['inputTime'] = $inputTime;
+            $newData['userId'] = $data['survId'];
+            $newData['userName'] = $data['engName'];
+            $newData['refNo'] = $v['jobNoNew'];
+            if(strtolower($v['jobNoNew']) == 'new'){
+                //如果检测到是新job，则把最新没排期的加进来
+                $sql = "SELECT m.jobNo,m.jobNoNew FROM {$conf['table']['prefix']}MainSchedule m
+                     LEFT JOIN {$conf['table']['prefix']}SurveyPart sp ON sp.refNo = m.jobNoNew AND sp.delFlag='no'
+                     WHERE m.jobNo = '{$data['jobNo']}'
+                        AND m.surveyorCode<=0 AND sp.survId IS NULL
+                     ORDER BY m.jobNoNew ASC
+                     LIMIT 1";
+                $this->db->query($sql);
+                if($dr = $this->db->next_record()) {
+                    $newData['refNo'] = $dr['jobNoNew'];
+                }else{
+                    //TODO 报名名额已经用完的情况
+                }
+            }
+            $newData['survId'] = $v['surveyorCode'];
+            $sql = "UPDATE {$conf['table']['prefix']}SurveyPart
+                    SET delFlag='yes',modifyUserId='{$data['survId']}'
+                    ,modifyUserName='{$data['engName']}',modifyTime='{$inputTime}'
+                    WHERE refNo='{$newData['refNo']}'";
+            $this->db->query($sql);
+            if(strtolower($newData['survId']) == 'delete'){
+                continue;
+            }
+            $newData['status'] = $data['status'];
+            $newData['status_mark'] = $data['status_mark'];
+
+            $sql = makeSql($newData);
+            $sql = "INSERT INTO {$conf['table']['prefix']}SurveyPart".$sql;
+            $this->db->query($sql);
+        }
+        return true;
+    }
+
     function setDataEntry($data) {
         global $conf;
         $signJobInfos = $data['signJobInfos'];

@@ -46,6 +46,9 @@ switch ($data['q']) {
 	case 'setDataEntry':
 		setDataEntry($data);
 		break;
+    case 'setStatus':
+        setStatus($data);
+        break;
 	case 'getDataEntryList':
 		getDataEntryList($data);
 		break;
@@ -1900,6 +1903,83 @@ function getJobNoNewList($data){
     );
     die(json_encode($message));
 }
+
+
+/**
+ * 管理员设置学员状态（已到，缺席，迟到，替代者，病假）
+ * $data['status'] 默认1，1已到，2：迟到，3：他人报道，4：病假）
+ * $data['status_mark'] status 为3时记录用
+ * @param $data
+ */
+function setStatus($data){
+    global $conf,$db;
+    if(empty($data['sign'])){
+        $message = array (
+            'status' => 'failed',
+            'msg' => 'sign is null.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+
+    $filename = $conf["path"]["sign"].$data['sign'];
+    $survId = file_get_contents($filename);
+
+    if(empty($survId)){
+        $message = array (
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $data['survId'] = $survId;
+    $s = new Surveyor();
+    $sa = new SurveyorAccess($db);
+    $s->survId = $survId;
+    $rsSurveyor = $sa->GetListSearch($s);
+
+    if(count($rsSurveyor) > 0){
+        $data['engName'] = $rsSurveyor[0]->engName;
+    }
+    if($rsSurveyor[0]->survType == 'surveyor'){
+
+        $sql = "SELECT mso.sjop FROM Survey_SurveyJobOpen mso
+				WHERE 1=1 AND mso.delFlag='no' and JobNo = '{$data['jobNo']}'";
+        $db->query($sql);
+
+        $isOpen = false;
+        while ($rs = $db->next_record()) {
+            $isOpen = true;
+        }
+        if($isOpen == false ){
+            $message = array (
+                'status' => 'failed',
+                'msg' => '暫未開放自行報到',
+                'data' => ''
+            );
+            echo json_encode($message);exit;
+        }
+    }
+
+    $ja = new JobsAccess($db);
+    $result = $ja->setDataEntryNew($data);
+    if($result){
+        $message = array (
+            'status' => 'success',
+            'msg' => '',
+            'data' => ''
+        );
+    }else{
+        $message = array (
+            'status' => 'failed',
+            'msg' => '',
+            'data' => ''
+        );
+    }
+    die(json_encode($message));
+}
+
 
 /**
  * 上传已点名学员
