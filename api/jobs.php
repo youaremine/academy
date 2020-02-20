@@ -2683,18 +2683,20 @@ function paymentHistory($data)
     if(empty($verdict)){
         $urlInfo=array(
             'status'=>'failed',
-            'msg'=>'verdict can not be empty ',
+            'msg'=>'verdict is required ',
             'data'=>''
         );
         echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
+        exit();
     }
     if(empty($jobNo)){
         $urlInfo=array(
             'status'=>'failed',
-            'msg'=>'jobNo can not be empty ',
+            'msg'=>'jobNo is required ',
             'data'=>''
         );
         echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
+        exit();
     }
     switch ($verdict) {
         case 1:
