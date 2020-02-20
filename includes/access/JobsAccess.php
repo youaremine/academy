@@ -771,7 +771,7 @@ WHERE
         return json_encode($arr, JSON_UNESCAPED_UNICODE);
     }
 
-<<<<<<< HEAD
+
     /**广告图Url 存储和获取
      * @param $case
      * @param $arr
@@ -860,14 +860,4 @@ WHERE
     }
 }
 
-=======
-    function advImage($case,$arr){
-        global $conf;
-        switch ($case){
-            case 1:
-                $sql="INSERT INTO `Survey_AdvImage`(`path`,`file_name`,`resolution`,`rate`) VALUES ('{$arr['path']}','{$arr['file_name']}','{$arr['resolution']}','{$arr['rate']}')";
-                $this->db->query($sql);
-        }
-    }
-}
->>>>>>> bdb0a73f25fcf3f28b28b3cfd0044c90fd988b1c
+
