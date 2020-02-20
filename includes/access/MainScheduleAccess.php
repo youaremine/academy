@@ -3202,7 +3202,7 @@ class MainScheduleAccess
             $name = empty($record_surveyor->chiName)?'('.$record_surveyor->engName.')':'('.$record_surveyor->chiName.')';
         }
         $record_surveyor_id = $record_surveyor->survId;
-        $remark = $selfOperate === true?'學員自選課堂':$name.'分配課堂';
+        $remark = $selfOperate === true?'學員自選事项':$name.'分配事项';
         $this->addClassRecord($sur->survId,$jobNoNew,0-$class_num,$sur->class_remain-$class_num,$remark,$record_surveyor_id);
     }
 

@@ -2,16 +2,16 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="c994b716-6997-4a9f-af8c-a8c084facf99" name="ozzo sandbox" url="http://47.75.165.42">
-        <fileTransfer host="47.75.165.42" port="22" rootFolder="/data0/htdocs/www.ozzotec.com/academy" accessType="SFTP">
+      <webServer id="c994b716-6997-4a9f-af8c-a8c084facf99" name="测试" url="http://47.75.165.42">
+        <fileTransfer host="47.75.165.42" port="22" rootFolder="/data0/htdocs/www.ozzotec.com/bni-hk-marvel" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
           <option name="port" value="22" />
         </fileTransfer>
       </webServer>
-      <webServer id="ef8d6ec1-ed1c-4a6a-8d8d-0a289301bd1e" name="ozzo pro" url="http://120.27.202.77">
-        <fileTransfer host="120.27.202.77" port="22" rootFolder="/data0/htdocs/www.ozzotec.com/academy" accessType="SFTP">
+      <webServer id="ef8d6ec1-ed1c-4a6a-8d8d-0a289301bd1e" name="正式" url="http://120.27.202.77">
+        <fileTransfer host="120.27.202.77" port="22" rootFolder="/data0/htdocs/www.ozzotec.com/bni-hk-marvel" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
