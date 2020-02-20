@@ -669,6 +669,8 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
             $row['profilePhoto'] = !empty($dr['profilePhoto']) ? 'http://' . $_SERVER['SERVER_NAME'] . '/' . PROJECTNAME . $dr['profilePhoto'] : '';
             $row['isOpen'] = '';
             $row['class_record_id'] = $dr['class_record_id'];
+            $row['status'] = $dr['status'];
+            $row['status_mark'] = $dr['status_mark'];
             $result[] = $row;
         }
         if (count($noEnterSurveyors) > 0) {
