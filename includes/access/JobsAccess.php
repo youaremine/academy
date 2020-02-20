@@ -669,6 +669,8 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
             $row['profilePhoto'] = !empty($dr['profilePhoto']) ? 'http://' . $_SERVER['SERVER_NAME'] . '/' . PROJECTNAME . $dr['profilePhoto'] : '';
             $row['isOpen'] = '';
             $row['class_record_id'] = $dr['class_record_id'];
+            $row['status'] = $dr['status'];
+            $row['status_mark'] = $dr['status_mark'];
             $result[] = $row;
         }
         if (count($noEnterSurveyors) > 0) {
@@ -769,6 +771,7 @@ WHERE
         return json_encode($arr, JSON_UNESCAPED_UNICODE);
     }
 
+<<<<<<< HEAD
     /**广告图Url 存储和获取
      * @param $case
      * @param $arr
@@ -857,3 +860,14 @@ WHERE
     }
 }
 
+=======
+    function advImage($case,$arr){
+        global $conf;
+        switch ($case){
+            case 1:
+                $sql="INSERT INTO `Survey_AdvImage`(`path`,`file_name`,`resolution`,`rate`) VALUES ('{$arr['path']}','{$arr['file_name']}','{$arr['resolution']}','{$arr['rate']}')";
+                $this->db->query($sql);
+        }
+    }
+}
+>>>>>>> bdb0a73f25fcf3f28b28b3cfd0044c90fd988b1c

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>物品詳情</title>
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable = 0" />
+<!--    <script type="text/javascript" src="../js/jquery2.0.js"></script>-->
+<!--    <link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css">-->
+<!--    <script type="text/javascript" src="../js/bootstrap.min.js"></script>-->
+    <link type="text/css" rel="stylesheet" href="../css/goods_details.css">
+    <link href="../css/Font-Awesome-3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.staticfile.org/jquery/2.0.0/jquery.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.css">
+    <script type="text/javascript" src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.js"></script>
+</head>
+<body>
+<div>
+    <div class="box">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators img-display img-indicator">
+
+            </ol>
+            <div class="carousel-inner img-inner">
+
+            </div>
+            <!--            向左换页-->
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                 <i class="icon-chevron-left" aria-hidden="true" style="color:white;font-size: 2rem;background: black"></i>
+                <span class="sr-only">Previous</span>
+            </a>
+            <!--            向右换页-->
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <i class="icon-chevron-right" aria-hidden="true" style="color:white;font-size: 2rem;background: black"></i>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+        <div class="mt-3 text-center">
+            <table class="info-table table" border="1">
+                <tr scope="col">
+                    <td>物品編號</td>
+                    <td>
+                        <a href="" class="serial">
+                            <i class="icon-comments-alt icon-large"></i>
+                            <em></em>
+                        </a>
+                    </td>
+                </tr>
+                <tr scope="col">
+                    <td>詳細信息</td>
+                    <td class="text-monospace"></td>
+                </tr>
+                <tr scope="col">
+                    <td>數量</td>
+                    <td></td>
+                </tr>
+                <tr scope="col">
+                    <td>剩餘數量</td>
+                    <td>50</td>
+                </tr>
+            </table>
+            <table class="table-button mt-2">
+                <tr>
+                    <td>
+                        <button class="btn btn-primary" onclick="addPlan(this)">加入購物車</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-info" onclick="returnTop()">返回列表</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/account/goods_details.js"></script>
+</body>
+</html>

@@ -131,6 +131,18 @@ if (!UserLogin::IsLogin()) {
                                     <?php
                                 }
                                 ?>
+                                <?php
+                                if (UserLogin::HasPermission('bar_chart_time_user')) {
+                                    ?>
+                                    <tr>
+                                        <td class="TdButtonC">
+                                            <a href="advertisement_html.php" target="mainFrame">
+                                                <span class="TdButtonCText">上傳廣告圖</span></a>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                                ?>
                             </table>
                         </td>
                     </tr>
@@ -152,7 +164,7 @@ if (!UserLogin::IsLogin()) {
                                     ?>
                                     <tr>
                                         <td class="TdButtonC">
-                                            <a href="user_entry.php" target="mainFrame"><span class="TdButtonCText">新增帳戶</span></a>
+                                            <a href="user_entry.php" target="mainFrame"><span class="TdButtonCText">新增賬戶</span></a>
                                         </td>
                                     </tr>
                                     <?php

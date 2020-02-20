@@ -5,6 +5,7 @@
  * @author Xiaoqiang.Wu <jamblues@gmail.com>
  * @version 1.01 , 2018-2-12
  */
+
 set_time_limit(0);
 include_once("../includes/config.inc.php");
 
@@ -27,6 +28,7 @@ switch ($data['q']) {
         tmpInitData1();*/
     case 'tmpInitData233':
         tmpInitData233();
+
     case 'saveJobs':
         saveJobs($data);
         break;
@@ -60,6 +62,42 @@ switch ($data['q']) {
     case 'openJob':
         openJob($data);
         break;
+	case 'saveJobs':
+        saveJobs($data);
+		break;
+	case 'getInfo':
+		getInfo($data);
+		break;
+	case 'deleteInfo':
+		deleteInfo($data);
+		break;
+	case 'getJobs':
+		getJobs($data);
+		break;
+	case 'getJobNoNewList':
+		getJobNoNewList($data);
+		break;
+	case 'setDataEntry':
+		setDataEntry($data);
+		break;
+    case 'setStatus':
+        setStatus($data);
+        break;
+	case 'getDataEntryList':
+		getDataEntryList($data);
+		break;
+	case 'setJobOpenStatus':
+		setJobOpenStatus($data);
+		break;
+	/*case 'assign':
+		assignSurveyor($data,'assign');
+		break;
+	case 'unassign':
+		assignSurveyor($data,'unassign');
+		break;*/
+	case 'openJob':
+		openJob($data);
+		break;
     case 'getPaymentPDF':
         getPaymentPDF($data);
         break;
@@ -120,8 +158,10 @@ switch ($data['q']) {
     case "paymentHistory":
         paymentHistory($data);
         break;
-    default:
-        break;
+	default:
+	    echo 'error';
+		break;
+
 }
 
 function updateClassPDF($pdfid, $set_class_by, $class_num, $class_remain)
@@ -315,16 +355,38 @@ function getClassRecord($data)
         }
     } else {
         $res = _getClassRecord($class_surId, $start_time, $end_time);
+        $class_surId = getArrNoNull($data, 'class_surId');
+        $start_time = isset($data['start_time']) ? $data['start_time'] : false;
+        $end_time = isset($data['end_time']) ? $data['end_time'] : false;
+        $is_goods = isset($data['is_goods']) ? $data['is_goods'] : false;
+
+        if ($class_surId != $surInfo->survId) {
+
+            if ($surInfo->survType == 'admin' || $surInfo->survType == 'teach') {
+                //管理员能查看所有人的
+                $res = _getClassRecord($class_surId, $start_time, $end_time, $is_goods);
+            } else {
+                returnJson('failed', '', 'Permission Error');
+            }
+        } else {
+            //学员自己只能查自己的
+            $res = _getClassRecord($class_surId, $start_time, $end_time, $is_goods);
+        }
+        returnJson('success', $res, '');
     }
-    returnJson('success', $res, '');
 }
 
-function _getClassRecord($survId, $start_time = false, $end_time = false)
+
+
+function _getClassRecord($survId,$start_time = false,$end_time = false,$is_goods = false)
 {
+
     global $db;
+
+
     $sql = "SELECT ssc.id as id,ssc.surveyor_id,ssc.jobNoNew,ssc.use_class,ssc.class_remain,ssc.remark,ssc.record_surveyor_id,ssc.record_time,ssc.is_del,ssc.status,ssc.confirm_pdf_create_time,ssc.record_time,
 sm.plannedSurveyDate,sm.surveyType,sm.surveyorCode,sm.startTime_1,sm.jobNo,sm.endTime_1,sscp.id as pdfid,sscp.path as surveyor_pdf,sscp.upload_pdf_time as surveyor_pdf_create_time,sscp.is_set_class,
-sscp2.path as confirm_pdf,ssc.confirm_pdf as confirm_pdfid, ss.chiName as confirm_chiName, ss.engName as confirm_engName
+sscp2.path as confirm_pdf,ssc.confirm_pdf as confirm_pdfid, ss.chiName as confirm_chiName, ss.engName as confirm_engName,sm.is_image
 FROM Survey_SurveyorClassRecord as ssc 
 left Join Survey_MainSchedule as sm on sm.jobNoNew=ssc.jobNoNew
 left Join Survey_Surveyor as ss on ss.survId=ssc.confirm_pdf_create_by
@@ -336,8 +398,16 @@ WHERE ";
     if ($start_time !== false && $end_time !== false) {
         $sql .= "sm.plannedSurveyDate >= '$start_time' and sm.plannedSurveyDate <= '$end_time' and ";
     }
+    if ($is_goods) {
+        $sql .= "sm.is_image='1' and ";
+    }
     $sql .= "ssc.surveyor_id = '{$survId}' and ssc.is_del = 0 order by ssc.id desc";
     $db->query($sql);
+
+//    echo $sql;
+//    exit();
+    $db->query($sql);
+
     $rows = array();
     while ($rs = $db->next_record()) {
         $tmp = array();
@@ -364,13 +434,22 @@ WHERE ";
         $tmp['pdfid'] = $rs['pdfid'];
         $tmp['confirm_pdfid'] = $rs['confirm_pdfid'];
 
-        if ($rs['surveyorCode'] == $rs['surveyor_id']) {
-            $tmp['is_own'] = 1;
-        }
-        $rows[] = $tmp;
-    }
-    return $rows;
 
+        if ($rs['surveyorCode'] == $rs['surveyor_id']) {
+
+            $tmp['is_image'] = $rs['is_image'];
+            if (empty($rs['is_image'])) {
+                $tmp['is_image'] = 0;
+            }
+            if ($rs['surveyorCode'] == $rs['surveyor_id']) {
+
+                $tmp['is_own'] = 1;
+            }
+            $rows[] = $tmp;
+        }
+        return $rows;
+
+    }
 }
 
 
@@ -994,7 +1073,7 @@ function batchEditJobs($data)
         $sqlData['surveyTimeHours'] = $data['surveyTimeHours'];
         $sqlData['estimatedManHour'] = $data['estimatedManHour'];
         $sqlData['totalHours'] = $data['totalHours'];
-
+        $sqlData['img_url'] = $data['img_url'];
 
         foreach ($sqlData as $k => $v) {
             if (is_null($v)) {
@@ -1097,6 +1176,14 @@ function insert_Class($jobNo, $insert_num, $insert_data, $countStart = 0)
         $sqlData['map_address'] = $insert_data['map_address'];
         $sqlData['diy_name'] = $insert_data['diy_name'];
         $sqlData['diy_value'] = $insert_data['diy_value'];
+
+        if(array_key_exists('img_url',$insert_data)){
+            $sqlData['img_url'] = $insert_data['img_url'];
+        }else{
+            $sqlData['img_url'] = array_key_exists('imgUrl',$insert_data)?$insert_data['imgUrl']:'';//TODO
+        }
+
+        $sqlData['is_image'] = array_key_exists('isImage',$insert_data)?$insert_data['isImage']:0;//TODO
 
         $insrtData[] = $sqlData;
     }
@@ -1565,103 +1652,111 @@ function getPaymentPDF($data)
  * 保存工作
  * @param $data
  */
-function saveJobs($data)
-{
-    global $conf, $db;
-    if (empty($data['sign'])) {
-        $message = array(
-            'status' => 'failed',
-            'msg' => 'sign is null.',
-            'data' => array()
-        );
-        die(json_encode($message));
+
+
+function saveJobs($data){
+	global $conf,$db;
+	if(empty($data['sign'])){
+		$message = array (
+
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$filename = $conf["path"]["sign"].$data['sign'];
+        $survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	if(empty($data['jobNoNew'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'The information is incomplete.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	//判断是否接收到了图片的url
+	if(empty($data['imgUrl'])){
+	    $data['imgUrl']='';
     }
-    $filename = $conf["path"]["sign"] . $data['sign'];
-    $survId = file_get_contents($filename);
-    if (empty($survId)) {
-        $message = array(
-            'status' => 'failed',
-            'msg' => 'Login has expired.',
-            'data' => array()
-        );
-        die(json_encode($message));
-    }
-    if (empty($data['jobNoNew'])) {
-        $message = array(
-            'status' => 'failed',
-            'msg' => 'The information is incomplete.',
-            'data' => array()
-        );
-        die(json_encode($message));
-    }
-    $sqlData = array();
-    $sqlData['weekNo'] = $data['weekNo'];
-    $sqlData['jobNoShort'] = $data['jobNoShort'];
-    $sqlData['jobNo'] = $data['jobNo'];
-    $sqlData['jobNoNew'] = $data['jobNoNew'];
-    $sqlData['plannedSurveyDate'] = $data['plannedSurveyDate'];
-    $sqlData['tdFileNo'] = $data['tdFileNo'];
-    $sqlData['receivedDate'] = $data['receivedDate'];
-    $sqlData['dueDate'] = $data['dueDate'];
-    $sqlData['fromTD'] = $data['fromTD'];
-    $sqlData['actualSurveyDate'] = $data['actualSurveyDate'];
-    $sqlData['startTime_1'] = $data['startTime_1'];
-    $sqlData['endTime_1'] = $data['endTime_1'];
-    $sqlData['startTime_2'] = $data['startTime_2'];
-    $sqlData['endTime_2'] = $data['endTime_2'];
-    $sqlData['startTime_3'] = $data['startTime_3'];
-    $sqlData['endTime_3'] = $data['endTime_3'];
-    $sqlData['startTime_4'] = $data['startTime_4'];
-    $sqlData['endTime_4'] = $data['endTime_4'];
-    $sqlData['totalHours'] = $data['totalHours'];
-    $sqlData['surveyTimeHours'] = $data['surveyTimeHours'];
-    $sqlData['stCode'] = $data['stCode'];
-    $sqlData['surveyType'] = $data['surveyType'];
-    $sqlData['vehCode'] = $data['vehCode'];
-    $sqlData['vehicle'] = $data['vehicle'];
-    $sqlData['isHoliday'] = $data['isHoliday'];
-    $sqlData['bonusHours'] = $data['bonusHours'];
-    $sqlData['surveyLocationDistrict'] = $data['surveyLocationDistrict'];
-    $sqlData['surveyLocation'] = $data['surveyLocation'];
-    $sqlData['routeItems'] = $data['routeItems'];
-    $sqlData['noOfSurveyors'] = $data['noOfSurveyors'];
-    $sqlData['estimatedManHour'] = $data['estimatedManHour'];
-    $sqlData['receiveDate'] = $data['receiveDate'];
-    $sqlData['dataInputNo'] = $data['dataInputNo'];
-    $sqlData['dataInputBy'] = $data['dataInputBy'];
-    $sqlData['entryFormTypeNo'] = $data['entryFormTypeNo'];
-    $sqlData['noOfPages'] = $data['noOfPages'];
-    $sqlData['report'] = $data['report'];
-    $sqlData['hourlyRate'] = $data['hourlyRate'];
-    $sqlData['surveyFinding'] = $data['surveyFinding'];
-    $sqlData['am'] = $data['am'];
-    $sqlData['periodHour_1'] = $data['periodHour_1'];
-    $sqlData['periodWagesHr_1'] = $data['periodWagesHr_1'];
-    $sqlData['periodHour_2'] = $data['periodHour_2'];
-    $sqlData['periodWagesHr_2'] = $data['periodWagesHr_2'];
-    $sqlData['totalWages'] = $data['totalWages'];
-    $sqlData['onBoardCostFare'] = $data['onBoardCostFare'];
-    $sqlData['noOfTrips'] = $data['noOfTrips'];
-    $sqlData['transportAllowanceAm'] = $data['transportAllowanceAm'];
-    $sqlData['transportAllowanceNoon'] = $data['transportAllowanceNoon'];
-    $sqlData['transportAllowancePm'] = $data['transportAllowancePm'];
-    $sqlData['transportAllowanceOvernight'] = $data['transportAllowanceOvernight'];
-    $sqlData['taTotal'] = $data['taTotal'];
-    $sqlData['wagesTaOnBoard'] = $data['wagesTaOnBoard'];
-    $sqlData['onBoardTranportAllowanceTotal'] = $data['onBoardTranportAllowanceTotal'];
-    $sqlData['surveyorCode'] = $data['surveyorCode'];
-    $sqlData['surveyorName'] = $data['surveyorName'];
-    $sqlData['surveyorTelephone'] = $data['surveyorTelephone'];
-    $sqlData['complateJobNo'] = $data['complateJobNo'];
-    $sqlData['distributedToLeader'] = $data['distributedToLeader'];
-    $sqlData['reportWeek'] = $data['reportWeek'];
-    $sqlData['surveyLocationCn'] = $data['surveyLocationCn'];
-    $sqlData['direction'] = $data['direction'];
+	$sqlData = array();
+	$sqlData['weekNo'] = $data['weekNo'];
+	$sqlData['jobNoShort'] = $data['jobNoShort'];
+	$sqlData['jobNo'] = $data['jobNo'];
+	$sqlData['jobNoNew'] = $data['jobNoNew'];
+	$sqlData['plannedSurveyDate'] = $data['plannedSurveyDate'];
+	$sqlData['tdFileNo'] = $data['tdFileNo'];
+	$sqlData['receivedDate'] = $data['receivedDate'];
+	$sqlData['dueDate'] = $data['dueDate'];
+	$sqlData['fromTD'] = $data['fromTD'];
+	$sqlData['actualSurveyDate'] = $data['actualSurveyDate'];
+	$sqlData['startTime_1'] = $data['startTime_1'];
+	$sqlData['endTime_1'] = $data['endTime_1'];
+	$sqlData['startTime_2'] = $data['startTime_2'];
+	$sqlData['endTime_2'] = $data['endTime_2'];
+	$sqlData['startTime_3'] = $data['startTime_3'];
+	$sqlData['endTime_3'] = $data['endTime_3'];
+	$sqlData['startTime_4'] = $data['startTime_4'];
+	$sqlData['endTime_4'] = $data['endTime_4'];
+	$sqlData['totalHours'] = $data['totalHours'];
+	$sqlData['surveyTimeHours'] = $data['surveyTimeHours'];
+	$sqlData['stCode'] = $data['stCode'];
+	$sqlData['surveyType'] = $data['surveyType'];
+	$sqlData['vehCode'] = $data['vehCode'];
+	$sqlData['vehicle'] = $data['vehicle'];
+	$sqlData['isHoliday'] = $data['isHoliday'];
+	$sqlData['bonusHours'] = $data['bonusHours'];
+	$sqlData['surveyLocationDistrict'] = $data['surveyLocationDistrict'];
+	$sqlData['surveyLocation'] = $data['surveyLocation'];
+	$sqlData['routeItems'] = $data['routeItems'];
+	$sqlData['noOfSurveyors'] = $data['noOfSurveyors'];
+	$sqlData['estimatedManHour'] = $data['estimatedManHour'];
+	$sqlData['receiveDate'] = $data['receiveDate'];
+	$sqlData['dataInputNo'] = $data['dataInputNo'];
+	$sqlData['dataInputBy'] = $data['dataInputBy'];
+	$sqlData['entryFormTypeNo'] = $data['entryFormTypeNo'];
+	$sqlData['noOfPages'] = $data['noOfPages'];
+	$sqlData['report'] = $data['report'];
+	$sqlData['hourlyRate'] = $data['hourlyRate'];
+	$sqlData['surveyFinding'] = $data['surveyFinding'];
+	$sqlData['am'] = $data['am'];
+	$sqlData['periodHour_1'] = $data['periodHour_1'];
+	$sqlData['periodWagesHr_1'] = $data['periodWagesHr_1'];
+	$sqlData['periodHour_2'] = $data['periodHour_2'];
+	$sqlData['periodWagesHr_2'] = $data['periodWagesHr_2'];
+	$sqlData['totalWages'] = $data['totalWages'];
+	$sqlData['onBoardCostFare'] = $data['onBoardCostFare'];
+	$sqlData['noOfTrips'] = $data['noOfTrips'];
+	$sqlData['transportAllowanceAm'] = $data['transportAllowanceAm'];
+	$sqlData['transportAllowanceNoon'] = $data['transportAllowanceNoon'];
+	$sqlData['transportAllowancePm'] = $data['transportAllowancePm'];
+	$sqlData['transportAllowanceOvernight'] = $data['transportAllowanceOvernight'];
+	$sqlData['taTotal'] = $data['taTotal'];
+	$sqlData['wagesTaOnBoard'] = $data['wagesTaOnBoard'];
+	$sqlData['onBoardTranportAllowanceTotal'] = $data['onBoardTranportAllowanceTotal'];
+	$sqlData['surveyorCode'] = $data['surveyorCode'];
+	$sqlData['surveyorName'] = $data['surveyorName'];
+	$sqlData['surveyorTelephone'] = $data['surveyorTelephone'];
+	$sqlData['complateJobNo'] = $data['complateJobNo'];
+	$sqlData['distributedToLeader'] = $data['distributedToLeader'];
+	$sqlData['reportWeek'] = $data['reportWeek'];
+	$sqlData['surveyLocationCn'] = $data['surveyLocationCn'];
+	$sqlData['direction'] = $data['direction'];
     $sqlData['bookLong'] = $data['bookLong'];
     $sqlData['bookLat'] = $data['bookLat'];
     $sqlData['map_address'] = $data['map_address'];
     $sqlData['diy_name'] = $data['diy_name'];
     $sqlData['diy_value'] = $data['diy_value'];
+    $sqlData['img_url']=$data['imgUrl'];
+
 
     $ja = new JobsAccess($db);
     $mascId = intval($data['mascId']);
@@ -1770,44 +1865,90 @@ function deleteInfo($data)
  * 獲取所有工作列表
  * @param $data
  */
-function getJobs($data)
-{
-    global $conf, $db;
-    if (empty($data['sign'])) {
-        $message = array(
-            'status' => 'failed',
-            'msg' => 'sign is null.',
-            'data' => array()
-        );
-        die(json_encode($message));
-    }
-    $filename = $conf["path"]["sign"] . $data['sign'];
-    $survId = file_get_contents($filename);
-    if (empty($survId)) {
-        $message = array(
-            'status' => 'failed',
-            'msg' => 'Login has expired.',
-            'data' => array()
-        );
-        die(json_encode($message));
-    }
-    $ja = new JobsAccess($db);
-    $rs = $ja->getList2(array());
-    foreach ($rs as $k => $v) {
-        foreach ($v as $kk => $vv) {
-            if (is_string($vv)) {
-                if ($encode = mb_detect_encoding($vv, array("ASCII", 'UTF-8', "GB2312", "GBK", 'BIG5'))) {
+
+//function getJobs($data)
+//{
+//    global $conf, $db;
+//    if (empty($data['sign'])) {
+//        $message = array(
+//            'status' => 'failed',
+//            'msg' => 'sign is null.',
+//            'data' => array()
+//        );
+//        die(json_encode($message));
+//    }
+//    $filename = $conf["path"]["sign"] . $data['sign'];
+//    $survId = file_get_contents($filename);
+//    if (empty($survId)) {
+//        $message = array(
+//            'status' => 'failed',
+//            'msg' => 'Login has expired.',
+//            'data' => array()
+//        );
+//        die(json_encode($message));
+//    }
+//    $ja = new JobsAccess($db);
+//    $rs = $ja->getList2(array());
+//    foreach ($rs as $k => $v) {
+//        foreach ($v as $kk => $vv) {
+//            if (is_string($vv)) {
+//                if ($encode = mb_detect_encoding($vv, array("ASCII", 'UTF-8', "GB2312", "GBK", 'BIG5'))) {
+//                }
+//            }
+//        }
+//    }
+//}
+
+function getJobs($data){
+	global $conf,$db;
+
+	if(empty($data['sign'])){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'sign is null.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+    $is_goods = isset($data['is_goods'])?$data['is_goods'] :false;
+	$filename = $conf["path"]["sign"].$data['sign'];
+	$survId = file_get_contents($filename);
+	if(empty($survId)){
+		$message = array (
+				'status' => 'failed',
+				'msg' => 'Login has expired.',
+				'data' => array()
+		);
+		die(json_encode($message));
+	}
+	$ja = new JobsAccess($db);
+	$rs = $ja->getList2(array(),'','',$is_goods);
+    foreach($rs as $k =>$v){
+        foreach($v as $kk=>$vv){
+            if(is_string($vv)){
+                if($encode = mb_detect_encoding($vv, array("ASCII",'UTF-8',"GB2312","GBK",'BIG5'))){
+
                     $rs[$k][$kk] = mb_convert_encoding($vv, 'UTF-8', $encode);
                 }
             }
         }
     }
+
     $message = array(
         'status' => 'success',
         'msg' => '',
         'data' => $rs
     );
     die(json_encode($message));
+
+
+    $message = array (
+			'status' => 'success',
+			'msg' => '',
+			'data' => $rs
+	);
+	die(json_encode($message));
+
 }
 
 /**
@@ -1901,6 +2042,83 @@ function getJobNoNewList($data)
     );
     die(json_encode($message));
 }
+
+
+/**
+ * 管理员设置学员状态（已到，缺席，迟到，替代者，病假）
+ * $data['status'] 默认1，1已到，2：迟到，3：他人报道，4：病假）
+ * $data['status_mark'] status 为3时记录用
+ * @param $data
+ */
+function setStatus($data){
+    global $conf,$db;
+    if(empty($data['sign'])){
+        $message = array (
+            'status' => 'failed',
+            'msg' => 'sign is null.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+
+    $filename = $conf["path"]["sign"].$data['sign'];
+    $survId = file_get_contents($filename);
+
+    if(empty($survId)){
+        $message = array (
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $data['survId'] = $survId;
+    $s = new Surveyor();
+    $sa = new SurveyorAccess($db);
+    $s->survId = $survId;
+    $rsSurveyor = $sa->GetListSearch($s);
+
+    if(count($rsSurveyor) > 0){
+        $data['engName'] = $rsSurveyor[0]->engName;
+    }
+    if($rsSurveyor[0]->survType == 'surveyor'){
+
+        $sql = "SELECT mso.sjop FROM Survey_SurveyJobOpen mso
+				WHERE 1=1 AND mso.delFlag='no' and JobNo = '{$data['jobNo']}'";
+        $db->query($sql);
+
+        $isOpen = false;
+        while ($rs = $db->next_record()) {
+            $isOpen = true;
+        }
+        if($isOpen == false ){
+            $message = array (
+                'status' => 'failed',
+                'msg' => '暫未開放自行報到',
+                'data' => ''
+            );
+            echo json_encode($message);exit;
+        }
+    }
+
+    $ja = new JobsAccess($db);
+    $result = $ja->setDataEntryNew($data);
+    if($result){
+        $message = array (
+            'status' => 'success',
+            'msg' => '',
+            'data' => ''
+        );
+    }else{
+        $message = array (
+            'status' => 'failed',
+            'msg' => '',
+            'data' => ''
+        );
+    }
+    die(json_encode($message));
+}
+
 
 /**
  * 上传已点名学员
@@ -2454,43 +2672,44 @@ function getJobNoNewByClassRecord($class_record_id)
  * @param $data
  */
 function paymentHistory($data)
-{
-    global $db;
-    $verdict = $data['verdict'];
-    $jobNo = $data['jobNo'];
-    switch ($verdict) {
-        case 1:
-            $sql = "SELECT `surveyor_id` FROM `Survey_SurveyorClassPDF` WHERE `jobNoNew` LIKE '{$jobNo}%' GROUP BY `jobNoNew`,`surveyor_id`";
-            $db->query($sql);
-            while($rs = $db->next_record()) {
-                $userIds[] = $rs['surveyor_id'];
-            }
-            $sqls = "SELECT `userId`,`chiName`,`engName`,`moblie` FROM `Survey_Users` WHERE `userId` IN (";
-            $userSql ='';
-          for($i=0;$i<count($userIds);$i++){
-              if($i==0){
-                  $userSql="'".$userIds[$i]."'";
-              }else{
-                  $userSql.=","."'".$userIds[$i]."'";
-              }
-          }
-            $sqls.=$userSql.")";
+                    {
+                        global $db;
+                        $verdict = $data['verdict'];
+                        $jobNo = $data['jobNo'];
+                        switch ($verdict) {
+                            case 1:
+                                $sql = "SELECT `surveyor_id` FROM `Survey_SurveyorClassPDF` WHERE `jobNoNew` LIKE '{$jobNo}%' GROUP BY `jobNoNew`,`surveyor_id`";
+                                $db->query($sql);
+                                while($rs = $db->next_record()) {
+                                    $userIds[] = $rs['surveyor_id'];
+                                }
+                                $sqls = "SELECT `userId`,`chiName`,`engName`,`moblie` FROM `Survey_Users` WHERE `userId` IN (";
+                                $userSql ='';
+                                for($i=0;$i<count($userIds);$i++){
+                                    if($i==0){
+                                        $userSql="'".$userIds[$i]."'";
+                                    }else{
+                                        $userSql.=","."'".$userIds[$i]."'";
+                                    }
+                                }
+                                $sqls.=$userSql.")";
 
-            $db->query($sqls);
-            while($rss = $db->next_record()) {
-                $rs['userId']=$rss['userId'];
-                $rs['chiName']=$rss['chiName'];
-                $rs['engName']=$rss['engName'];
-                $rs['moblie']=$rss['moblie'];
-                $info[]=$rs;
-            }
-            echo json_encode($info, JSON_UNESCAPED_UNICODE);
-            break;
-        case 2:
+                                $db->query($sqls);
+                                while($rss = $db->next_record()) {
+                                    $rs['userId']=$rss['userId'];
+                                    $rs['chiName']=$rss['chiName'];
+                                    $rs['engName']=$rss['engName'];
+                                    $rs['moblie']=$rss['moblie'];
+                                    $info[]=$rs;
+                                }
+                                echo json_encode($info, JSON_UNESCAPED_UNICODE);
+                                break;
+                            case 2:
 
-            break;
-        default:
+                                break;
+                            default:
 
-            break;
-    }
-}
+                                break;
+                        }
+
+                    }

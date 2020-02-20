@@ -15,7 +15,6 @@ $t->set_caching ( $conf ["cache"] ["valid"] );
 $t->set_cache_dir ( $conf ["cache"] ["dir"] );
 $t->set_expire_time ( $conf ["cache"] ["timeout"] );
 $t->print_cache ();
-
 $t->set_block ( "HdIndex", "DistPartRow", "DistPartRows" );
 $t->set_block ( "HdIndex", "SurvTypeRow", "SurvTypeRows" );
 $t->set_block ( "HdIndex", "StatusRow", "StatusRows" );

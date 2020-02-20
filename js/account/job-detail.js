@@ -22,6 +22,7 @@ $(function() {
         jobNoNew3 = jobNoNew3==undefined?'':jobNoNew3;
         var jobNoNew4 = $('#txtJobNoNew4').val();
         jobNoNew4 = jobNoNew4==undefined?'':jobNoNew4;
+
         $.ajax({
             type : "GET",
             url : "./api.php",
@@ -31,7 +32,7 @@ $(function() {
                 var e = $('#btnDetailConfirm');
                 e.popover({placement:'top', content:msg.message}).popover('show');
                 if(msg.success){
-                    setTimeoutbtnDetailConfirm("top.location.href='jobs_3.php'", 3000);
+                    setTimeout("top.location.href='jobs_3.php'", 3000);
                 }
             }
         });

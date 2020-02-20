@@ -12,7 +12,6 @@ if (! UserLogin::IsSuperAdministrator ()) {
 
 $t = new CacheTemplate ( "./templates" );
 $t->set_file ( "HdIndex", "user_entry.html" );
-// $t->set_caching($conf["cache"]["valid"]);
 $t->set_caching ( false );
 $t->set_cache_dir ( $conf ["cache"] ["dir"] );
 $t->set_expire_time ( $conf ["cache"] ["timeout"] );
@@ -21,6 +20,8 @@ $t->set_block ( "HdIndex", "DistPartRow", "DistPartRows" );
 $t->set_block ( "HdIndex", "RoleRow", "RoleRows" );
 $t->set_block ( "HdIndex", "Rowyear", "Rowsyear" );
 $t->set_block ( "HdIndex", "DistrictRow", "DistrictRows" );
+
+
 
 // 年
 for($i = date ( "Y" ); $i <= date ( "Y" ) + 2; $i ++) {

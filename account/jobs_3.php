@@ -103,13 +103,12 @@ if($type == 'opening'){
 
     $msa->order = 'ORDER BY MS.plannedSurveyDate ASC';
     $confirmed_job = $msa->GetListSearch($ms);
-
     $ms->surveyorCode = '';
     $msoa->order = 'ORDER BY plannedSurveyDate ASC ';
     $applied_job = $msoa->GetListSearchOpening2($ms,'applied',$surveyorCode);
-
     $rs = $msoa->GetListSearchOpening2($ms,'opening',$surveyorCode);
     $rs = check_repeat_job($confirmed_job,$applied_job,$rs);
+
 }elseif($type == 'applied'){
     $ms->surveyorCode = '';
     $msoa->order = 'ORDER BY plannedSurveyDate ASC ';
@@ -122,8 +121,8 @@ $timeIcon = "";
 if($type == 'opening'){
     $timeIcon = "";
 }
-
 $res = array();
+
 foreach($rs as $k=>$v){
     $remainTime = strtotime($v->mainScheduleOpen->inputTime) + $conf["job"]['pickTime'] - time();
     $remainTimeHtml = "";

@@ -192,7 +192,7 @@ switch ($query) {
 
         $fileExt = fileext($_FILES['file']['name']);
         $fileExt = strtolower($fileExt);
-        $fileName = '/'.date('YmdHis').'.'.$fileExt;
+        $fileName = '/'.date('YmdHis').'-'.uniqid().'.'.$fileExt;
         $filePath = $path.$fileName;
         move_uploaded_file($_FILES['file']['tmp_name'],$filePath);
         $message = array (

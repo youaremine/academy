@@ -434,9 +434,14 @@ class MainScheduleOpenAccess
 		return $rows;
 	}
 
-    function GetListSearchOpening2($obj,$type='opening',$applySurvId=null)
+    function GetListSearchOpening2($obj,$type='opening',$applySurvId=null,$is_image = false)
     {
         $query = '';
+        if($is_image == true){
+            $query .= " AND is_image = 1";
+        }else{
+            $query .= " AND is_image = 0";
+        }
         if ($obj->mascId != '')
             $query .= " AND mascId = '" . $obj->mascId . "'";
         if ($obj->weekNo != '')
@@ -585,7 +590,7 @@ class MainScheduleOpenAccess
         if ($this->order != '')
             $query .= $this->order;
 
-        $sql = "SELECT jobNo,jobNoNew,plannedSurveyDate,startTime_1,endTime_1,surveyType,vehicle,surveyLocation,diy_name,diy_value,surveyorCode FROM Survey_MainSchedule " . " WHERE 1=1 ";
+        $sql = "SELECT jobNo,img_url,jobNoNew,plannedSurveyDate,startTime_1,endTime_1,surveyType,vehicle,surveyLocation,diy_name,diy_value,surveyorCode FROM Survey_MainSchedule " . " WHERE 1=1 ";
         $sql = $sql . $query;
         $this->db->query($sql);
         $rows = array();

@@ -111,5 +111,7 @@ class MainSchedule {
 	
 	// 只查询不泛匹配
 	var $jobNoNewSigle;
+	var $is_image;
+	var $img_url;
 }
 ?>

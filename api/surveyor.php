@@ -40,10 +40,11 @@ switch ($data['q']) {
         editClass($data);
         break;
 	case 'login' :
+
 		$username = $data['username'];
 		$password = $data['password'];
 		$login = new SurveyorLogin ( $db );
-		if ($login->Login ( $username, $password )) {
+		if ($login->Login ( $username, $password )) {//判断密码是否正确
 			$s = new Surveyor ();
 			$s->company = '';
 			$s->status = 'active';
@@ -61,8 +62,11 @@ switch ($data['q']) {
 			$surveyor['survType'] = $s->survType;
 			$surveyor['profilePhoto'] = $s->profilePhoto;
             $surveyor['vip_level'] = $s->vip_level;
+
 			if(!empty($surveyor['profilePhoto'])){
-				$surveyor['profilePhoto'] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.$surveyor['profilePhoto'];
+                if(strpos($surveyor['profilePhoto'],'images/profile-photo')){
+                    $surveyor['profilePhoto'] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.$surveyor['profilePhoto'];
+                }
 			}
 
 			$message = array (
@@ -76,6 +80,7 @@ switch ($data['q']) {
 				$message['sign'] = $sign;
 				//写入到文件中
 				$filename = $conf["path"]["sign"].$sign;
+
 				file_put_contents($filename,$s->survId);
 			}
 		} else {
@@ -118,6 +123,7 @@ switch ($data['q']) {
 
 		$m = new MainSchedule();
 		$ma = new MainScheduleAccess($db);
+        $is_goods = isset($data['is_goods'])?$data['is_goods'] :false;
 		if(empty($data['sign'])){
 			$message = array (
 					'status' => 'failed',
@@ -144,7 +150,7 @@ switch ($data['q']) {
             $m->jobNoNew = $data['jobNoNew'];
         }
 
-		$rs = $ma->GetListSearch($m,$m->surveyorCode);
+		$rs = $ma->GetListSearch($m,$m->surveyorCode,$is_goods);
 		$jsonArr = array();
 		foreach($rs as $obj){
 			$dr = array();
@@ -171,6 +177,8 @@ switch ($data['q']) {
             $dr['checkIn'] = $obj->checkIn;
             $dr['class_record_id'] = $obj->class_record_id;
             $dr['realClass'] = $obj->realClass;
+            $dr['img_url']=$obj->img_url;
+            $dr['is_image']=$obj->is_image;
 			$jsonArr[] = $dr;
 		}
         foreach($jsonArr as $k =>$v){
@@ -2126,7 +2134,7 @@ function addInfo($data){
 		$sa = new SurveyorAccess($db);
 
 		$s->survId = $data['survId'];
-		$s->upSurvId = $data['upSurvId'];
+        $s->upSurvId = $data['upSurvId'];
 		$s->ozzoCode = $data['ozzoCode'];
 		$s->chiName = $data['chiName'];
 		$s->engName = $data['engName'];

@@ -390,7 +390,7 @@ function getTop($data){
         $message = array (
             'status' => 'success',
             'msg' => '',
-            'data' => array()
+            'data' => array("content"=>'',"title"=>'')
         );
     }
     die(json_encode($message));

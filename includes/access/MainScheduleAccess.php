@@ -548,8 +548,7 @@ class MainScheduleAccess
      *            $afterJobNoShorts
      * @param $isAfter 是否之后
      */
-    function GetWeekList($weekNo, $complateJobNo, $afterJobNoShorts, $isAfter = false)
-    {
+    function GetWeekList($weekNo, $complateJobNo, $afterJobNoShorts, $isAfter = false){
         $query = '';
         $query .= " AND complateJobNo = '" . $complateJobNo . "'";
         $query .= " AND jobNoNew NOT LIKE '%ss'"; // 去掉end with ss
@@ -802,8 +801,7 @@ class MainScheduleAccess
         return $rows;
     }
 
-    function GetListSearch($obj,$surveyorId = false)
-    {
+    function GetListSearch($obj,$surveyorId = false,$is_goods=false){
         $query = '';
         if ($obj->mascId != '')
             $query .= " AND MS.mascId = '" . $obj->mascId . "'";
@@ -970,8 +968,12 @@ class MainScheduleAccess
             $query .= " AND MS.surveyorCode = ''
             AND MS.jobNoNew IN (SELECT jobNoNew FROM Survey_MainScheduleOpen WHERE delFlag='no' AND auditUserId=0 AND applySurvId>0)";
         }
-        if ($obj->noSS == true)
+        if ($obj->noSS == true){
             $query .= " AND MS.jobNoNew NOT LIKE '%ss'"; // 去掉end with ss
+        }
+        if($is_goods){
+            $query.= " AND MS.is_image='1'";
+        }
 
         if ($this->order != '')
             $query .= $this->order;
@@ -984,7 +986,7 @@ class MainScheduleAccess
         }
 
         $sql .= ",RF.fileName as rawFile
-				,MSC.mscId,MSC.company FROM Survey_MainSchedule MS
+				,MSC.mscId,MSC.company,MS.img_url,MS.is_image FROM Survey_MainSchedule MS
 				LEFT JOIN Survey_MainScheduleRawFile RF ON RF.jobNoNew=MS.jobNoNew
 				LEFT JOIN Survey_MainScheduleContractor MSC ON MSC.delFlag='no' AND MSC.jobNoNew=MS.jobNoNew
 				LEFT JOIN Survey_SurveyJobOpen mso on mso.jobNo = MS.jobNo and mso.delFlag='no'
@@ -996,7 +998,8 @@ class MainScheduleAccess
 
         $sql .= 'WHERE 1=1 ';
         $sql = $sql . $query;
-
+//        echo $sql;
+//        exit();
         $this->db->query($sql);
 
 //         echo "{$sql}<br>";
@@ -1077,6 +1080,8 @@ class MainScheduleAccess
             $obj->class_record_id = $rs ["class_record_id"];
             $obj->isopen = is_null($rs['jop'])?'yes':'no';
             $obj->checkIn = is_null($rs['checkIn'])?'no':'yes';
+            $obj->img_url=$rs['img_url'];
+            $obj->is_image=$rs['is_image'];
             $rows [] = $obj;
         }
         return $rows;
