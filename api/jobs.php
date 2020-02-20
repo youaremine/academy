@@ -2679,6 +2679,23 @@ function paymentHistory($data)
     global $db;
     $verdict = $data['verdict'];
     $jobNo = $data['jobNo'];
+    $surInfo = getSurInfo($data['sign']);
+    if(empty($verdict)){
+        $urlInfo=array(
+            'status'=>'failed',
+            'msg'=>'verdict can not be empty ',
+            'data'=>''
+        );
+        echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
+    }
+    if(empty($jobNo)){
+        $urlInfo=array(
+            'status'=>'failed',
+            'msg'=>'jobNo can not be empty ',
+            'data'=>''
+        );
+        echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
+    }
     switch ($verdict) {
         case 1:
             $sql = "SELECT `surveyor_id` FROM `Survey_SurveyorClassPDF` WHERE `jobNoNew` LIKE '{$jobNo}%' GROUP BY `jobNoNew`,`surveyor_id`";
@@ -2686,32 +2703,125 @@ function paymentHistory($data)
             while ($rs = $db->next_record()) {
                 $userIds[] = $rs['surveyor_id'];
             }
-            $sqls = "SELECT `userId`,`chiName`,`engName`,`moblie` FROM `Survey_Users` WHERE `userId` IN (";
-            $userSql = '';
-            for ($i = 0; $i < count($userIds); $i++) {
-                if ($i == 0) {
-                    $userSql = "'" . $userIds[$i] . "'";
-                } else {
-                    $userSql .= "," . "'" . $userIds[$i] . "'";
+            if(!empty($userIds)){
+                $sqls = "SELECT `userId`,`chiName`,`engName`,`moblie` FROM `Survey_Users` WHERE `userId` IN (";
+                $userSql = '';
+                for ($i = 0; $i < count($userIds); $i++) {
+                    if ($i == 0) {
+                        $userSql = "'" . $userIds[$i] . "'";
+                    } else {
+                        $userSql .= "," . "'" . $userIds[$i] . "'";
+                    }
                 }
+                $sqls .= $userSql . ")";
+                $db->query($sqls);
+                while ($rss = $db->next_record()) {
+                    $rs['userId'] = $rss['userId'];
+                    $rs['chiName'] = $rss['chiName'];
+                    $rs['engName'] = $rss['engName'];
+                    $rs['moblie'] = $rss['moblie'];
+                    $info[] = $rs;
+                }
+                $urlInfo=array(
+                    'status'=>'success',
+                    'msg'=>'',
+                    'data'=>$info
+                );
+                echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
+                break;
+            }else{
+                $urlInfo=array(
+                    'status'=>'success',
+                    'msg'=>'',
+                    'data'=>''
+                );
+                echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
+                break;
             }
-            $sqls .= $userSql . ")";
-
-            $db->query($sqls);
-            while ($rss = $db->next_record()) {
-                $rs['userId'] = $rss['userId'];
-                $rs['chiName'] = $rss['chiName'];
-                $rs['engName'] = $rss['engName'];
-                $rs['moblie'] = $rss['moblie'];
-                $info[] = $rs;
-            }
-            echo json_encode($info, JSON_UNESCAPED_UNICODE);
-            break;
         case 2:
+            $sql="SELECT `surveyorCode` FROM `Survey_MainSchedule` WHERE `jobNo`='{$jobNo}' AND `surveyorCode`!=''";
+            $db->query($sql);
+            while ($rs = $db->next_record()) {
+                $userCodes[] = $rs['surveyorCode'];
+            }
+            if(!empty($userCodes)){
+                $sql = "SELECT `surveyor_id` FROM `Survey_SurveyorClassPDF` WHERE `jobNoNew` LIKE '{$jobNo}%' GROUP BY `jobNoNew`,`surveyor_id`";
+                $db->query($sql);
+                while ($rs = $db->next_record()) {
+                    $userIds[] = $rs['surveyor_id'];
+                }
+                if(!empty($userIds)){
+                    $result = array_diff($userCodes, $userIds);
+                    $sqls = "SELECT `userId`,`chiName`,`engName`,`moblie` FROM `Survey_Users` WHERE `userId` IN (";
+                    $userSql = '';
+                    for ($i = 0; $i < count($result); $i++) {
+                        if ($i == 0) {
+                            $userSql = "'" . $result[$i] . "'";
+                        } else {
+                            $userSql .= "," . "'" . $result[$i] . "'";
+                        }
+                    }
+                    $sqls .= $userSql . ")";
 
-            break;
+                    $db->query($sqls);
+                    while ($rss = $db->next_record()) {
+                        $rs['userId'] = $rss['userId'];
+                        $rs['chiName'] = $rss['chiName'];
+                        $rs['engName'] = $rss['engName'];
+                        $rs['moblie'] = $rss['moblie'];
+                        $info[] = $rs;
+                    }
+                    $urlInfo=array(
+                        'status'=>'success',
+                        'msg'=>'',
+                        'data'=>$info
+                    );
+                    echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
+                    break;
+                }else{
+                    $sqls = "SELECT `userId`,`chiName`,`engName`,`moblie` FROM `Survey_Users` WHERE `userId` IN (";
+                    $userSql = '';
+                    for ($i = 0; $i < count($userCodes); $i++) {
+                        if ($i == 0) {
+                            $userSql = "'" . $userCodes[$i] . "'";
+                        } else {
+                            $userSql .= "," . "'" . $userCodes[$i] . "'";
+                        }
+                    }
+                    $sqls .= $userSql . ")";
+
+                    $db->query($sqls);
+                    while ($rss = $db->next_record()) {
+                        $rs['userId'] = $rss['userId'];
+                        $rs['chiName'] = $rss['chiName'];
+                        $rs['engName'] = $rss['engName'];
+                        $rs['moblie'] = $rss['moblie'];
+                        $info[] = $rs;
+                    }
+                    $urlInfo=array(
+                        'status'=>'success',
+                        'msg'=>'',
+                        'data'=>$info
+                    );
+                    echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
+                    break;
+                }
+            }else{
+                $urlInfo=array(
+                    'status'=>'success',
+                    'msg'=>'',
+                    'data'=>''
+                );
+                echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
+                break;
+            }
         default:
-
+            $urlInfo=array(
+                'status'=>'failed',
+                'msg'=>'',
+                'data'=>''
+            );
+            echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
             break;
     }
 

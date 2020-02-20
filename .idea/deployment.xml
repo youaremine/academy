@@ -1,33 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-<<<<<<< HEAD
   <component name="PublishConfigData" serverName="测试">
     <serverData>
-      <paths name="正式">
-=======
-  <component name="PublishConfigData" serverName="sandbox">
-    <serverData>
-      <paths name="apache">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="bni-hk-marvel">
->>>>>>> bdb0a73f25fcf3f28b28b3cfd0044c90fd988b1c
-        <serverdata>
-          <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
-            <mapping local="" />
-          </mappings>
-        </serverdata>
-      </paths>
-<<<<<<< HEAD
       <paths name="测试">
-=======
-      <paths name="sandbox">
->>>>>>> bdb0a73f25fcf3f28b28b3cfd0044c90fd988b1c
         <serverdata>
           <mappings>
             <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
