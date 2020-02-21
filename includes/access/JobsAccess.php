@@ -638,7 +638,7 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
         }
         $sql = "SELECT m.jobNo,m.jobNoNew,m.class_record_id,m.plannedSurveyDate,m.surveyTimeHours,m.surveyType
                     ,m.surveyorCode,m.surveyorName,m.surveyorTelephone
-                    ,s.survId,s.chiName,s.engName,s.contact,s.profilePhoto
+                    ,s.survId,s.chiName,s.engName,s.contact,s.profilePhoto,sp.status,sp.status_mark
                 FROM {$conf['table']['prefix']}MainSchedule m
                 LEFT JOIN {$conf['table']['prefix']}SurveyPart sp ON sp.refNo = m.jobNoNew AND sp.delFlag='no'
                 LEFT JOIN {$conf['table']['prefix']}Surveyor s ON s.survId = sp.survId
