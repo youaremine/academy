@@ -2680,108 +2680,137 @@ function paymentHistory($data)
     $verdict = $data['verdict'];
     $jobNo = $data['jobNo'];
     $surInfo = getSurInfo($data['sign']);
-    if(empty($verdict)){
-        $urlInfo=array(
-            'status'=>'failed',
-            'msg'=>'verdict is required ',
-            'data'=>''
+    if (empty($verdict)) {
+        $urlInfo = array(
+            'status' => 'failed',
+            'msg' => 'verdict is required ',
+            'data' => ''
         );
         echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
         exit();
     }
-    if(empty($jobNo)){
-        $urlInfo=array(
-            'status'=>'failed',
-            'msg'=>'jobNo is required ',
-            'data'=>''
+    if (empty($jobNo)) {
+        $urlInfo = array(
+            'status' => 'failed',
+            'msg' => 'jobNo is required ',
+            'data' => ''
         );
         echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
         exit();
     }
     switch ($verdict) {
         case 1:
-            $sql = "SELECT `surveyor_id` FROM `Survey_SurveyorClassPDF` WHERE `jobNoNew` LIKE '{$jobNo}%' GROUP BY `jobNoNew`,`surveyor_id`";
+            $sql = "SELECT `surveyor_id`,`path`,`jobNoNew` FROM `Survey_SurveyorClassPDF` WHERE `jobNoNew` LIKE '{$jobNo}%' GROUP BY `jobNoNew`,`surveyor_id` ORDER BY `surveyor_id`";
             $db->query($sql);
+            //获取已上传pdf名单
             while ($rs = $db->next_record()) {
-                $userIds[] = $rs['surveyor_id'];
+                $userCodes['surveyor_id'] = $rs['surveyor_id'];
+                $userCodes['jobNoNew'] = $rs['jobNoNew'];
+                $userCodes['path'] = $rs['path'];
+
+                $userCode[]=$userCodes;
             }
-            if(!empty($userIds)){
-                $sqls = "SELECT `userId`,`chiName`,`engName`,`moblie` FROM `Survey_Users` WHERE `userId` IN (";
+            if (!empty($userCode)) {
+                $sqls = "SELECT `survId`,`chiName`,`engName`,`contact` FROM `Survey_Surveyor` WHERE `survId` IN (";
                 $userSql = '';
-                for ($i = 0; $i < count($userIds); $i++) {
+                for ($i = 0; $i < count($userCode); $i++) {
                     if ($i == 0) {
-                        $userSql = "'" . $userIds[$i] . "'";
+                        $userSql = "'" . $userCode[$i]['surveyor_id'] . "'";
                     } else {
-                        $userSql .= "," . "'" . $userIds[$i] . "'";
+                        $userSql .= "," . "'" . $userCode[$i]['surveyor_id'] . "'";
                     }
                 }
                 $sqls .= $userSql . ")";
                 $db->query($sqls);
+                //获取名单信息
                 while ($rss = $db->next_record()) {
-                    $rs['userId'] = $rss['userId'];
+                    $rs['survId'] = $rss['survId'];
                     $rs['chiName'] = $rss['chiName'];
                     $rs['engName'] = $rss['engName'];
-                    $rs['moblie'] = $rss['moblie'];
+                    $rs['contact'] = $rss['contact'];
                     $info[] = $rs;
                 }
-                $urlInfo=array(
-                    'status'=>'success',
-                    'msg'=>'',
-                    'data'=>$info
+                //添加信息
+                for($i=0;$i<count($info);$i++){
+                        $info[$i]['jobNoNew']=$userCode[$i]['jobNoNew'];
+                        $info[$i]['path']=$userCode[$i]['path'];
+                }
+                $urlInfo = array(
+                    'status' => 'success',
+                    'msg' => '',
+                    'data' => $info
                 );
                 echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
                 break;
-            }else{
-                $urlInfo=array(
-                    'status'=>'success',
-                    'msg'=>'',
-                    'data'=>''
+            } else {
+                $urlInfo = array(
+                    'status' => 'success',
+                    'msg' => '',
+                    'data' => ''
                 );
                 echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
                 break;
             }
         case 2:
-            $sql="SELECT `surveyorCode` FROM `Survey_MainSchedule` WHERE `jobNo`='{$jobNo}' AND `surveyorCode`!=''";
+            $sql = "SELECT `surveyorCode`,`jobNoNew` FROM `Survey_MainSchedule` WHERE `jobNo`='{$jobNo}' AND `surveyorCode`!=''";
             $db->query($sql);
             while ($rs = $db->next_record()) {
-                $userCodes[] = $rs['surveyorCode'];
+                $userCodes['surveyorCode'] = $rs['surveyorCode'];
+                $userCodes['jobNoNew'] = $rs['jobNoNew'];
+                $userCode[]=$userCodes;
             }
-            if(!empty($userCodes)){
+            if (!empty($userCode)) {
                 $sql = "SELECT `surveyor_id` FROM `Survey_SurveyorClassPDF` WHERE `jobNoNew` LIKE '{$jobNo}%' GROUP BY `jobNoNew`,`surveyor_id`";
                 $db->query($sql);
                 while ($rs = $db->next_record()) {
                     $userIds[] = $rs['surveyor_id'];
                 }
-                if(!empty($userIds)){
-                    $result = array_diff($userCodes, $userIds);
-                    $sqls = "SELECT `userId`,`chiName`,`engName`,`moblie` FROM `Survey_Users` WHERE `userId` IN (";
+                //存在已上传pdf情况
+                if (!empty($userIds)) {
+                    //记录已上传的名单下标
+                   for($j=0;$j<count($userCode);$j++){
+                       for($k=0;$k<count($userIds);$k++){
+                           if ($userCode[$j]['surveyorCode']==$userIds[$k]){
+                               $code[]=$j;
+                           }
+                       }
+                   }
+                   //移除已上传的元素
+                   $result=array_diff_key($userCode,$code);
+                    $sqls = "SELECT `survId`,`chiName`,`engName`,`contact` FROM `Survey_Surveyor` WHERE `survId` IN (";
                     $userSql = '';
-                    for ($i = 0; $i < count($result); $i++) {
-                        if ($i == 0) {
-                            $userSql = "'" . $result[$i] . "'";
+                    for ($i = 1; $i <= count($result); $i++) {
+                        if ($i == 1) {
+                            $userSql = "'" . $result[$i]['surveyorCode'] . "'";
                         } else {
-                            $userSql .= "," . "'" . $result[$i] . "'";
+                            $userSql .= "," . "'" . $result[$i]['surveyorCode'] . "'";
                         }
                     }
-                    $sqls .= $userSql . ")";
-
+                    $sqls .= $userSql . ") ORDER BY `survId`";
                     $db->query($sqls);
                     while ($rss = $db->next_record()) {
-                        $rs['userId'] = $rss['userId'];
+                        $rs['survId'] = $rss['survId'];
                         $rs['chiName'] = $rss['chiName'];
                         $rs['engName'] = $rss['engName'];
-                        $rs['moblie'] = $rss['moblie'];
+                        $rs['contact'] = $rss['contact'];
                         $info[] = $rs;
                     }
-                    $urlInfo=array(
-                        'status'=>'success',
-                        'msg'=>'',
-                        'data'=>$info
+                    //重新建立数组索引
+                    $result=array_values($result);
+                    //添加至返回信息
+                   for ($i=0;$i<count($info);$i++){
+                       $info[$i]['jobNoNew']=$result[$i]['jobNoNew'];
+                       $info[$i]['path']='';
+                   }
+                    $urlInfo = array(
+                        'status' => 'success',
+                        'msg' => '',
+                        'data' => $info
                     );
                     echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
                     break;
-                }else{
-                    $sqls = "SELECT `userId`,`chiName`,`engName`,`moblie` FROM `Survey_Users` WHERE `userId` IN (";
+                } else {
+                    $sqls = "SELECT `survId`,`chiName`,`engName`,`contact` FROM `Survey_Surveyor` WHERE `survId` IN (";
                     $userSql = '';
                     for ($i = 0; $i < count($userCodes); $i++) {
                         if ($i == 0) {
@@ -2794,34 +2823,64 @@ function paymentHistory($data)
 
                     $db->query($sqls);
                     while ($rss = $db->next_record()) {
-                        $rs['userId'] = $rss['userId'];
+                        $rs['survId'] = $rss['survId'];
                         $rs['chiName'] = $rss['chiName'];
                         $rs['engName'] = $rss['engName'];
-                        $rs['moblie'] = $rss['moblie'];
+                        $rs['contact'] = $rss['contact'];
                         $info[] = $rs;
                     }
-                    $urlInfo=array(
-                        'status'=>'success',
-                        'msg'=>'',
-                        'data'=>$info
+                    for ($i=0;$i<count($info);$i++){
+                        $info[$i]['jobNoNew']=$userCode[$i]['jobNoNew'];
+                        $info[$i]['path']='';
+                    }
+                    $urlInfo = array(
+                        'status' => 'success',
+                        'msg' => '',
+                        'data' => $info
                     );
                     echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
                     break;
                 }
-            }else{
-                $urlInfo=array(
-                    'status'=>'success',
-                    'msg'=>'',
-                    'data'=>''
+            } else {
+                $urlInfo = array(
+                    'status' => 'success',
+                    'msg' => '',
+                    'data' => ''
                 );
                 echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
                 break;
             }
+        case 3:
+            $sql="SELECT A.`surveyorCode`,A.`jobNoNew`,
+(SELECT B.`path` FROM `Survey_SurveyorClassPDF` B WHERE B.`jobNoNew`=A.`jobNoNew`) AS path,
+C.`chiName`,C.`engName`,C.`contact` FROM `Survey_MainSchedule` A,`Survey_Surveyor` C WHERE
+A.`jobNo`='{$jobNo}' AND A.`surveyorCode`!='' AND A.`surveyorCode`=C.`survId`";
+            $db->query($sql);
+            while ($rss = $db->next_record()) {
+                $rs['survId'] = $rss['surveyorCode'];
+                $rs['chiName'] = $rss['chiName'];
+                $rs['engName'] = $rss['engName'];
+                $rs['contact'] = $rss['contact'];
+                $rs['jobNoNew'] = $rss['jobNoNew'];
+                if(!empty($rss['path'])){
+                    $rs['path'] = $rss['path'];
+                }else{
+                    $rs['path']='';
+                }
+                $info[] = $rs;
+            }
+            $urlInfo = array(
+                'status' => 'success',
+                'msg' => '',
+                'data' => $info
+            );
+            echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
+            break;
         default:
-            $urlInfo=array(
-                'status'=>'failed',
-                'msg'=>'',
-                'data'=>''
+            $urlInfo = array(
+                'status' => 'failed',
+                'msg' => 'verdict parameter error ',
+                'data' => ''
             );
             echo json_encode($urlInfo, JSON_UNESCAPED_UNICODE);
             break;
