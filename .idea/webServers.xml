@@ -2,23 +2,20 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="1fcd1b2d-cb84-4bc1-b32c-5fcfa4c74cab" name="apache" url="http://localhost">
-        <fileTransfer port="0" accessType="LOCAL" />
-      </webServer>
-      <webServer id="04a066d8-e43e-4e67-b332-10553e7442e5" name="sandbox" url="http://47.75.165.42">
-        <fileTransfer host="47.75.165.42" port="22" rootFolder="/data0/htdocs/www.ozzotec.com/academy" accessType="SFTP">
+      <webServer id="04a066d8-e43e-4e67-b332-10553e7442e5" name="測試" url="http://47.75.165.42">
+        <fileTransfer host="47.75.165.42" port="10107" privateKey="C:\wamp\www\sandbox-root.ppk" rootFolder="/data0/htdocs/www.ozzotec.com/academy" accessType="SFTP" keyPair="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
-          <option name="port" value="22" />
+          <option name="port" value="10107" />
         </fileTransfer>
       </webServer>
-      <webServer id="5528eb86-c71d-446c-815f-b92f60b7ce30" name="bni-hk-marvel" url="http://47.75.165.42">
-        <fileTransfer host="47.75.165.42" port="22" rootFolder="/data0/htdocs/www.ozzotec.com/bni-hk-marvel" accessType="SFTP">
+      <webServer id="0468cf7c-20ff-48ba-903e-017c59381713" name="正式" url="http://120.27.202.77">
+        <fileTransfer host="120.27.202.77" port="10107" privateKey="C:\wamp\www\root120.27.202.77.ppk" rootFolder="/data0/htdocs/www.ozzotec.com/academy" accessType="SFTP" keyPair="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
-          <option name="port" value="22" />
+          <option name="port" value="10107" />
         </fileTransfer>
       </webServer>
     </option>

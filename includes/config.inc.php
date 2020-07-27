@@ -96,7 +96,7 @@ $conf['page']['pagesize'] = 20;
 $conf["dbConnectStr"]["BusSurvey"]["host"] = "localhost";
 $conf["dbConnectStr"]["BusSurvey"]["dataBase"] = "academy";
 $conf["dbConnectStr"]["BusSurvey"]["user"] = "root";
-$conf["dbConnectStr"]["BusSurvey"]["password"] = "occo2019";
+$conf["dbConnectStr"]["BusSurvey"]["password"] = "ozzo2019";
 $conf["dbConnectStr"]["BusSurvey"]["characterSet"] = "latin1";
 
 include_once ($conf["path"]["root"] . "../library/database/DataBase.php");

@@ -5,27 +5,29 @@
  * @author Xiaoqiang.Wu <jamblues@gmail.com>
  * @version 1.01 , 2013-3-27
  */
-include_once ("../includes/config.inc.php");
+include_once("../includes/config.inc.php");
 
-$rawJson = file_get_contents('php://input','r');
+$rawJson = file_get_contents('php://input', 'r');
 
 if(empty($rawJson)){
-
-	$data = $_REQUEST;
-	$data['channel'] = 0;
+    $data=$_REQUEST;
+    if(empty($data['channel'])){
+        $data['channel'] = 0;
+    }
 }else{
-
-	$data = json_decode($rawJson,TRUE);
-	if(empty($data['q'])){
-		$data['q'] = $_REQUEST ['q'];
-	}
+    $data = $_POST;
+    if(empty($data['channel'])){
+        $data['channel'] = 0;
+    }
+    if(empty($data['q'])){
+        $data['q'] = $_REQUEST ['q'];
+    }
 }
-// start output
-//if ($data['callback']) {
-//	header ( 'Content-Type: text/javascript' );
-//} else {
-//	header ( 'Content-Type: application/x-json' );
-//}
+file_put_contents('/tmp/loginPass.log', json_encode($data)."\n\r", FILE_APPEND);
+
+
+
+
 switch ($data['q']) {
     case 'setClassPDF' :
         setClassPDF($data);
@@ -39,133 +41,138 @@ switch ($data['q']) {
     case 'editClass' :
         editClass($data);
         break;
-	case 'login' :
+    case 'login' :
 
-		$username = $data['username'];
-		$password = $data['password'];
-		$login = new SurveyorLogin ( $db );
-		if ($login->Login ( $username, $password )) {//判断密码是否正确
-			$s = new Surveyor ();
-			$s->company = '';
-			$s->status = 'active';
-			$s->singleContact = $username;
-			$sa = new SurveyorAccess( $db );
-			$rs = $sa->GetListSearch( $s );
-			$surveyor = array();
-			$s = $rs[0];
-			$surveyor['survId'] = $s->survId;
-			$surveyor['upSurvId'] = $s->upSurvId;
-			$surveyor['chiName'] = $s->chiName;
-			$surveyor['engName'] = $s->engName;
-			$surveyor['contact'] = $s->contact;
-			$surveyor['dipaCode'] = $s->dipaCode;
-			$surveyor['survType'] = $s->survType;
-			$surveyor['profilePhoto'] = $s->profilePhoto;
+        $username = $data['username'];
+        $password = $data['password'];
+        $login = new SurveyorLogin ($db);
+        if ($login->Login($username, $password)) {//判断密码是否正确
+
+            $s = new Surveyor ();
+            $s->company = '';
+            $s->status = 'active';
+            $s->singleContact = $username;
+            $sa = new SurveyorAccess($db);
+            $rs = $sa->GetListSearch($s);
+            $surveyor = array();
+            $s = $rs[0];
+            $surveyor['survId'] = $s->survId;
+            $surveyor['upSurvId'] = $s->upSurvId;
+            $surveyor['chiName'] = $s->chiName;
+            $surveyor['engName'] = $s->engName;
+            $surveyor['contact'] = $s->contact;
+            $surveyor['dipaCode'] = $s->dipaCode;
+            $surveyor['survType'] = $s->survType;
+            $surveyor['profilePhoto'] = $s->profilePhoto;
             $surveyor['vip_level'] = $s->vip_level;
 
-			if(!empty($surveyor['profilePhoto'])){
-                if(strpos($surveyor['profilePhoto'],'images/profile-photo')){
-                    $surveyor['profilePhoto'] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.$surveyor['profilePhoto'];
+            if (!empty($surveyor['profilePhoto'])) {
+                if (strpos($surveyor['profilePhoto'], 'images/profile-photo')) {
+                    $surveyor['profilePhoto'] = 'http://' . $_SERVER['SERVER_NAME'] . '/' . PROJECTNAME . $surveyor['profilePhoto'];
                 }
-			}
+            }
 
-			$message = array (
-					'status' => 'success',
-					'msg' => '',
-					'surveyor' => $surveyor
-			);
-			//app的登录信息要写入文件,channel:2(安卓）;channel:3(IOS）
-			if($data['channel'] == 2 || $data['channel'] == 3){
-				$sign = date("Ymd").uniqid();
-				$message['sign'] = $sign;
-				//写入到文件中
-				$filename = $conf["path"]["sign"].$sign;
+            $message = array(
+                'status' => 'success',
+                'msg' => '',
+                'surveyor' => $surveyor
+            );
+            //app的登录信息要写入文件,channel:1(安卓）;channel:2(IOS）
+            if ($data['channel'] == 2 || $data['channel'] == 3) {
+                $sign = date("Ymd") . uniqid();
+                $message['sign'] = $sign;
+                //写入到文件中
+                $filename = $conf["path"]["sign"] . $sign;
+                file_put_contents($filename, $s->survId);
+            }
 
-				file_put_contents($filename,$s->survId);
-			}
-		} else {
-			$message = array (
-					'status' => 'failed',
-					'msg' => "username:{$username} or password:{$password} is error.",
-					'surveyor' => '' 
-			);
-		}
-		die(json_encode($message));
-		break;
-	case 'isLogin':
-		if(empty($data['sign'])){
-			$message = array (
-					'status' => 'failed',
-					'msg' => 'sign is null.',
-					'data' => array()
-			);
-			die(json_encode($message));
-		}
-		$filename = $conf["path"]["sign"].$data['sign'];
-		$surveyorCode = @file_get_contents($filename);
-		if(empty($surveyorCode)){
-			$message = array (
-					'status' => 'failed',
-					'msg' => 'Login has expired.',
-					'data' => array()
-			);
-			die(json_encode($message));
-		}else{
-			$message = array (
-					'status' => 'success',
-					'msg' => '',
-					'data' => array()
-			);
-			die(json_encode($message));
-		}
-		break;
-	case 'getJobs':
+        } else {
+            $tmp=['survId'=>'','upSurvId'=>'','chiName'=>'','engName'=>'','contact'=>'','dipaCode'=>'',"survType"=>'',"profilePhoto"=>'',"vip_level"=>''];
+            $message = array(
+                'status' => 'failed',
+                'msg' => "username:{$username} or password:{$password} is error.",
+                'surveyor' => $tmp,
+                'sign'=>''
+            );
+        }
+        die(json_encode($message));
+        break;
 
-		$m = new MainSchedule();
-		$ma = new MainScheduleAccess($db);
-        $is_goods = isset($data['is_goods'])?$data['is_goods'] :false;
-		if(empty($data['sign'])){
-			$message = array (
-					'status' => 'failed',
-					'msg' => 'sign is null.',
-					'data' => array()
-			);
-			die(json_encode($message));
-		}
-		$filename = $conf["path"]["sign"].$data['sign'];
-		$m->surveyorCode = file_get_contents($filename);
-		if(empty($m->surveyorCode)){
-			$message = array (
-					'status' => 'failed',
-					'msg' => 'Login has expired.',
-					'data' => array()
-			);
-			die(json_encode($message));
-		}
-		$m->plannedSurveyDateStart = $data['startDate'];
+
+    case 'isLogin':
+        if (empty($data['sign'])) {
+            $message = array(
+                'status' => 'failed',
+                'msg' => 'sign is null.',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
+        $filename = $conf["path"]["sign"] . $data['sign'];
+        $surveyorCode = @file_get_contents($filename);
+        if (empty($surveyorCode)) {
+            $message = array(
+                'status' => 'failed',
+                'msg' => 'Login has expired.',
+                'data' => array()
+            );
+            die(json_encode($message));
+        } else {
+            $message = array(
+                'status' => 'success',
+                'msg' => '',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
+        break;
+    case 'getJobs':
+
+        $m = new MainSchedule();
+        $ma = new MainScheduleAccess($db);
+        $is_goods = isset($data['is_goods']) ? $data['is_goods'] : false;
+        if (empty($data['sign'])) {
+            $message = array(
+                'status' => 'failed',
+                'msg' => 'sign is null.',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
+        $filename = $conf["path"]["sign"] . $data['sign'];
+        $m->surveyorCode = file_get_contents($filename);
+        if (empty($m->surveyorCode)) {
+            $message = array(
+                'status' => 'failed',
+                'msg' => 'Login has expired.',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
+        $m->plannedSurveyDateStart = $data['startDate'];
 
 
         //如果有传jobNoNew 参数返回对应jobNoNew的单个记录
-        if(array_key_exists('jobNoNew',$data)){
+        if (array_key_exists('jobNoNew', $data)) {
             $m->jobNoNew = $data['jobNoNew'];
         }
 
-		$rs = $ma->GetListSearch($m,$m->surveyorCode,$is_goods);
-		$jsonArr = array();
-		foreach($rs as $obj){
-			$dr = array();
-			$dr['mascId'] = $obj->mascId;
-			$dr['weekNo'] = $obj->weekNo;
-			$dr['jobNo'] = $obj->jobNo;
-			$dr['jobNoNew'] = $obj->jobNoNew;
-			$dr['plannedSurveyDate'] = $obj->plannedSurveyDate;
-			$dr['surveyTimeHours'] = $obj->surveyTimeHours;
-			$dr['surveyType'] = $obj->surveyType;
-			$dr['vehCode'] = $obj->vehCode;
-			$dr['vehicle'] = $obj->vehicle;
-			$dr['surveyLocation'] = $obj->surveyLocationCn?$obj->surveyLocationCn:$obj->surveyLocation;
-			$dr['routeItems'] = $obj->routeItems;
-			$dr['estimatedManHour'] = $obj->estimatedManHour;
+        $rs = $ma->GetListSearch($m, $m->surveyorCode, $is_goods);
+        $jsonArr = array();
+        foreach ($rs as $obj) {
+            $dr = array();
+            $dr['mascId'] = $obj->mascId;
+            $dr['weekNo'] = $obj->weekNo;
+            $dr['jobNo'] = $obj->jobNo;
+            $dr['jobNoNew'] = $obj->jobNoNew;
+            $dr['plannedSurveyDate'] = $obj->plannedSurveyDate;
+            $dr['surveyTimeHours'] = $obj->surveyTimeHours;
+            $dr['surveyType'] = $obj->surveyType;
+            $dr['vehCode'] = $obj->vehCode;
+            $dr['vehicle'] = $obj->vehicle;
+            $dr['surveyLocation'] = $obj->surveyLocationCn ? $obj->surveyLocationCn : $obj->surveyLocation;
+            $dr['routeItems'] = $obj->routeItems;
+            $dr['estimatedManHour'] = $obj->estimatedManHour;
             $dr['bookLong'] = $obj->bookLong;
             $dr['bookLat'] = $obj->bookLat;
             $dr['map_address'] = $obj->map_address;
@@ -177,104 +184,103 @@ switch ($data['q']) {
             $dr['checkIn'] = $obj->checkIn;
             $dr['class_record_id'] = $obj->class_record_id;
             $dr['realClass'] = $obj->realClass;
-            $dr['img_url']=$obj->img_url;
-            $dr['is_image']=$obj->is_image;
-			$jsonArr[] = $dr;
-		}
-        foreach($jsonArr as $k =>$v){
-            foreach($v as $kk=>$vv){
-                if(is_string($vv)){
-                    if($encode = mb_detect_encoding($vv, array("ASCII",'UTF-8',"GB2312","GBK",'BIG5'))){
+            $dr['img_url'] = $obj->img_url;
+            $dr['is_image'] = $obj->is_image;
+            $jsonArr[] = $dr;
+        }
+        foreach ($jsonArr as $k => $v) {
+            foreach ($v as $kk => $vv) {
+                if (is_string($vv)) {
+                    if ($encode = mb_detect_encoding($vv, array("ASCII", 'UTF-8', "GB2312", "GBK", 'BIG5'))) {
                         $jsonArr[$k][$kk] = mb_convert_encoding($vv, 'UTF-8', $encode);
                     }
                 }
             }
         }
-		$message = array (
-				'status' => 'success',
-				'msg' => '',
-				'data' => $jsonArr
-		);
+        $message = array(
+            'status' => 'success',
+            'msg' => '',
+            'data' => $jsonArr
+        );
 
-		echo json_encode($message);
-		break;
-	case 'saveJobs':
-		$filename = '../data/survey/'.$data['refNo'].'_'.date("YmdHis").rand(1000,9999).'.txt';
-		$saveContent = var_export($_SERVER,true);
-		$saveContent .= "\r\n" . $rawJson;
-		file_put_contents($filename,$saveContent);
-		$sp = new SurveyPart($db);
-		if(empty($data['refNo'])){
-			$message = array (
-					'status' => 'failed',
-					'msg' => 'ref no. is not allow null.'
-			);
-			die(json_encode($message));
-		}
-		$sp->refNo = $data['refNo'];
-		$sp->weatherId = $data['weatherId'];
-		$sp->surDate = $data['surDate'];
-		$sp->surFromTime = $data['surFromTime'];
-		$sp->surToTime = $data['surToTime'];
-		$sp->surId =  0;
-		$sp->location = addslashes($data['location']);
-		$sp->bounds = addslashes($data['bounds']);
-		$sp->survId = $data['survId'];
-		$sp->userId = 0;
-		$sp->channel = empty($data['channel'])?2:$data['channel'];
-		$sp->userName = empty($data['survId'])?'unknown':$data['survId'];
-		$sp->inputTime = date('Y-m-d H:i:s');
-		$sp->remarks = addslashes($data['remarks']);
-		$supaId = $sp->Save();
-		// Survey Detail
-		$sd = new SurveyDetail($db);
-		$sd->supaId = $supaId;
-		$sd->userName = $sp->userName;
-		if(!is_array($data['detailList'])){
-			$message = array (
-					'status' => 'failed',
-					'msg' => 'survey is not allow null.'
-			);
-			die(json_encode($message));
-		}
-		foreach($data['detailList'] as $v)
-		{
-			$sd->displayBoard = '';
-			$sd->skippedStop = $v['skippedStop'];
-			$sd->fleetNo = $v['fleetNo'];
-			$sd->pslNo = $v['pslNo'];
-			$sd->arrivalTime = $v['arrivalTime'];
-			$sd->departureTime = $v['departureTime'];
-			$sd->onArrival = $v['onArrival'];
-			$sd->setDown = $v['setDown'];
-			$sd->pickup = $v['pickup'];
-			$sd->onDept = $v['onDept'];
-			$sd->leftBehind = $v['leftBehind'];
-			$sd->routeItem = $v['routeItem'];
-			$sd->remarks = $v['remarks'];
-			$sd->leftRoleFlag = 'yes';
-			$sd->Save();
-		}
+        echo json_encode($message);
+        break;
+    case 'saveJobs':
+        $filename = '../data/survey/' . $data['refNo'] . '_' . date("YmdHis") . rand(1000, 9999) . '.txt';
+        $saveContent = var_export($_SERVER, true);
+        $saveContent .= "\r\n" . $rawJson;
+        file_put_contents($filename, $saveContent);
+        $sp = new SurveyPart($db);
+        if (empty($data['refNo'])) {
+            $message = array(
+                'status' => 'failed',
+                'msg' => 'ref no. is not allow null.'
+            );
+            die(json_encode($message));
+        }
+        $sp->refNo = $data['refNo'];
+        $sp->weatherId = $data['weatherId'];
+        $sp->surDate = $data['surDate'];
+        $sp->surFromTime = $data['surFromTime'];
+        $sp->surToTime = $data['surToTime'];
+        $sp->surId = 0;
+        $sp->location = addslashes($data['location']);
+        $sp->bounds = addslashes($data['bounds']);
+        $sp->survId = $data['survId'];
+        $sp->userId = 0;
+        $sp->channel = empty($data['channel']) ? 2 : $data['channel'];
+        $sp->userName = empty($data['survId']) ? 'unknown' : $data['survId'];
+        $sp->inputTime = date('Y-m-d H:i:s');
+        $sp->remarks = addslashes($data['remarks']);
+        $supaId = $sp->Save();
+        // Survey Detail
+        $sd = new SurveyDetail($db);
+        $sd->supaId = $supaId;
+        $sd->userName = $sp->userName;
+        if (!is_array($data['detailList'])) {
+            $message = array(
+                'status' => 'failed',
+                'msg' => 'survey is not allow null.'
+            );
+            die(json_encode($message));
+        }
+        foreach ($data['detailList'] as $v) {
+            $sd->displayBoard = '';
+            $sd->skippedStop = $v['skippedStop'];
+            $sd->fleetNo = $v['fleetNo'];
+            $sd->pslNo = $v['pslNo'];
+            $sd->arrivalTime = $v['arrivalTime'];
+            $sd->departureTime = $v['departureTime'];
+            $sd->onArrival = $v['onArrival'];
+            $sd->setDown = $v['setDown'];
+            $sd->pickup = $v['pickup'];
+            $sd->onDept = $v['onDept'];
+            $sd->leftBehind = $v['leftBehind'];
+            $sd->routeItem = $v['routeItem'];
+            $sd->remarks = $v['remarks'];
+            $sd->leftRoleFlag = 'yes';
+            $sd->Save();
+        }
 
-		$message = array (
-				'status' => 'success',
-				'msg' => '保存成功'
-		);
-		die(json_encode($message));
-		break;
+        $message = array(
+            'status' => 'success',
+            'msg' => '保存成功'
+        );
+        die(json_encode($message));
+        break;
 
     //新版,根据postId
     case 'getMessagesNew':
-        if(!array_key_exists('msgId',$data)){
-            $message = array (
+        if (!array_key_exists('msgId', $data)) {
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'msgId is required.',
                 'data' => array()
             );
             die(json_encode($message));
         }
-        if(empty($data['sign'])){
-            $message = array (
+        if (empty($data['sign'])) {
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'sign is null.',
                 'data' => array()
@@ -282,11 +288,11 @@ switch ($data['q']) {
             die(json_encode($message));
         }
 
-        $filename = $conf["path"]["sign"].$data['sign'];
+        $filename = $conf["path"]["sign"] . $data['sign'];
         $survId = file_get_contents($filename);
-        if(!$survId){
+        if (!$survId) {
 
-            $message = array (
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'Sign Not Found',
                 'data' => array()
@@ -302,7 +308,7 @@ switch ($data['q']) {
         $m = new MessagesNew();
         $ma = new MessagesNewAccess($db);
         $jsonArr = array();
-        if($userInfo->survType == 'admin' || $userInfo->survType == 'teach'){
+        if ($userInfo->survType == 'admin' || $userInfo->survType == 'teach') {
             //管理员与教练获取到的通知
 
             $messageModel = new MessagesNew();
@@ -311,18 +317,18 @@ switch ($data['q']) {
 
 
             //查詢是否有新增付款憑證
-            $sql = "SELECT * FROM Survey_MessagesNew ".
+            $sql = "SELECT * FROM Survey_MessagesNew " .
                 " WHERE 1=1 ";
-            if($data['msgId'] > 0){
-                $query = "AND msgId > ".$data['msgId'] . " AND type = 3 order by msgId desc limit 0,1";
-            }else{
+            if ($data['msgId'] > 0) {
+                $query = "AND msgId > " . $data['msgId'] . " AND type = 3 order by msgId desc limit 0,1";
+            } else {
                 $query = "AND type = 3 order by msgId desc limit 0,1";
             }
 
-            $sql = $sql.$query;
+            $sql = $sql . $query;
             $db->query($sql);
 
-            if($rs = $db->next_record()){
+            if ($rs = $db->next_record()) {
                 $dr['msgId'] = $rs['msgId'];
                 $dr['title'] = $rs['title'];
                 $dr['content'] = $rs['content'];
@@ -331,27 +337,27 @@ switch ($data['q']) {
                 $jsonArr[] = $dr;
             }
 
-            $message = array (
+            $message = array(
                 'status' => 'success',
                 'msg' => '',
                 'data' => $jsonArr
             );
 
 
-        }else{
+        } else {
             //学员获取到的通知
             //查詢是否有修改課堂通知
-            $sql = "SELECT * FROM Survey_MessagesNew ".
+            $sql = "SELECT * FROM Survey_MessagesNew " .
                 " WHERE 1=1 ";
-            if($data['msgId'] > 0){
-                $query = "AND msgId > ".$data['msgId'] . " AND type = 2 order by msgId desc limit 0,1";
-            }else{
+            if ($data['msgId'] > 0) {
+                $query = "AND msgId > " . $data['msgId'] . " AND type = 2 order by msgId desc limit 0,1";
+            } else {
                 $query = "AND type = 2 order by msgId desc limit 0,1";
             }
 
-            $sql = $sql.$query;
+            $sql = $sql . $query;
             $db->query($sql);
-            if($rs = $db->next_record()){
+            if ($rs = $db->next_record()) {
                 $dr['msgId'] = $rs['msgId'];
                 $dr['title'] = $rs['title'];
                 $dr['content'] = $rs['content'];
@@ -361,18 +367,18 @@ switch ($data['q']) {
             }
 
             //查詢是否有開放課堂通知
-            $sql = "SELECT * FROM Survey_MessagesNew ".
+            $sql = "SELECT * FROM Survey_MessagesNew " .
                 " WHERE 1=1 ";
-            if($data['msgId'] > 0){
-                $query = "AND msgId > ".$data['msgId'] . " AND type = 1 order by msgId desc limit 0,1";
-            }else{
+            if ($data['msgId'] > 0) {
+                $query = "AND msgId > " . $data['msgId'] . " AND type = 1 order by msgId desc limit 0,1";
+            } else {
                 $query = "AND type = 1 order by msgId desc limit 0,1";
             }
 
-            $sql = $sql.$query;
+            $sql = $sql . $query;
             $db->query($sql);
 
-            if($rs = $db->next_record()){
+            if ($rs = $db->next_record()) {
                 $dr['msgId'] = $rs['msgId'];
                 $dr['title'] = $rs['title'];
                 $dr['content'] = $rs['content'];
@@ -381,7 +387,7 @@ switch ($data['q']) {
                 $jsonArr[] = $dr;
             }
 
-            $message = array (
+            $message = array(
                 'status' => 'success',
                 'msg' => '',
                 'data' => $jsonArr
@@ -392,28 +398,27 @@ switch ($data['q']) {
         die(json_encode($message));
 
 
-
     //旧版
-	case 'getMessages':
+    case 'getMessages':
 
-		if(empty($data['sign'])){
-			$message = array (
-					'status' => 'failed',
-					'msg' => 'sign is null.',
-					'data' => array()
-			);
-			die(json_encode($message));
-		}
-		$filename = $conf["path"]["sign"].$data['sign'];
-		$m->survId = file_get_contents($filename);
+        if (empty($data['sign'])) {
+            $message = array(
+                'status' => 'failed',
+                'msg' => 'sign is null.',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
+        $filename = $conf["path"]["sign"] . $data['sign'];
+        $m->survId = file_get_contents($filename);
         $s = new Surveyor();
         $s->survId = $m->survId;
         $sa = new SurveyorAccess($db);
         $rs = $sa->GetListSearch($s);
         $userInfo = $rs[0];
 
-        if(empty($userInfo)){
-            $message = array (
+        if (empty($userInfo)) {
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'Sign Not Found',
                 'data' => array()
@@ -424,7 +429,7 @@ switch ($data['q']) {
         /*
          * 检查是否有PDF
          * */
-        $inputTime = date("Y-m-d H:i:s",(time()-3600));
+        $inputTime = date("Y-m-d H:i:s", (time() - 3600));
         $plannedSurveyDate = date("Y-m-d");
         /*if($userInfo->survType == 'admin' || $userInfo->survType == 'teach'){
             $sql1 = "SELECT COUNT(*) AS total,id as pdfid FROM Survey_SurveyorClassPDF sscp
@@ -457,81 +462,81 @@ switch ($data['q']) {
         /*
          * 检查是否有新工作
          * */
-		//检测1小时内是否有新发布的工作还没有被抢
-		//$inputTime = date("Y-m-d H:i:s",(time()-3660));
+        //检测1小时内是否有新发布的工作还没有被抢
+        //$inputTime = date("Y-m-d H:i:s",(time()-3660));
 
-		$sql = "SELECT COUNT(*) AS total FROM Survey_MainScheduleOpen mso
+        $sql = "SELECT COUNT(*) AS total FROM Survey_MainScheduleOpen mso
 		INNER JOIN Survey_MainSchedule m ON m.jobNoNew = mso.jobNoNew
 		WHERE mso.delFlag = 'no' AND mso.applySurvId=0
 		AND mso.inputTime>'{$inputTime}' AND m.plannedSurveyDate>='{$plannedSurveyDate}'";
-		$db->query($sql);
-		if($result = $db->next_record()){
-			//有新工作开放
-			if($result['total'] > 0){
-				//判断1小时内是否已经提示过
-				$sql = "SELECT COUNT(*) AS total FROM Survey_Messages
+        $db->query($sql);
+        if ($result = $db->next_record()) {
+            //有新工作开放
+            if ($result['total'] > 0) {
+                //判断1小时内是否已经提示过
+                $sql = "SELECT COUNT(*) AS total FROM Survey_Messages
 					WHERE msgType='open' AND survId='{$m->survId}' AND inputTime>'{$inputTime}'";
-				$db->query($sql);
-				//echo $sql;exit();
-				if($result = $db->next_record()){
-					if($result['total'] <= 0){//没有提示过
-						$newMessages = new Messages();
-						$newMessages->survId = $m->survId;
-						$newMessages->msgType = 'open';
-						$newMessages->title = "Some new course are opened!";
-						$newMessages->content = "開放了一些新課程！";
-						$newMessages->inputTime = date('Y-m-d H:i:s');
-						$ma->Add($newMessages);
-					}
-				}
-			}
-		}
-		$m->msgType = '';
-		$m->order = 'ORDER BY msgId DESC';
-		$m->pageLimit = 'LIMIT 20';
-		$rs = $ma->GetListSearch($m);
-		$jsonArr = array();
-		foreach($rs as $obj){
-			$dr = array();
-			$dr['msgId'] = $obj->msgId;
-			$dr['title'] = $obj->title;
-			$dr['content'] = $obj->content;
-			$dr['inputTime'] = $obj->inputTime;
-			$dr['isRead'] = $obj->isRead;
-			$dr['msgType'] = $obj->msgType;
-			$jsonArr[] = $dr;
-		}
-		$message = array (
-				'status' => 'success',
-				'msg' => '',
-				'data' => $jsonArr
-		);
-		die(json_encode($message));
-		break;
-	case 'markMessages':
-		maskMessage($data);
-		break;
-	case 'getRegistration':
-		getRegistration($data);
-		break;
-	case 'changePassword':
-		changePassword($data);
-		break;
-	case 'setProfilePhoto':
-		setProfilePhoto($data);
-		break;
-	case 'getInfo':
-		getInfo($data);
-		break;
-	case 'getAllInfo':
-		getAllInfo($data);
-		break;
-	case 'addInfo':
-		addInfo($data);
-		break;
-	case 'getPassword':
-		getPassword($data);
-		break;
+                $db->query($sql);
+                //echo $sql;exit();
+                if ($result = $db->next_record()) {
+                    if ($result['total'] <= 0) {//没有提示过
+                        $newMessages = new Messages();
+                        $newMessages->survId = $m->survId;
+                        $newMessages->msgType = 'open';
+                        $newMessages->title = "Some new course are opened!";
+                        $newMessages->content = "開放了一些新課程！";
+                        $newMessages->inputTime = date('Y-m-d H:i:s');
+                        $ma->Add($newMessages);
+                    }
+                }
+            }
+        }
+        $m->msgType = '';
+        $m->order = 'ORDER BY msgId DESC';
+        $m->pageLimit = 'LIMIT 20';
+        $rs = $ma->GetListSearch($m);
+        $jsonArr = array();
+        foreach ($rs as $obj) {
+            $dr = array();
+            $dr['msgId'] = $obj->msgId;
+            $dr['title'] = $obj->title;
+            $dr['content'] = $obj->content;
+            $dr['inputTime'] = $obj->inputTime;
+            $dr['isRead'] = $obj->isRead;
+            $dr['msgType'] = $obj->msgType;
+            $jsonArr[] = $dr;
+        }
+        $message = array(
+            'status' => 'success',
+            'msg' => '',
+            'data' => $jsonArr
+        );
+        die(json_encode($message));
+        break;
+    case 'markMessages':
+        maskMessage($data);
+        break;
+    case 'getRegistration':
+        getRegistration($data);
+        break;
+    case 'changePassword':
+        changePassword($data);
+        break;
+    case 'setProfilePhoto':
+        setProfilePhoto($data);
+        break;
+    case 'getInfo':
+        getInfo($data);
+        break;
+    case 'getAllInfo':
+        getAllInfo($data);
+        break;
+    case 'addInfo':
+        addInfo($data);
+        break;
+    case 'getPassword':
+        getPassword($data);
+        break;
     case 'resetPassword':
         resetPassword($data);
         break;
@@ -556,21 +561,20 @@ switch ($data['q']) {
         PDFRecord($data);
     case 'getRecordById':
         getRecordById($data);
-	default:
-		break;
+    default:
+        break;
 }
 
-function cmp($a, $b)
-{
+function cmp($a, $b) {
     return ($a['msgId'] < $b['msgId']) ? -1 : 1;
 }
 
-function getRecordById($data){
-    global $db,$conf;
-    $filename = $conf["path"]["sign"].$data['sign'];
+function getRecordById($data) {
+    global $db, $conf;
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
@@ -578,7 +582,7 @@ function getRecordById($data){
         die(json_encode($message));
     }
 
-    $class_record_id = getArrNoNull($data,'class_record_id');
+    $class_record_id = getArrNoNull($data, 'class_record_id');
 
 
     $sql = "SELECT ssc.id as id,ssc.surveyor_id,ssc.jobNoNew,ssc.use_class,ssc.class_remain,ssc.remark,ssc.record_surveyor_id,ssc.record_time,ssc.is_del,ssc.status,ssc.confirm_pdf_create_time,ssc.record_time,
@@ -593,9 +597,9 @@ WHERE ";
     $sql .= "ssc.id = '{$class_record_id}' and ssc.is_del = 0 order by ssc.record_time desc";
 
 
-    $db->query ( $sql );
+    $db->query($sql);
     $rows = array();
-    if($rs = $db->next_record ()){
+    if ($rs = $db->next_record()) {
         $rows = array();
         $rows['class_record_id'] = $rs['id'];
         $rows['surveyor_id'] = $rs['surveyor_id'];
@@ -620,33 +624,33 @@ WHERE ";
         $rows['pdfid'] = $rs['pdfid'];
         $rows['confirm_pdfid'] = $rs['confirm_pdfid'];
 
-        if($rs['surveyorCode'] == $rs['surveyor_id']){
+        if ($rs['surveyorCode'] == $rs['surveyor_id']) {
             $rows['is_own'] = 1;
         }
     }
-    if(empty($rows)){
+    if (empty($rows)) {
         $rows = '';
     }
-    returnJson('success',$rows,'');
+    returnJson('success', $rows, '');
 }
 
-function cancelConfirmPDF($data){
-    global $db,$conf;
+function cancelConfirmPDF($data) {
+    global $db, $conf;
 
-    $class_record_id = getArrNoNull($data,'class_record_id');
+    $class_record_id = getArrNoNull($data, 'class_record_id');
     $record = getJobNoNewByClassRecord($class_record_id);
     $pdfid = $record['confirm_pdf'];
-    if(!$record){
-        returnJson('failed','','未找到對應課堂記錄');
+    if (!$record) {
+        returnJson('failed', '', '未找到對應課堂記錄');
     }
-    if(empty($pdfid)){
-        returnJson('failed','','未找到確認PDF,不能取消');
+    if (empty($pdfid)) {
+        returnJson('failed', '', '未找到確認PDF,不能取消');
     }
 
-    $filename = $conf["path"]["sign"].$data['sign'];
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
@@ -659,30 +663,30 @@ function cancelConfirmPDF($data){
     $rs = $sa->GetListSearch($s);
     $info = $rs[0];
 
-    if($info->survType == 'admin' || $info->survType == 'teach'){
+    if ($info->survType == 'admin' || $info->survType == 'teach') {
         $nowTime = date('Y-m-d H:i:s');
         //更新课堂记录的确认PDF
         $sql1 = "UPDATE Survey_SurveyorClassRecord SET confirm_pdf = '',
 cancel_confirm_pdf_by = '{$info->survId}',confirm_pdf_create_time='{$nowTime}'
  where id='{$class_record_id}' and is_del = 0";
-        $updateRes1 = $db->query ( $sql1 );
+        $updateRes1 = $db->query($sql1);
 
         //更新PDF的剩余课堂数
         $sql2 = "UPDATE Survey_SurveyorClassPDF SET class_remain = class_remain+1
  where id='{$pdfid}' and is_del = 0";
-        $updateRes2 = $db->query ( $sql2 );
+        $updateRes2 = $db->query($sql2);
 
-        returnJson('success','','取消確認成功');
+        returnJson('success', '', '取消確認成功');
 
-    }else{
-        returnJson('failed','','權限不足');
+    } else {
+        returnJson('failed', '', '權限不足');
     }
 
 }
 
-function PDFRecord($data){
+function PDFRecord($data) {
     global $db;
-    $pdfid = getArrNoNull($data,'pdfid');
+    $pdfid = getArrNoNull($data, 'pdfid');
 
     $recordSql = "SELECT sscr.*,sm.surveyType,sm.plannedSurveyDate FROM Survey_SurveyorClassRecord as sscr 
 LEFT JOIN Survey_MainSchedule as sm ON sm.jobNoNew = sscr.jobNoNew
@@ -690,7 +694,7 @@ where confirm_pdf = '{$pdfid}' and is_del = 0";
     $db->query($recordSql);
 
     $res = array();
-    while($row = $db->next_record ()){
+    while ($row = $db->next_record()) {
 
         $tmp['plannedSurveyDate'] = $row['plannedSurveyDate'];
         $tmp['class_record_id'] = $row['id'];
@@ -706,7 +710,7 @@ where confirm_pdf = '{$pdfid}' and is_del = 0";
         $tmp['record_surveyor_id'] = $row['record_surveyor_id'];
         $tmp['record_time'] = $row['record_time'];
         $tmp['status'] = $row['status'];
-        if($row['status'] == 1){
+        if ($row['status'] == 1) {
             $res[] = $tmp;
         }
     }
@@ -716,7 +720,7 @@ where confirm_pdf = '{$pdfid}' and is_del = 0";
 where id = '{$pdfid}' and is_del = 0";
     $db->query($pdfInfoSql);
     $res2 = array();
-    if($row = $db->next_record ()){
+    if ($row = $db->next_record()) {
         $res2['class_num'] = $row['class_num'];
         $res2['class_remain'] = $row['class_remain'];
         $res2['upload_surveyor_id'] = $row['upload_surveyor_id'];
@@ -725,16 +729,16 @@ where id = '{$pdfid}' and is_del = 0";
         $res2['set_class_time'] = $row['set_class_time'];
     }
 
-    returnJson('success',$res,'',$res2);
+    returnJson('success', $res, '', $res2);
 }
 
-function confirmPDFList($data){
-    global $db,$conf;
-    $surveyor_id = getArrNoNull($data,'surveyor_id');
-    $filename = $conf["path"]["sign"].$data['sign'];
+function confirmPDFList($data) {
+    global $db, $conf;
+    $surveyor_id = getArrNoNull($data, 'surveyor_id');
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
@@ -747,7 +751,7 @@ function confirmPDFList($data){
     $rs = $sa->GetListSearch($s);
     $info = $rs[0];
 
-    if($info->survType == 'admin' || $info->survType == 'teach'){
+    if ($info->survType == 'admin' || $info->survType == 'teach') {
 
         $listSql = "SELECT sscp.id,sscp.class_record_id,sscp.jobNoNew,sscp.upload_surveyor_id,sscp.path,ss1.chiName as upload_surveyor_chiName,ss1.engName as upload_surveyor_engName,
 ss2.chiName as set_class_chiName,ss2.engName as set_class_engName,
@@ -759,7 +763,7 @@ left join Survey_Surveyor as ss3 on  ss3.survId = sscp.surveyor_id
 WHERE is_del = 0 and is_set_class = 1 and sscp.class_remain > 0 and surveyor_id='{$surveyor_id}' ORDER BY sscp.upload_pdf_time desc";
         $db->query($listSql);
         $res = array();
-        while($row = $db->next_record ()){
+        while ($row = $db->next_record()) {
             $tmp = array();
             $tmp['class_record_id'] = $row['class_record_id'];
             $tmp['jobNoNew'] = $row['jobNoNew'];
@@ -781,10 +785,10 @@ WHERE is_del = 0 and is_set_class = 1 and sscp.class_remain > 0 and surveyor_id=
             $res[] = $tmp;
         }
 
-        returnJson('success',$res,'');
+        returnJson('success', $res, '');
 
-    }else{
-        returnJson('failed','','Permission Error');
+    } else {
+        returnJson('failed', '', 'Permission Error');
     }
 
 }
@@ -792,33 +796,33 @@ WHERE is_del = 0 and is_set_class = 1 and sscp.class_remain > 0 and surveyor_id=
 /**
  * @param $data
  */
-function confirmPDF($data){
-    global $db,$conf;
-    $pdfid = getArrNoNull($data,'pdfid');
+function confirmPDF($data) {
+    global $db, $conf;
+    $pdfid = getArrNoNull($data, 'pdfid');
 
-    $class_record_id = getArrNoNull($data,'class_record_id');
+    $class_record_id = getArrNoNull($data, 'class_record_id');
     $hadRecord = getJobNoNewByClassRecord($class_record_id);
-    if(!$hadRecord){
-        returnJson('failed','','未找到對應課堂記錄');
+    if (!$hadRecord) {
+        returnJson('failed', '', '未找到對應課堂記錄');
     }
-    if(!empty($hadRecord['confirm_pdf'])){
-        returnJson('failed','','該記錄已確認，不能重複確認');
+    if (!empty($hadRecord['confirm_pdf'])) {
+        returnJson('failed', '', '該記錄已確認，不能重複確認');
     }
     $pdfInfo = getpdf($pdfid);
-    if($pdfInfo === false){
-        returnJson('failed','','未找到對應PDF');
+    if ($pdfInfo === false) {
+        returnJson('failed', '', '未找到對應PDF');
     }
-    if($pdfInfo['is_set_class'] == 0){
-        returnJson('failed','','該PDF尚未設置課堂數，不可確認');
+    if ($pdfInfo['is_set_class'] == 0) {
+        returnJson('failed', '', '該PDF尚未設置課堂數，不可確認');
     }
-    if($pdfInfo['class_remain'] <= 0){
-        returnJson('failed','','該PDF剩餘課堂數不足，不可確認');
+    if ($pdfInfo['class_remain'] <= 0) {
+        returnJson('failed', '', '該PDF剩餘課堂數不足，不可確認');
     }
 
-    $filename = $conf["path"]["sign"].$data['sign'];
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
@@ -831,37 +835,37 @@ function confirmPDF($data){
     $rs = $sa->GetListSearch($s);
     $info = $rs[0];
 
-    if($info->survType == 'admin' || $info->survType == 'teach'){
+    if ($info->survType == 'admin' || $info->survType == 'teach') {
         $nowTime = date('Y-m-d H:i:s');
         //更新课堂记录的确认PDF
         $sql1 = "UPDATE Survey_SurveyorClassRecord SET confirm_pdf = '{$pdfid}',
 confirm_pdf_create_by = '{$info->survId}',confirm_pdf_create_time='{$nowTime}'
  where id='{$class_record_id}' and is_del = 0";
-        $updateRes1 = $db->query ( $sql1 );
+        $updateRes1 = $db->query($sql1);
 
         //更新PDF的剩余课堂数
         $sql2 = "UPDATE Survey_SurveyorClassPDF SET class_remain = class_remain-1
  where id='{$pdfid}' and is_del = 0";
-        $updateRes2 = $db->query ( $sql2 );
+        $updateRes2 = $db->query($sql2);
 
-        returnJson('success','','確認成功');
+        returnJson('success', '', '確認成功');
 
-    }else{
-        returnJson('failed','','權限不足');
+    } else {
+        returnJson('failed', '', '權限不足');
     }
 }
 
 
-function getPDFbyDate($data){
-    global $db,$conf;
-    $startDate = getArrNoNull($data,'startDate');
-    $endDate = getArrNoNull($data,'endDate');
-    $surveyor_id = getArrNoNull($data,'surveyor_id');
+function getPDFbyDate($data) {
+    global $db, $conf;
+    $startDate = getArrNoNull($data, 'startDate');
+    $endDate = getArrNoNull($data, 'endDate');
+    $surveyor_id = getArrNoNull($data, 'surveyor_id');
 
-    $filename = $conf["path"]["sign"].$data['sign'];
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
@@ -874,20 +878,20 @@ function getPDFbyDate($data){
     $rs = $sa->GetListSearch($s);
     $info = $rs[0];
 
-    if($info->survType == 'admin' || $info->survType == 'teach'){
+    if ($info->survType == 'admin' || $info->survType == 'teach') {
 
         $sql = "SELECT ssp.*,ss1.chiName,ss1.engName,ss2.engName as upload_surveyor_engName,ss2.chiName as upload_surveyor_chiName FROM Survey_SurveyorClassPDF as ssp 
 left join Survey_Surveyor as ss1 on ss1.survId = ssp.surveyor_id 
 left join Survey_Surveyor as ss2 on ss2.survId = ssp.upload_surveyor_id
 WHERE jobNoNew != '0' and upload_pdf_time >= '$startDate' and upload_pdf_time <= '$endDate' and is_del = 0 ";
-        if($surveyor_id !=0 ){
+        if ($surveyor_id != 0) {
             $sql .= " AND ssp.surveyor_id = '{$surveyor_id}' ";
         }
         $sql .= 'ORDER BY ssp.upload_pdf_time desc';
 
         $db->query($sql);
         $res = array();
-        while($row = $db->next_record ()){
+        while ($row = $db->next_record()) {
             $tmp = array();
             $tmp['chiName'] = $row['chiName'];
             $tmp['engName'] = $row['engName'];
@@ -909,15 +913,15 @@ WHERE jobNoNew != '0' and upload_pdf_time >= '$startDate' and upload_pdf_time <=
             $res[] = $tmp;
         }
 
-        returnJson('success','',$res);
-    }else{
+        returnJson('success', '', $res);
+    } else {
         $sql = "SELECT ssp.*,ss1.chiName,ss1.engName,ss2.engName as upload_surveyor_engName,ss2.chiName as upload_surveyor_chiName FROM Survey_SurveyorClassPDF as ssp 
 left join Survey_Surveyor as ss1 on ss1.survId = ssp.surveyor_id 
 left join Survey_Surveyor as ss2 on ss2.survId = ssp.upload_surveyor_id
 WHERE upload_pdf_time >= '$startDate' and upload_pdf_time <= '$endDate' and ssp.surveyor_id = '{$info->survId}' and is_del = 0  ORDER BY ssp.upload_pdf_time desc";
         $db->query($sql);
         $res = array();
-        while($row = $db->next_record ()){
+        while ($row = $db->next_record()) {
             $tmp = array();
             $tmp['chiName'] = $row['chiName'];
             $tmp['engName'] = $row['engName'];
@@ -939,23 +943,23 @@ WHERE upload_pdf_time >= '$startDate' and upload_pdf_time <= '$endDate' and ssp.
             $res[] = $tmp;
         }
 
-        returnJson('success','',$res);
+        returnJson('success', '', $res);
     }
 }
 
-function setClassPDF($data){
-    global $db,$conf;
-    $class_record_id = getArrNoNull($data,'class_record_id');
-    $surveyor_id = getArrNoNull($data,'surveyor_id');
-    $money = getArrNoNull($data,'money');
-    $payment_type = getArrNoNull($data,'payment_type');
-    $money_time = getArrNoNull($data,'money_time');
-    $class_num = getArrNoNull($data,'class_num');
+function setClassPDF($data) {
+    global $db, $conf;
+    $class_record_id = getArrNoNull($data, 'class_record_id');
+    $surveyor_id = getArrNoNull($data, 'surveyor_id');
+    $money = getArrNoNull($data, 'money');
+    $payment_type = getArrNoNull($data, 'payment_type');
+    $money_time = getArrNoNull($data, 'money_time');
+    $class_num = getArrNoNull($data, 'class_num');
 
-    $filename = $conf["path"]["sign"].$data['sign'];
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
@@ -964,8 +968,8 @@ function setClassPDF($data){
     }
 
 
-    if(!$money_time){
-        $message = array (
+    if (!$money_time) {
+        $message = array(
             'status' => 'error',
             'msg' => 'Param money_time Error',
             'data' => array()
@@ -985,22 +989,22 @@ function setClassPDF($data){
     $surveyor_info = $rs2[0];
 
     $admin_id = $info->survId;
-    if($info->survType != 'admin' && $info->survType != 'teach'){
-            $message = array (
-                'status' => 'failed',
-                'msg' => 'Permission denied',
-                'data' => array()
-            );
-            die(json_encode($message));
+    if ($info->survType != 'admin' && $info->survType != 'teach') {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Permission denied',
+            'data' => array()
+        );
+        die(json_encode($message));
     }
-    $pdfid  = getpdfidByClassRecord($class_record_id,$surveyor_id);
+    $pdfid = getpdfidByClassRecord($class_record_id, $surveyor_id);
 
-    if($class_record_id == 0){
+    if ($class_record_id == 0) {
         //不根据学员PDF设置课堂
         $jobNoNew = 0;
         $firstTime = false;
         // 添加classPDF===>is_set_class=1
-        if(empty($pdfid)){
+        if (empty($pdfid)) {
             $firstTime = true;
             $nowTime = date('Y-m-d H:i:s');
             $default_path = '/cache/paymentPDF/default/default.pdf';//default PDF
@@ -1009,7 +1013,7 @@ function setClassPDF($data){
             $res = $db->query($sql);
             $sql2 = "SELECT last_insert_id() ";
             $db->query($sql2);
-            if($lastid = $db->next_record ()){
+            if ($lastid = $db->next_record()) {
                 $pdfid = $lastid[0];
             }
         }
@@ -1021,31 +1025,31 @@ function setClassPDF($data){
         $class = htmlspecialchars($class_num);
         $nowTime = date('Y-m-d H:i:s');
         $remark = htmlspecialchars($data['remark']);
-        $start_date = strtotime($data['start_date'])?$data['start_date']:'0000-00-00';
-        $end_date = strtotime($data['end_date'])?$data['end_date']:'0000-00-00';
+        $start_date = strtotime($data['start_date']) ? $data['start_date'] : '0000-00-00';
+        $end_date = strtotime($data['end_date']) ? $data['end_date'] : '0000-00-00';
 
         $sql = "INSERT INTO  Survey_SurveyorClass(money,money_time,payment_type,payment_res,admin_id,class,surveyor_id,create_time,remark,start_date,end_date,pdfid)
              VALUES('{$money}','{$money_time}','{$payment_type}','{$payment_res}','{$admin_id}','{$class}','{$surveyor_id}','{$nowTime}','{$remark}','{$start_date}','{$end_date}','{$pdfid}')";
-        $db->query ( $sql );
+        $db->query($sql);
         $res = $db->last_insert_id();
-        if($res){
+        if ($res) {
             $sql = "UPDATE  Survey_Surveyor SET updateTime = date('Y-m-d H:i:s'),class_sum = class_sum+$class,class_remain=class_remain+$class WHERE survId=$surveyor_id";
-            $updateRes = $db->query ( $sql );
+            $updateRes = $db->query($sql);
 
-            $recordRemark = $class_num <0 ?'管理員减少課堂':'管理員添加課堂';
+            $recordRemark = $class_num < 0 ? '管理員减少課堂' : '管理員添加課堂';
             // 添加Survey_SurveyorClassRecord
-            addClassRecord($surveyor_id,$jobNoNew,$class,$class,$recordRemark,$admin_id,2,$pdfid,$info->survId,date('Y-m-d H:i:s'));
-            if($firstTime == false){
-                updateClassPDF($pdfid,$admin_id,$class_num,$class_num);
+            addClassRecord($surveyor_id, $jobNoNew, $class, $class, $recordRemark, $admin_id, 2, $pdfid, $info->survId, date('Y-m-d H:i:s'));
+            if ($firstTime == false) {
+                updateClassPDF($pdfid, $admin_id, $class_num, $class_num);
             }
-            returnJson('success',array(),'');
-        }else{
-            returnJson('failed',array(),'設置失敗，請稍後再試');
+            returnJson('success', array(), '');
+        } else {
+            returnJson('failed', array(), '設置失敗，請稍後再試');
         }
-    }else{
+    } else {
         //根据学员PDF设置课堂
-        if(empty($pdfid)){
-            $message = array (
+        if (empty($pdfid)) {
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'PDF Not Found',
                 'data' => ''
@@ -1058,31 +1062,31 @@ function setClassPDF($data){
         $class = htmlspecialchars($class_num);
         $nowTime = date('Y-m-d H:i:s');
         $remark = htmlspecialchars($data['remark']);
-        $start_date = strtotime($data['start_date'])?$data['start_date']:'0000-00-00';
-        $end_date = strtotime($data['end_date'])?$data['end_date']:'0000-00-00';
+        $start_date = strtotime($data['start_date']) ? $data['start_date'] : '0000-00-00';
+        $end_date = strtotime($data['end_date']) ? $data['end_date'] : '0000-00-00';
 
         $sql = "INSERT INTO  Survey_SurveyorClass(money,money_time,payment_type,payment_res,admin_id,class,surveyor_id,create_time,remark,start_date,end_date,pdfid)
              VALUES('{$money}','{$money_time}','{$payment_type}','{$payment_res}','{$admin_id}','{$class}','{$surveyor_id}','{$nowTime}','{$remark}','{$start_date}','{$end_date}','{$pdfid}')";
-        $db->query ( $sql );
+        $db->query($sql);
         $res = $db->last_insert_id();
 
-        if($res){
+        if ($res) {
 
             $sql = "UPDATE  Survey_Surveyor SET updateTime = date('Y-m-d H:i:s'),class_sum = class_sum+$class,class_remain=class_remain+$class WHERE survId=$surveyor_id";
-            $updateRes = $db->query ( $sql );
+            $updateRes = $db->query($sql);
 
             $classRecordInfo = getJobNoNewByClassRecord($class_record_id);
             $jobNoNew = $classRecordInfo['jobNoNew'];
 
-            $recordRemark = $class_num <0 ?'管理員减少課堂':'管理員添加課堂';
+            $recordRemark = $class_num < 0 ? '管理員减少課堂' : '管理員添加課堂';
 
             $class_remain = $surveyor_info->class_remain + $class;
-            addClassRecord($surveyor_id,$jobNoNew,$class,$class_remain,$recordRemark,$admin_id,2,$pdfid,$info->survId,date('Y-m-d H:i:s'));
-            updateClassPDF($pdfid,$admin_id,$class_num,$class_num);
+            addClassRecord($surveyor_id, $jobNoNew, $class, $class_remain, $recordRemark, $admin_id, 2, $pdfid, $info->survId, date('Y-m-d H:i:s'));
+            updateClassPDF($pdfid, $admin_id, $class_num, $class_num);
 
 
-            if($updateRes){
-                $message = array (
+            if ($updateRes) {
+                $message = array(
                     'status' => 'success',
                     'msg' => '',
                     'data' => array()
@@ -1090,8 +1094,8 @@ function setClassPDF($data){
                 die(json_encode($message));
             }
 
-        }else{
-            $message = array (
+        } else {
+            $message = array(
                 'status' => 'error',
                 'msg' => 'Unknow Error',
                 'data' => array()
@@ -1102,15 +1106,15 @@ function setClassPDF($data){
 }
 
 
-function getpdf($pdfid,$class_record_id = null){
+function getpdf($pdfid, $class_record_id = null) {
     global $db;
 
     $sql = "SELECT id,class_record_id,jobNoNew,surveyor_id,upload_surveyor_id,path,is_set_class,set_class_by,set_class_time,class_num,class_remain,upload_pdf_time FROM Survey_SurveyorClassPDF where id = $pdfid  and is_del = 0";
-    if($class_record_id){
+    if ($class_record_id) {
         $sql .= " AND class_record_id = '{$class_record_id}'";
     }
     $db->query($sql);
-    if($pdf = $db->next_record ()){
+    if ($pdf = $db->next_record()) {
         return $pdf;
     }
     return false;
@@ -1118,31 +1122,30 @@ function getpdf($pdfid,$class_record_id = null){
 }
 
 
-
-function getpdfidByClassRecord($class_record_id,$surveyor_id = 0){
+function getpdfidByClassRecord($class_record_id, $surveyor_id = 0) {
     global $db;
 
     $sql = "SELECT id FROM Survey_SurveyorClassPDF where class_record_id = $class_record_id AND surveyor_id=$surveyor_id";
-    if($class_record_id == 0){
+    if ($class_record_id == 0) {
         $sql .= " AND jobNoNew = 0";
     }
     $sql .= ' ORDER BY id desc';
     $db->query($sql);
-    if($pdfid = $db->next_record ()){
+    if ($pdfid = $db->next_record()) {
         $pdfid = $pdfid[0];
     }
 
     return $pdfid;
 }
 
-function getJobNoNewByClassRecord($class_record_id){
+function getJobNoNewByClassRecord($class_record_id) {
     global $db;
     $sql = "SELECT jobNoNew,confirm_pdf FROM Survey_SurveyorClassRecord where id='$class_record_id'";
     $db->query($sql);
     $res = array();
     $res['jobNoNew'] = null;
     $res['confirm_pdf'] = null;
-    if($jobNoNew = $db->next_record ()){
+    if ($jobNoNew = $db->next_record()) {
         $res['jobNoNew'] = $jobNoNew['jobNoNew'];
         $res['confirm_pdf'] = $jobNoNew['confirm_pdf'];
     }
@@ -1150,7 +1153,7 @@ function getJobNoNewByClassRecord($class_record_id){
     return $res;
 }
 
-function updateClassPDF($pdfid,$set_class_by,$class_num,$class_remain){
+function updateClassPDF($pdfid, $set_class_by, $class_num, $class_remain) {
     global $db;
 
     $now_time = date('Y-m-d H:i:s');
@@ -1158,12 +1161,12 @@ function updateClassPDF($pdfid,$set_class_by,$class_num,$class_remain){
     return $db->query($sql);
 }
 
-function addClassRecord($surveyor_id,$jobNoNew,$use_class,$class_remain,$remark,$record_surveyor_id,$status = 1,$confirm_pdf = null,$confirm_pdf_create_by = 0,$confirm_pdf_create_time = null){
+function addClassRecord($surveyor_id, $jobNoNew, $use_class, $class_remain, $remark, $record_surveyor_id, $status = 1, $confirm_pdf = null, $confirm_pdf_create_by = 0, $confirm_pdf_create_time = null) {
     global $db;
 
     $record_time = date('Y-m-d H:i:s');
 
-    if($confirm_pdf === null){
+    if ($confirm_pdf === null) {
         $confirm_pdf_create_time = '0000-00-00 00:00:00';
     }
 
@@ -1171,18 +1174,18 @@ function addClassRecord($surveyor_id,$jobNoNew,$use_class,$class_remain,$remark,
  values ('$surveyor_id','$jobNoNew','$use_class','$class_remain','$remark','$record_time','$record_surveyor_id','$status','$confirm_pdf','$confirm_pdf_create_by','$confirm_pdf_create_time')";
     $res = $db->query($sql);
 
-    if($status == 1){
+    if ($status == 1) {
         $sql2 = "SELECT last_insert_id() ";
         $db->query($sql2);
-        if($lastid = $db->next_record ()){
+        if ($lastid = $db->next_record()) {
             $lastid = $lastid[0];
         }
-        if($jobNoNew != 0){
+        if ($jobNoNew != 0) {
             $ss_sql = "UPDATE Survey_MainSchedule set class_record_id = '$lastid'  where jobNoNew = '$jobNoNew'";
         }
-    }elseif($status == 1){
+    } elseif ($status == 1) {
         $ss_sql = "UPDATE Survey_MainSchedule set class_record_id = '' where jobNoNew = '$jobNoNew'";
-    }else{
+    } else {
         return $res;
     }
 
@@ -1192,21 +1195,21 @@ function addClassRecord($surveyor_id,$jobNoNew,$use_class,$class_remain,$remark,
 }
 
 
-function edit_vip_level($data){
-    global $db,$conf;
+function edit_vip_level($data) {
+    global $db, $conf;
 
-    if(empty($data['sign'])){
-        $message = array (
+    if (empty($data['sign'])) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'sign is null.',
             'data' => array()
         );
         die(json_encode($message));
     }
-    $filename = $conf["path"]["sign"].$data['sign'];
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
@@ -1219,8 +1222,8 @@ function edit_vip_level($data){
     $sa = new SurveyorAccess($db);
     $rs = $sa->GetListSearch($s);
     $userInfo = $rs[0];
-    if(empty($userInfo)){
-        $message = array (
+    if (empty($userInfo)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Sign Not Found',
             'data' => array()
@@ -1228,8 +1231,8 @@ function edit_vip_level($data){
         die(json_encode($message));
     }
 
-    if($userInfo->survType != 'admin' && $userInfo->survType != 'teach'){
-        $message = array (
+    if ($userInfo->survType != 'admin' && $userInfo->survType != 'teach') {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Permission Error',
             'data' => array()
@@ -1237,16 +1240,16 @@ function edit_vip_level($data){
         die(json_encode($message));
     }
 
-    if(!isset($data['vip_level']) && empty($data['vip_level'])){
-        $message = array (
+    if (!isset($data['vip_level']) && empty($data['vip_level'])) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'vip_level is required',
             'data' => array()
         );
         die(json_encode($message));
     }
-    if(!isset($data['surveyorId']) && empty($data['surveyorId'])){
-        $message = array (
+    if (!isset($data['surveyorId']) && empty($data['surveyorId'])) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'surveyorId is required',
             'data' => array()
@@ -1257,16 +1260,16 @@ function edit_vip_level($data){
     $surveyorId = $data['surveyorId'];
     $sql = "UPDATE  Survey_Surveyor SET vip_level = '{$vip_level}' WHERE survId='{$surveyorId}'";
 
-    $updateRes = $db->query ( $sql );
-    if($updateRes){
-        $message = array (
+    $updateRes = $db->query($sql);
+    if ($updateRes) {
+        $message = array(
             'status' => 'success',
             'msg' => '',
             'data' => array()
         );
         die(json_encode($message));
-    }else{
-        $message = array (
+    } else {
+        $message = array(
             'status' => 'error',
             'msg' => 'Try again',
             'data' => array()
@@ -1275,20 +1278,20 @@ function edit_vip_level($data){
     }
 }
 
-function tmp_add_class(){
+function tmp_add_class() {
     global $db;
     $sql = 'SELECT survId FROM Survey_Surveyor';
-    $db->query ( $sql );
+    $db->query($sql);
     $class_num = array();
-    while ( $rs = $db->next_record () ) {
+    while ($rs = $db->next_record()) {
         $class_num[] = $rs['survId'];
     }
-    foreach($class_num as $k=>$v){
-        if($v){
+    foreach ($class_num as $k => $v) {
+        if ($v) {
             $sql = "INSERT INTO Survey_SurveyorClass "
-                ."(surveyor_id,money,money_time,payment_type,payment_res,admin_id,class,update_time,update_by,create_time)"
-                ."value({$v},0,'2019-07-23 10:12:00','轉賬',1,1,20,'2019-07-23 10:12:00',1,'2019-07-23 10:12:00')";
-            $db->query ( $sql );
+                . "(surveyor_id,money,money_time,payment_type,payment_res,admin_id,class,update_time,update_by,create_time)"
+                . "value({$v},0,'2019-07-23 10:12:00','轉賬',1,1,20,'2019-07-23 10:12:00',1,'2019-07-23 10:12:00')";
+            $db->query($sql);
         }
     }
 }
@@ -1298,21 +1301,21 @@ function tmp_add_class(){
  * 獲取學員購買和剩餘的課堂信息
  *
  * */
-function getClassInfo($data){
-    global $db,$conf;
+function getClassInfo($data) {
+    global $db, $conf;
 
-    if(empty($data['sign'])){
-        $message = array (
+    if (empty($data['sign'])) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'sign is null.',
             'data' => array()
         );
         die(json_encode($message));
     }
-    $filename = $conf["path"]["sign"].$data['sign'];
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
@@ -1320,8 +1323,8 @@ function getClassInfo($data){
         die(json_encode($message));
     }
 
-    if(!isset($data['surveyorId']) || empty($data['surveyorId'])){
-        $message = array (
+    if (!isset($data['surveyorId']) || empty($data['surveyorId'])) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'surveyorId is required',
             'data' => array()
@@ -1329,9 +1332,9 @@ function getClassInfo($data){
         die(json_encode($message));
     }
 
-    $class_num_sql = "SELECT class_sum,class_remain,vip_level,avatar FROM Survey_Surveyor " . " WHERE 1=1  AND survId = ".$data['surveyorId'] ;
-    $db->query ( $class_num_sql );
-    while ( $rs = $db->next_record () ) {
+    $class_num_sql = "SELECT class_sum,class_remain,vip_level,avatar FROM Survey_Surveyor " . " WHERE 1=1  AND survId = " . $data['surveyorId'];
+    $db->query($class_num_sql);
+    while ($rs = $db->next_record()) {
         $class_num = $rs['class_sum'];
         $class_remain = $rs['class_remain'];
         $vip_level = $rs['vip_level'];
@@ -1344,13 +1347,13 @@ function getClassInfo($data){
         $used_class_num = $class_num - $rs['class_num_sql'];
     }*/
 
-    $payment_log_sql = "SELECT ss.engName,ss.chiName,ssc.id,ssc.money,ssc.money_time,ssc.payment_type,ssc.class,ssc.remark,ssc.end_date,ssc.start_date FROM Survey_SurveyorClass ssc,Survey_Surveyor ss " . " WHERE 1=1  AND ssc.surveyor_id = ".$data['surveyorId'] ." AND ss.survId = ssc.admin_id AND ssc.is_del=0 " . " ORDER BY ssc.create_time desc";
-    $db->query ( $payment_log_sql );
+    $payment_log_sql = "SELECT ss.engName,ss.chiName,ssc.id,ssc.money,ssc.money_time,ssc.payment_type,ssc.class,ssc.remark,ssc.end_date,ssc.start_date FROM Survey_SurveyorClass ssc,Survey_Surveyor ss " . " WHERE 1=1  AND ssc.surveyor_id = " . $data['surveyorId'] . " AND ss.survId = ssc.admin_id AND ssc.is_del=0 " . " ORDER BY ssc.create_time desc";
+    $db->query($payment_log_sql);
     $payment_log = array();
-    while ( $rs = $db->next_record () ) {
+    while ($rs = $db->next_record()) {
         $payment_log_tmp['operator_engName'] = $rs['engName'];
         $payment_log_tmp['operator_chiName'] = $rs['chiName'];
-        $payment_log_tmp['money'] = number_format($rs['money'],2);
+        $payment_log_tmp['money'] = number_format($rs['money'], 2);
         $payment_log_tmp['money_time'] = $rs['money_time'];
         $payment_log_tmp['payment_type'] = $rs['payment_type'];
         $payment_log_tmp['class_num'] = $rs['class'];
@@ -1369,7 +1372,7 @@ function getClassInfo($data){
     $res['vip_level'] = $vip_level;
     $res['avatar'] = $avatar;
 
-    $message = array (
+    $message = array(
         'status' => 'success',
         'msg' => '',
         'data' => $res
@@ -1381,11 +1384,11 @@ function getClassInfo($data){
 /*
  * 重設學員密碼
  * */
-function resetPassword($data){
-    global $conf,$db;
+function resetPassword($data) {
+    global $conf, $db;
 
-    if(empty($data['sign'])){
-        $message = array (
+    if (empty($data['sign'])) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'sign is null.',
             'data' => array()
@@ -1393,10 +1396,10 @@ function resetPassword($data){
         die(json_encode($message));
     }
 
-    $filename = $conf["path"]["sign"].$data['sign'];
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
@@ -1410,26 +1413,26 @@ function resetPassword($data){
     $rs = $sa->GetListSearch($s);
     $info = $rs[0];
 
-    if($info->survType == 'admin'){
-        if(!isset($data['surveyorId']) || empty($data['surveyorId'])){
-            $message = array (
+    if ($info->survType == 'admin') {
+        if (!isset($data['surveyorId']) || empty($data['surveyorId'])) {
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'surveyorId is required',
                 'data' => array()
             );
             die(json_encode($message));
-        }else{
-            $sql = "DELETE FROM Survey_SurveyorPassword " . " WHERE 1=1  AND survId = ".$data['surveyorId'];
-            $res = $db->query ( $sql );
-            $message = array (
+        } else {
+            $sql = "DELETE FROM Survey_SurveyorPassword " . " WHERE 1=1  AND survId = " . $data['surveyorId'];
+            $res = $db->query($sql);
+            $message = array(
                 'status' => 'success',
                 'msg' => '',
                 'data' => array()
             );
             die(json_encode($message));
         }
-    }else{
-        $message = array (
+    } else {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Permission denied',
             'data' => array()
@@ -1442,16 +1445,16 @@ function resetPassword($data){
 /*
  * 刷新会员拥有的课堂总数
  * */
-function flushClasSum($surveyor_id){
+function flushClasSum($surveyor_id) {
     global $db;
 
-    $class_num_sql = "SELECT sum(class) as class_num from Survey_SurveyorClass where is_del = 0 AND surveyor_id=".$surveyor_id;
-    $db->query ( $class_num_sql );
+    $class_num_sql = "SELECT sum(class) as class_num from Survey_SurveyorClass where is_del = 0 AND surveyor_id=" . $surveyor_id;
+    $db->query($class_num_sql);
     $res = $db->next_record();
-    $class_num = is_null($res['class_num'])?0:$res['class_num'];
-    $sql = "UPDATE  Survey_Surveyor SET updateTime = '".date('Y-m-d H:i:s')."', class_sum = $class_num WHERE survId=$surveyor_id";
+    $class_num = is_null($res['class_num']) ? 0 : $res['class_num'];
+    $sql = "UPDATE  Survey_Surveyor SET updateTime = '" . date('Y-m-d H:i:s') . "', class_sum = $class_num WHERE survId=$surveyor_id";
 
-    $updateRes = $db->query ( $sql );
+    $updateRes = $db->query($sql);
     return true;
 
 }
@@ -1460,20 +1463,20 @@ function flushClasSum($surveyor_id){
  * 修改會員課堂信息
  * 
  * */
-function editClass($data){
-    global $conf,$db;
-    $filename = $conf["path"]["sign"].$data['sign'];
+function editClass($data) {
+    global $conf, $db;
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
         );
         die(json_encode($message));
     }
-    if(!isset($data['id']) || empty($data['id'])){
-        $message = array (
+    if (!isset($data['id']) || empty($data['id'])) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'ID is required',
             'data' => array()
@@ -1486,11 +1489,11 @@ function editClass($data){
     $rs = $sa->GetListSearch($s);
     $info = $rs[0];
 
-    if($info->survType == 'admin'){
+    if ($info->survType == 'admin') {
 
         $updateSql = '';
-        if(!isset($data['surveyor_id']) || empty($data['surveyor_id'])){
-            $message = array (
+        if (!isset($data['surveyor_id']) || empty($data['surveyor_id'])) {
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'Params Error',
                 'data' => array()
@@ -1503,52 +1506,52 @@ function editClass($data){
         $rss = $sa->GetListSearch($ss);
         $sinfo = $rss[0];
 
-        $source_class_sql = "SELECT class FROM Survey_SurveyorClass WHERE id='".$data['id'] ."' and is_del = 0 and surveyor_id = ".$data['surveyor_id'];
+        $source_class_sql = "SELECT class FROM Survey_SurveyorClass WHERE id='" . $data['id'] . "' and is_del = 0 and surveyor_id = " . $data['surveyor_id'];
 
-        $db->query ( $source_class_sql );
+        $db->query($source_class_sql);
 
-        while($resdb = $db->next_record()){
+        while ($resdb = $db->next_record()) {
             $source_class = $resdb['class'];
         }
-        if(is_null($source_class) || $source_class < 0){
-            $message = array (
+        if (is_null($source_class) || $source_class < 0) {
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'Params Error',
                 'data' => array()
             );
             die(json_encode($message));
         }
-        if( isset($data['money'])){
+        if (isset($data['money'])) {
             $money = $data['money'];
-            $updateSql .=" money = '{$money}',";
+            $updateSql .= " money = '{$money}',";
         }
-        if( isset($data['payment_type']) && !empty($data['payment_type'])){
+        if (isset($data['payment_type']) && !empty($data['payment_type'])) {
             $payment_type = $data['payment_type'];
-            $updateSql .=" payment_type = '{$payment_type}',";
+            $updateSql .= " payment_type = '{$payment_type}',";
         }
-        if( isset($data['money_time']) && !empty($data['money_time'])){
+        if (isset($data['money_time']) && !empty($data['money_time'])) {
             $money_time = $data['money_time'];
-            $updateSql .=" money_time = '{$money_time}',";
+            $updateSql .= " money_time = '{$money_time}',";
         }
-        if( isset($data['class_num']) ){
+        if (isset($data['class_num'])) {
             $class_num = $data['class_num'];
-            $updateSql .=" class = '{$class_num}',";
+            $updateSql .= " class = '{$class_num}',";
         }
-        if( isset($data['remark']) ){
+        if (isset($data['remark'])) {
             $remark = $data['remark'];
-            $updateSql .=" remark = '{$remark}',";
+            $updateSql .= " remark = '{$remark}',";
         }
-        if( isset($data['remark']) ){
+        if (isset($data['remark'])) {
             $remark = $data['remark'];
-            $updateSql .=" remark = '{$remark}',";
+            $updateSql .= " remark = '{$remark}',";
         }
-        if( isset($data['start_date']) ){
-            $start_date = strtotime($data['start_date'])?$data['start_date']:'0000-00-00';
-            $updateSql .=" start_date = '{$start_date}',";
+        if (isset($data['start_date'])) {
+            $start_date = strtotime($data['start_date']) ? $data['start_date'] : '0000-00-00';
+            $updateSql .= " start_date = '{$start_date}',";
         }
-        if( isset($data['end_date']) ){
-            $end_date = strtotime($data['end_date'])?$data['end_date']:'0000-00-00';
-            $updateSql .=" start_date = '{$end_date}',";
+        if (isset($data['end_date'])) {
+            $end_date = strtotime($data['end_date']) ? $data['end_date'] : '0000-00-00';
+            $updateSql .= " start_date = '{$end_date}',";
         }
 
 
@@ -1556,24 +1559,24 @@ function editClass($data){
         $updateSql .= " update_time = '{$nowTime}',update_by = '{$info->survId}'";
         $sql = "UPDATE  Survey_SurveyorClass SET ";
         $sql .= $updateSql;
-        $sql .=" WHERE id=".$data['id'];
+        $sql .= " WHERE id=" . $data['id'];
 
-        $delRes = $db->query ( $sql );
-        if($delRes >= 1){
-            $sum_update_class = $sinfo->class_sum-$source_class+$class_num;
-            $remain_update_class = $sinfo->class_remain-$source_class+$class_num;
-            $sql = "UPDATE  Survey_Surveyor SET updateTime = '".date('Y-m-d H:i:s')."', class_sum = {$sum_update_class},class_remain = {$remain_update_class} WHERE survId={$data['surveyor_id']}";
-            $updateRes = $db->query ( $sql );
-            if($updateRes){
-                $message = array (
+        $delRes = $db->query($sql);
+        if ($delRes >= 1) {
+            $sum_update_class = $sinfo->class_sum - $source_class + $class_num;
+            $remain_update_class = $sinfo->class_remain - $source_class + $class_num;
+            $sql = "UPDATE  Survey_Surveyor SET updateTime = '" . date('Y-m-d H:i:s') . "', class_sum = {$sum_update_class},class_remain = {$remain_update_class} WHERE survId={$data['surveyor_id']}";
+            $updateRes = $db->query($sql);
+            if ($updateRes) {
+                $message = array(
                     'status' => 'success',
                     'msg' => '',
                     'data' => array()
                 );
                 die(json_encode($message));
             }
-        }else{
-            $message = array (
+        } else {
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'Unknow Error',
                 'data' => array()
@@ -1581,8 +1584,8 @@ function editClass($data){
             die(json_encode($message));
         }
 
-    }else{
-        $message = array (
+    } else {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Permission denied',
             'data' => array()
@@ -1595,20 +1598,20 @@ function editClass($data){
  * 刪除會員課堂信息
  *
  * */
-function delClass($data){
-    global $conf,$db;
-    $filename = $conf["path"]["sign"].$data['sign'];
+function delClass($data) {
+    global $conf, $db;
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
         );
         die(json_encode($message));
     }
-    if(!isset($data['id']) || empty($data['id'])){
-        $message = array (
+    if (!isset($data['id']) || empty($data['id'])) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'ID is required',
             'data' => array()
@@ -1622,40 +1625,40 @@ function delClass($data){
     $rs = $sa->GetListSearch($s);
     $info = $rs[0];
 
-    if($info->survType == 'admin'){
+    if ($info->survType == 'admin') {
 
-        $sql = "SELECT  class ,is_del,surveyor_id From Survey_SurveyorClass WHERE id=".$data['id'];
-        $db->query ( $sql );
+        $sql = "SELECT  class ,is_del,surveyor_id From Survey_SurveyorClass WHERE id=" . $data['id'];
+        $db->query($sql);
 
-        if($dr = $db->next_record()){
+        if ($dr = $db->next_record()) {
             $class_num = $dr['class'];
             $is_del = $dr['is_del'];
             $surveyor_id = $dr['surveyor_id'];
-        }else{
-            $message = array (
+        } else {
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'id No Found',
                 'data' => array()
             );
             die(json_encode($message));
         }
-        if($is_del == 0){
+        if ($is_del == 0) {
             $nowTime = date('Y-m-d H:i:s');
-            $sql = "UPDATE  Survey_SurveyorClass SET is_del = 1,update_time = '{$nowTime}',update_by = $info->survId WHERE id=".$data['id'];
-            $delRes = $db->query ( $sql );
-            if($delRes >= 1){
+            $sql = "UPDATE  Survey_SurveyorClass SET is_del = 1,update_time = '{$nowTime}',update_by = $info->survId WHERE id=" . $data['id'];
+            $delRes = $db->query($sql);
+            if ($delRes >= 1) {
 
-                $sql = "UPDATE  Survey_Surveyor SET updateTime = '".date('Y-m-d H:i:s')."',class_sum = class_sum-$class_num,class_remain = class_remain-$class_num WHERE survId=$surveyor_id";
-                $db->query ( $sql );
+                $sql = "UPDATE  Survey_Surveyor SET updateTime = '" . date('Y-m-d H:i:s') . "',class_sum = class_sum-$class_num,class_remain = class_remain-$class_num WHERE survId=$surveyor_id";
+                $db->query($sql);
 
-                $message = array (
+                $message = array(
                     'status' => 'success',
                     'msg' => '',
                     'data' => array()
                 );
                 die(json_encode($message));
-            }else{
-                $message = array (
+            } else {
+                $message = array(
                     'status' => 'failed',
                     'msg' => 'Unknow Error',
                     'data' => array()
@@ -1663,16 +1666,16 @@ function delClass($data){
                 die(json_encode($message));
             }
 
-        }else{
-            $message = array (
+        } else {
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'Already deleted',
                 'data' => array()
             );
             die(json_encode($message));
         }
-    }else{
-        $message = array (
+    } else {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Permission denied',
             'data' => array()
@@ -1685,13 +1688,13 @@ function delClass($data){
  * 设置会员课堂信息
  *
  * */
-function setClass($data){
-    global $conf,$db;
-    $filename = $conf["path"]["sign"].$data['sign'];
+function setClass($data) {
+    global $conf, $db;
+    $filename = $conf["path"]["sign"] . $data['sign'];
     $survId = file_get_contents($filename);
 
-    if(empty($survId)){
-        $message = array (
+    if (empty($survId)) {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Login has expired.',
             'data' => array()
@@ -1704,9 +1707,9 @@ function setClass($data){
     $rs = $sa->GetListSearch($s);
     $info = $rs[0];
 
-    if($info->survType == 'admin'){
-        if(!isset($data['surveyor_id']) || !isset($data['money']) || !isset($data['payment_type'] ) || !isset($data['money_time'] ) || !isset($data['class_num'] )){
-            $message = array (
+    if ($info->survType == 'admin') {
+        if (!isset($data['surveyor_id']) || !isset($data['money']) || !isset($data['payment_type']) || !isset($data['money_time']) || !isset($data['class_num'])) {
+            $message = array(
                 'status' => 'failed',
                 'msg' => 'Params Error',
                 'data' => array()
@@ -1717,10 +1720,10 @@ function setClass($data){
         $money = $data['money'];
 
         $money_time = strtotime($data['money_time']);
-        if($money_time){
-            $money_time = date('Y-m-d H:i:s',$money_time);
-        }else{
-            $message = array (
+        if ($money_time) {
+            $money_time = date('Y-m-d H:i:s', $money_time);
+        } else {
+            $message = array(
                 'status' => 'error',
                 'msg' => 'Param money_time Error',
                 'data' => array()
@@ -1734,19 +1737,19 @@ function setClass($data){
         $class = htmlspecialchars($data['class_num']);
         $nowTime = date('Y-m-d H:i:s');
         $remark = htmlspecialchars($data['remark']);
-        $start_date = strtotime($data['start_date'])?$data['start_date']:'0000-00-00';
-        $end_date = strtotime($data['end_date'])?$data['end_date']:'0000-00-00';
+        $start_date = strtotime($data['start_date']) ? $data['start_date'] : '0000-00-00';
+        $end_date = strtotime($data['end_date']) ? $data['end_date'] : '0000-00-00';
 
         $sql = "INSERT INTO  Survey_SurveyorClass(money,money_time,payment_type,payment_res,admin_id,class,surveyor_id,create_time,remark,start_date,end_date)
 				 VALUES('{$money}','{$money_time}','{$payment_type}','{$payment_res}','{$admin_id}','{$class}','{$surveyor_id}','{$nowTime}','{$remark}','{$start_date}','{$end_date}')";
-        $db->query ( $sql );
-        $res = $db->last_insert_id ();
-        if($res){
+        $db->query($sql);
+        $res = $db->last_insert_id();
+        if ($res) {
 
             $sql = "UPDATE  Survey_Surveyor SET updateTime = date('Y-m-d H:i:s'),class_sum = class_sum+$class,class_remain=class_remain+$class WHERE survId=$surveyor_id";
-            $updateRes = $db->query ( $sql );
-            if($updateRes){
-                $message = array (
+            $updateRes = $db->query($sql);
+            if ($updateRes) {
+                $message = array(
                     'status' => 'success',
                     'msg' => '',
                     'data' => array()
@@ -1754,16 +1757,16 @@ function setClass($data){
                 die(json_encode($message));
             }
 
-        }else{
-            $message = array (
+        } else {
+            $message = array(
                 'status' => 'error',
                 'msg' => 'Unknow Error',
                 'data' => array()
             );
             die(json_encode($message));
         }
-    }else{
-        $message = array (
+    } else {
+        $message = array(
             'status' => 'failed',
             'msg' => 'Permission denied',
             'data' => array()
@@ -1776,37 +1779,37 @@ function setClass($data){
  * 标记为已读/未读
  * @param $data
  */
-function maskMessage($data){
-	global $conf,$db;
-	$m = new Messages();
-	$ma = new MessagesAccess($db);
-	if(empty($data['sign'])){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'sign is null.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$filename = $conf["path"]["sign"].$data['sign'];
-	$m->survId = file_get_contents($filename);
-	if(empty($m->survId)){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'Login has expired.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$m->msgId = $data['msgId'];
-	$m->isRead = 'yes';
-	$ma->Mark($m);
-	$message = array (
-			'status' => 'success',
-			'msg' => '',
-			'data' => array()
-	);
-	die(json_encode($message));
+function maskMessage($data) {
+    global $conf, $db;
+    $m = new Messages();
+    $ma = new MessagesAccess($db);
+    if (empty($data['sign'])) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'sign is null.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $filename = $conf["path"]["sign"] . $data['sign'];
+    $m->survId = file_get_contents($filename);
+    if (empty($m->survId)) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $m->msgId = $data['msgId'];
+    $m->isRead = 'yes';
+    $ma->Mark($m);
+    $message = array(
+        'status' => 'success',
+        'msg' => '',
+        'data' => array()
+    );
+    die(json_encode($message));
 }
 
 
@@ -1814,75 +1817,75 @@ function maskMessage($data){
  * 根据车牌,车队编号获取载客量
  * @param $data
  */
-function getRegistration($data){
-	global $db;
-	$reg = new Registration();
-	$reg->plateNo = $data['fleetNo'];
-	$reg->fleetNo = $data['fleetNo'];
-	$rega = new RegistrationAccess( $db );
-	$rs = $rega->GetListSearch( $reg );
-	$message = array (
-			'status' => 'success',
-			'msg' => '',
-			'data' => $rs
-	);
-	die(json_encode($message));
+function getRegistration($data) {
+    global $db;
+    $reg = new Registration();
+    $reg->plateNo = $data['fleetNo'];
+    $reg->fleetNo = $data['fleetNo'];
+    $rega = new RegistrationAccess($db);
+    $rs = $rega->GetListSearch($reg);
+    $message = array(
+        'status' => 'success',
+        'msg' => '',
+        'data' => $rs
+    );
+    die(json_encode($message));
 }
 
-function changePassword($data){
-	global $conf, $db;
-	if(empty($data['sign'])){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'sign is null.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$filename = $conf["path"]["sign"].$data['sign'];
-	$survId = file_get_contents($filename);
-	if(empty($survId)){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'Login has expired.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$password = $data['password'];
-	$newPassword = $data['newPassword'];
-	$s = new Surveyor();
-	$s->survId = $survId;
-	$sa = new SurveyorAccess($db);
-	$rs = $sa->GetListSearch($s);
-	if(!empty($rs[0])){
-		$s = $rs[0];
-		$username = $s->contact;
-		$login = new SurveyorLogin($db);
-		if ($login->Login($username, $password)) {
-			$sl = new SurveyorLogin($db);
-			$sl->UpdatePassword($survId, $newPassword);
-			$message = array (
-					'status' => 'success',
-					'msg' => '',
-					'data' => array()
-			);
-			die(json_encode($message));
-		}else{
-			$message = array (
-					'status' => 'failed',
-					'msg' => 'error 001.',
-					'data' => array()
-			);
-			die(json_encode($message));
-		}
-	}
-	$message = array (
-			'status' => 'failed',
-			'msg' => 'error 001.',
-			'data' => array()
-	);
-	die(json_encode($message));
+function changePassword($data) {
+    global $conf, $db;
+    if (empty($data['sign'])) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'sign is null.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $filename = $conf["path"]["sign"] . $data['sign'];
+    $survId = file_get_contents($filename);
+    if (empty($survId)) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $password = $data['password'];
+    $newPassword = $data['newPassword'];
+    $s = new Surveyor();
+    $s->survId = $survId;
+    $sa = new SurveyorAccess($db);
+    $rs = $sa->GetListSearch($s);
+    if (!empty($rs[0])) {
+        $s = $rs[0];
+        $username = $s->contact;
+        $login = new SurveyorLogin($db);
+        if ($login->Login($username, $password)) {
+            $sl = new SurveyorLogin($db);
+            $sl->UpdatePassword($survId, $newPassword);
+            $message = array(
+                'status' => 'success',
+                'msg' => '',
+                'data' => array()
+            );
+            die(json_encode($message));
+        } else {
+            $message = array(
+                'status' => 'failed',
+                'msg' => 'error 001.',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
+    }
+    $message = array(
+        'status' => 'failed',
+        'msg' => 'error 001.',
+        'data' => array()
+    );
+    die(json_encode($message));
 }
 
 
@@ -1890,434 +1893,409 @@ function changePassword($data){
  * 调用调查员用户的头像
  * @param $data
  */
-function setProfilePhoto($data){
-	global $conf, $db;
-	if(empty($data['sign'])){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'sign is null.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$filename = $conf["path"]["sign"].$data['sign'];
-	$survId = file_get_contents($filename);
-	if(empty($survId)){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'Login has expired.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$path = $conf["path"]["root"]."/images/profile-photo/".date("Ymd");
-	if(!is_readable($path))
-	{
-		is_file($path) or mkdir($path,0755);
-	}
-	if(!is_array($_FILES['picFile']['name'])){
-		$message = array (
-				'status' => 'failed',
-				'msg' => '沒有檢測到上傳文件.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$sa = new SurveyorAccess($db);
-	foreach($_FILES['picFile']['name'] as $k=>$v){
-		$fileName = $path.'/'.date('YmdHis').'-'.uniqid().'.'.fileext($v);
-		move_uploaded_file($_FILES['picFile']['tmp_name'][$k],$fileName);
-		//添加到聊天记录
-		$profilePhoto = str_replace($conf["path"]["root"],'',$fileName);
-		$sa->setProfilePhoto($survId,$profilePhoto);
-		$message = array (
-				'status' => 'success',
-				'msg' => '成功！',
-				'profilePhoto' => 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.'/'.$profilePhoto,
-				'data' => array()
-		);
-		die(json_encode($message));
-		break;
-	}
+function setProfilePhoto($data) {
+    global $conf, $db;
+    if (empty($data['sign'])) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'sign is null.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $filename = $conf["path"]["sign"] . $data['sign'];
+    $survId = file_get_contents($filename);
+    if (empty($survId)) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $path = $conf["path"]["root"] . "/images/profile-photo/" . date("Ymd");
+    if (!is_readable($path)) {
+        is_file($path) or mkdir($path, 0755);
+    }
+    if (!is_array($_FILES['picFile']['name'])) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => '沒有檢測到上傳文件.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $sa = new SurveyorAccess($db);
+    foreach ($_FILES['picFile']['name'] as $k => $v) {
+        $fileName = $path . '/' . date('YmdHis') . '-' . uniqid() . '.' . fileext($v);
+        move_uploaded_file($_FILES['picFile']['tmp_name'][$k], $fileName);
+        //添加到聊天记录
+        $profilePhoto = str_replace($conf["path"]["root"], '', $fileName);
+        $sa->setProfilePhoto($survId, $profilePhoto);
+        $message = array(
+            'status' => 'success',
+            'msg' => '成功！',
+            'profilePhoto' => 'http://' . $_SERVER['SERVER_NAME'] . '/' . PROJECTNAME . '/' . $profilePhoto,
+            'data' => array()
+        );
+        die(json_encode($message));
+        break;
+    }
 }
 
 
-function getInfo($data){
-	global $conf, $db;
-	if(empty($data['sign'])){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'sign is null.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$filename = $conf["path"]["sign"].$data['sign'];
-	$survId = file_get_contents($filename);
+function getInfo($data) {
+    global $conf, $db;
+    if (empty($data['sign'])) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'sign is null.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $filename = $conf["path"]["sign"] . $data['sign'];
+    $survId = file_get_contents($filename);
 
-	if(empty($survId)){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'Login has expired.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$s = new Surveyor();
-	$s->survId = $survId;
-	$sa = new SurveyorAccess($db);
-	$rs = $sa->GetListSearch($s);
-	$info = $rs[0];
-	$rsData['info']['survId'] = $info->survId;
-	$rsData['info']['chiName'] = $info->chiName;
-	$rsData['info']['engName'] = $info->engName;
-	$rsData['info']['contact'] = $info->contact;
-	$rsData['info']['survHome'] = $info->survHome;
+    if (empty($survId)) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $s = new Surveyor();
+    $s->survId = $survId;
+    $sa = new SurveyorAccess($db);
+    $rs = $sa->GetListSearch($s);
+    $info = $rs[0];
+    $rsData['info']['survId'] = $info->survId;
+    $rsData['info']['chiName'] = $info->chiName;
+    $rsData['info']['engName'] = $info->engName;
+    $rsData['info']['contact'] = $info->contact;
+    $rsData['info']['survHome'] = $info->survHome;
     $rsData['info']['vip_level'] = $info->vip_level;
     $rsData['info']['avatar'] = $info->avatar;
-	$rsData['info']['profilePhoto'] = $info->profilePhoto;
-	if(!empty($rsData['info']['profilePhoto'])){
-		$rsData['info']['profilePhoto'] = 'http://'.$_SERVER['SERVER_NAME'].'/'.PROJECTNAME.'/'.$rsData['info']['profilePhoto'];
-	}
-	$message = array (
-			'status' => 'success',
-			'msg' => '',
-			'data' => $rsData
-	);
-	die(json_encode($message));
+    $rsData['info']['profilePhoto'] = $info->profilePhoto;
+    if (!empty($rsData['info']['profilePhoto'])) {
+        $rsData['info']['profilePhoto'] = 'http://' . $_SERVER['SERVER_NAME'] . '/' . PROJECTNAME . '/' . $rsData['info']['profilePhoto'];
+    }
+    $message = array(
+        'status' => 'success',
+        'msg' => '',
+        'data' => $rsData
+    );
+    die(json_encode($message));
 }
 
 
-function checkInfo($data){
-	global $conf, $db;
-	if(empty($data['sign'])){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'sign is null.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$survId = intval($data['survId']);
-	if($survId <=0 ){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'surveyor id is error.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$s = new Surveyor();
-	$s->survId = $survId;
-	$sa = new SurveyorAccess($db);
-	$rs = $sa->GetListSearch($s);
-	$info = $rs[0];
-	$rsData['info']['survId'] = $info->survId;
-	$rsData['info']['chiName'] = $info->chiName;
-	$rsData['info']['engName'] = $info->engName;
-	$rsData['info']['survHome'] = $info->survHome;
-	$message = array (
-			'status' => 'success',
-			'msg' => '',
-			'data' => $rsData
-	);
-	die(json_encode($message));
+function checkInfo($data) {
+    global $conf, $db;
+    if (empty($data['sign'])) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'sign is null.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $survId = intval($data['survId']);
+    if ($survId <= 0) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'surveyor id is error.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $s = new Surveyor();
+    $s->survId = $survId;
+    $sa = new SurveyorAccess($db);
+    $rs = $sa->GetListSearch($s);
+    $info = $rs[0];
+    $rsData['info']['survId'] = $info->survId;
+    $rsData['info']['chiName'] = $info->chiName;
+    $rsData['info']['engName'] = $info->engName;
+    $rsData['info']['survHome'] = $info->survHome;
+    $message = array(
+        'status' => 'success',
+        'msg' => '',
+        'data' => $rsData
+    );
+    die(json_encode($message));
 }
 
-function getAllInfo($data){
-	global $conf, $db;
-	if(empty($data['sign'])){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'sign is null.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$filename = $conf["path"]["sign"].$data['sign'];
-	$survId = @file_get_contents($filename);
-	if(empty($survId)){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'Login has expired.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$s = new Surveyor();
-	$s->survId = $survId;
-	$s->status = '';
-	$sa = new SurveyorAccess($db);
-	$rs = $sa->GetListSearch($s);
-	$info = $rs[0];
-	$rsData = array();
-	if($info->survType == 'teach' || $info->survType == 'admin'){
-		$s->survId = '';
-		$result = $sa->GetListSearch($s);
-		foreach($result as $v){
-			$dr['upSurvId'] = $v->upSurvId;
-			$dr['ozzoCode'] = $v->ozzoCode;
-			$dr['survId'] = $v->survId;
-			$dr['chiName'] = $v->chiName;
-			$dr['engName'] = $v->engName;
-			$dr['contact'] = $v->contact;
-			$dr['survHome'] = $v->survHome;
-			$dr['dipaCode'] = $v->dipaCode;
-			$dr['IsSupervisor'] = $v->IsSupervisor;
-			$dr['personalRecord'] = $v->personalRecord;
-			$dr['bank'] = $v->bank;
-			$dr['accountNo'] = $v->accountNo;
-			$dr['VIP'] = $v->VIP;
-			$dr['whatsAPP'] = $v->whatsAPP;
-			$dr['email'] = $v->email;
-			$dr['fax'] = $v->fax;
-			$dr['remarks'] = $v->remarks;
-			$dr['birthday'] = $v->birthday;
-			$dr['company'] = $v->company;
-			$dr['status'] = $v->status;
-			$dr['survType'] = $v->survType;
-			$dr['inputUsername'] = $v->inputUsername;
-			$dr['inputTime'] = $v->inputTime;
-			$dr['updateUsername'] = $v->updateUsername;
-			$dr['updateTime'] = $v->updateTime;
-			$dr['selfBefore'] = $v->selfBefore;
-			$dr['profilePhoto'] = $v->profilePhoto;
+function getAllInfo($data) {
+    global $conf, $db;
+    if (empty($data['sign'])) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'sign is null.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $filename = $conf["path"]["sign"] . $data['sign'];
+    $survId = @file_get_contents($filename);
+    if (empty($survId)) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $s = new Surveyor();
+    $s->survId = $survId;
+    $s->status = '';
+    $sa = new SurveyorAccess($db);
+    $rs = $sa->GetListSearch($s);
+    $info = $rs[0];
+    $rsData = array();
+    if ($info->survType == 'teach' || $info->survType == 'admin') {
+        $s->survId = '';
+        $result = $sa->GetListSearch($s);
+        foreach ($result as $v) {
+            $dr['upSurvId'] = $v->upSurvId;
+            $dr['ozzoCode'] = $v->ozzoCode;
+            $dr['survId'] = $v->survId;
+            $dr['chiName'] = $v->chiName;
+            $dr['engName'] = $v->engName;
+            $dr['contact'] = $v->contact;
+            $dr['survHome'] = $v->survHome;
+            $dr['dipaCode'] = $v->dipaCode;
+            $dr['IsSupervisor'] = $v->IsSupervisor;
+            $dr['personalRecord'] = $v->personalRecord;
+            $dr['bank'] = $v->bank;
+            $dr['accountNo'] = $v->accountNo;
+            $dr['VIP'] = $v->VIP;
+            $dr['whatsAPP'] = $v->whatsAPP;
+            $dr['email'] = $v->email;
+            $dr['fax'] = $v->fax;
+            $dr['remarks'] = $v->remarks;
+            $dr['birthday'] = $v->birthday;
+            $dr['company'] = $v->company;
+            $dr['status'] = $v->status;
+            $dr['survType'] = $v->survType;
+            $dr['inputUsername'] = $v->inputUsername;
+            $dr['inputTime'] = $v->inputTime;
+            $dr['updateUsername'] = $v->updateUsername;
+            $dr['updateTime'] = $v->updateTime;
+            $dr['selfBefore'] = $v->selfBefore;
+            $dr['profilePhoto'] = $v->profilePhoto;
             $dr['vip_level'] = $v->vip_level;
             $dr['avatar'] = $v->avatar;
-			$rsData[] = $dr;
-		}
-		$message = array (
-				'status' => 'success',
-				'msg' => '',
-				'data' => $rsData
-		);
-		die(json_encode($message));
-	}else{
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'only a teacher can see all the students.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
+            $rsData[] = $dr;
+        }
+        $message = array(
+            'status' => 'success',
+            'msg' => '',
+            'data' => $rsData
+        );
+        die(json_encode($message));
+    } else {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'only a teacher can see all the students.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
 }
 
-function addInfo($data){
-	global $conf, $db;
-	if(empty($data['sign'])){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'sign is null.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$filename = $conf["path"]["sign"].$data['sign'];
-	$survId = @file_get_contents($filename);
-	if(empty($survId)){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'Login has expired.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$s = new Surveyor();
-	$s->survId = $survId;
-	$sa = new SurveyorAccess($db);
-	$rs = $sa->GetListSearch($s);
-	$info = $rs[0];
-	$rsData = array();
-	if($info->survType == 'admin' || $info->survType == 'teach'){
+function addInfo($data) {
+    global $conf, $db;
+    if (empty($data['sign'])) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'sign is null.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $filename = $conf["path"]["sign"] . $data['sign'];
+    $survId = @file_get_contents($filename);
+    if (empty($survId)) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $s = new Surveyor();
+    $s->survId = $survId;
+    $sa = new SurveyorAccess($db);
+    $rs = $sa->GetListSearch($s);
+    $info = $rs[0];
+    $rsData = array();
+    if ($info->survType == 'admin' || $info->survType == 'teach') {
 
-		$s = new Surveyor();
-		$sa = new SurveyorAccess($db);
+        $s = new Surveyor();
+        $sa = new SurveyorAccess($db);
 
-		$s->survId = $data['survId'];
-        $s->upSurvId = $data['upSurvId'];
-		$s->ozzoCode = $data['ozzoCode'];
-		$s->chiName = $data['chiName'];
-		$s->engName = $data['engName'];
-		$s->contact = $data['contact'];
-		$s->survHome = $data['survHome'];
-		$s->dipaCode = $data['dipaCode'];
-		$s->IsSupervisor = $data['IsSupervisor'];
-		$s->personalRecord = $data['personalRecord'];
-		$s->bank = $data['bank'];
-		$s->accountNo = $data['accountNo'];
-		$s->VIP = $data['VIP'];
-		$s->whatsAPP = $data['whatsAPP'];
-		$s->email = $data['email'];
-		$s->fax = $data['fax'];
-		$s->remarks = $data['remarks'];
-		$s->birthday = $data['birthday'];
-		$s->company = $data['company'];
-		$s->survType = empty($data['survType'])?'surveyor':$data['survType'];
-		$s->status = empty($data['status'])?'active':$data['status'];
-		$s->selfBefore = $data['selfBefore'];
-		$s->lastYearSurveyTimes = $data['lastYearSurveyTimes'];
-		$s->inputUserId = 100000000 + intval($survId);
-		$s->inputTime = date('Y-m-d H:i:s');
-		$s->updateUserId = '';
-		$s->updateTime = date('Y-m-d H:i:s');
+        $s->survId = addslashes($data['survId']);
+        $s->upSurvId = addslashes($data['upSurvId']);
+        $s->ozzoCode = addslashes($data['ozzoCode']);
+        $s->chiName = addslashes($data['chiName']);
+        $s->engName = addslashes($data['engName']);
+        $s->contact = addslashes($data['contact']);
+        $s->survHome = addslashes($data['survHome']);
+        $s->dipaCode = addslashes($data['dipaCode']);
+        $s->IsSupervisor = addslashes($data['IsSupervisor']);
+        $s->personalRecord = addslashes($data['personalRecord']);
+        $s->bank = addslashes($data['bank']);
+        $s->accountNo = addslashes($data['accountNo']);
+        $s->VIP = addslashes($data['VIP']);
+        $s->whatsAPP = addslashes($data['whatsAPP']);
+        $s->email = addslashes($data['email']);
+        $s->fax = addslashes($data['fax']);
+        $s->remarks = addslashes($data['remarks']);
+        $s->birthday = addslashes($data['birthday']);
+        $s->company = addslashes($data['company']);
+        $s->survType = empty($data['survType']) ? 'surveyor' : addslashes($data['survType']);
+        $s->status = empty($data['status']) ? 'active' : addslashes($data['status']);
+        $s->selfBefore = addslashes($data['selfBefore']);
+        $s->lastYearSurveyTimes = addslashes($data['lastYearSurveyTimes']);
+        $s->inputUserId = 100000000 + intval($survId);
+        $s->inputTime = date('Y-m-d H:i:s');
+        $s->updateUserId = '';
+        $s->updateTime = date('Y-m-d H:i:s');
         $s->vip_level = $data['vip_level'];
-        $s->avatar = isset($data['avatar'])?$data['avatar']:'';
+        $s->avatar = isset($data['avatar']) ? addslashes($data['avatar']) : '';
 
-		if (empty($s->survId))
-		{
+        if (empty($s->survId)) {
             $surveyorCheck = new Surveyor();
             $surveyorCheck->survId = $s->survId;
             $surveyorCheck->contact = $s->contact;
-
             $surveyId = $sa->IsExist($surveyorCheck);
-			if ($surveyId > 0)
-			{
-				$message = array (
-						'status' => 'failed',
-						'msg' => 'the student already exists.',
-						'data' => array()
-				);
-				die(json_encode($message));
-			}
-			else
-			{
-				$s->survId = $sa->Add($s);
-			}
-		}
-		else
-		{
+            if ($surveyId > 0) {
+                $message = array(
+                    'status' => 'failed',
+                    'msg' => 'the student already exists.',
+                    'data' => array()
+                );
+                die(json_encode($message));
+            } else {
+                $s->survId = $sa->Add($s);
+            }
+        } else {
+
             $surs = new Surveyor();
+            unset($surs->status);
             $surs->survId = $data['survId'];
             $sursa = new SurveyorAccess($db);
             $rs = $sursa->GetListSearch($surs);
-		    if($rs[0]->contact == $data['contact']){
+            if ($rs[0]->contact == $data['contact']) {
                 $sa->Update($s);
-            }else{
+            } else {
                 $surveyorCheck = new Surveyor();
                 $surveyorCheck->survId = '';
                 $surveyorCheck->contact = $s->contact;
                 $surveyId = $sa->IsExist($surveyorCheck);
-                if($surveyId){
-                    $message = array (
+                if ($surveyId) {
+                    $message = array(
                         'status' => 'failed',
                         'msg' => '號碼已存在',
                         'data' => ''
                     );
                     die(json_encode($message));
-                }else{
+                } else {
                     $sa->Update($s);
                 }
             }
-		}
+        }
 
-		$message = array (
-				'status' => 'success',
-				'msg' => '',
-				'data' => $rsData
-		);
-		die(json_encode($message));
-	}else{
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'Permission denied',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
+        $message = array(
+            'status' => 'success',
+            'msg' => '',
+            'data' => $rsData
+        );
+        die(json_encode($message));
+    } else {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Permission denied',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
 }
 
-function getPassword($data){
-	global $conf, $db;
-	if(empty($data['sign'])){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'sign is null.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$filename = $conf["path"]["sign"].$data['sign'];
-	$survId = @file_get_contents($filename);
-	if(empty($survId)){
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'Login has expired.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-	$s = new Surveyor();
-	$s->survId = $survId;
-	$sa = new SurveyorAccess($db);
-	$rs = $sa->GetListSearch($s);
-	$info = $rs[0];
-	$rsData = array();
-	if($info->survType == 'teach' || $info->survType == 'admin'){
+function getPassword($data) {
+    global $conf, $db;
+    if (empty($data['sign'])) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'sign is null.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $filename = $conf["path"]["sign"] . $data['sign'];
+    $survId = @file_get_contents($filename);
+    if (empty($survId)) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $s = new Surveyor();
+    $s->survId = $survId;
+    $sa = new SurveyorAccess($db);
+    $rs = $sa->GetListSearch($s);
+    $info = $rs[0];
+    $rsData = array();
+    if ($info->survType == 'teach' || $info->survType == 'admin') {
 
-		$s = new Surveyor();
-		$sa = new SurveyorAccess($db);
-		$s->survId = intval($data['survId']);
-		if (!empty($s->survId))
-		{
-			$surveyorCheck = new Surveyor();
-			$surveyorCheck->survId = $s->survId;
-			if ($sa->IsUpdatedPassword($s->survId)) {
-				$message = array (
-						'status' => 'failed',
-						'msg' => 'unable to view modified password.',
-						'data' => array()
-				);
-				die(json_encode($message));
-			}
+        $s = new Surveyor();
+        $sa = new SurveyorAccess($db);
+        $s->survId = intval($data['survId']);
+        if (!empty($s->survId)) {
+            $surveyorCheck = new Surveyor();
+            $surveyorCheck->survId = $s->survId;
+            if ($sa->IsUpdatedPassword($s->survId)) {
+                $message = array(
+                    'status' => 'failed',
+                    'msg' => 'unable to view modified password.',
+                    'data' => array()
+                );
+                die(json_encode($message));
+            }
 
-			$rs = $sa->GetListSearch($s);
-			if (count($rs) > 0)
-			{
-				$sur = $rs[0];
+            $rs = $sa->GetListSearch($s);
+            if (count($rs) > 0) {
+                $sur = $rs[0];
                 /*if (($sur->survId) % 2 == 0) {
                     $sur->passWord = $sur->contact + $sur->survId * substr ( $sur->survId, - 1 );
                 } else {
                     $sur->passWord = $sur->contact - $sur->survId * substr ( $sur->survId, - 1 );
                 }*/
-				$firstCheck = substr(substr($sur->contact,0,4)*666,0,3);
-				$rsData['password'] = $firstCheck;
-			}
-		}
-		else
-		{
-			$message = array (
-					'status' => 'failed',
-					'msg' => 'survId is not allowed null.',
-					'data' => array()
-			);
-			die(json_encode($message));
-		}
+                $firstCheck = substr(substr($sur->contact, 0, 4) * 666, 0, 3);
+                $rsData['password'] = $firstCheck;
+            }
+        } else {
+            $message = array(
+                'status' => 'failed',
+                'msg' => 'survId is not allowed null.',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
 
-		$message = array (
-				'status' => 'success',
-				'msg' => '',
-				'data' => $rsData
-		);
-		die(json_encode($message));
-	}else{
-		$message = array (
-				'status' => 'failed',
-				'msg' => 'only teachers can check students password.',
-				'data' => array()
-		);
-		die(json_encode($message));
-	}
-}
-
-
-
-function getArrNoNull($arr,$field){
-    if(isset($arr[$field])){
-        return $arr[$field];
-    }else{
-        $message = array (
+        $message = array(
+            'status' => 'success',
+            'msg' => '',
+            'data' => $rsData
+        );
+        die(json_encode($message));
+    } else {
+        $message = array(
             'status' => 'failed',
-            'msg' => $field.' is required',
+            'msg' => 'only teachers can check students password.',
             'data' => array()
         );
         die(json_encode($message));
@@ -2325,7 +2303,21 @@ function getArrNoNull($arr,$field){
 }
 
 
-function returnJson($status='success',$data='',$msg='',$other = ''){
+function getArrNoNull($arr, $field) {
+    if (isset($arr[$field])) {
+        return $arr[$field];
+    } else {
+        $message = array(
+            'status' => 'failed',
+            'msg' => $field . ' is required',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+}
+
+
+function returnJson($status = 'success', $data = '', $msg = '', $other = '') {
 
     /* if(!empty($data)){
          if(is_array($data)){
@@ -2334,16 +2326,16 @@ function returnJson($status='success',$data='',$msg='',$other = ''){
              }
          }
      }*/
-    if(!empty($other)){
-        $message = array (
+    if (!empty($other)) {
+        $message = array(
             'status' => $status,
             'msg' => $msg,
             'data' => $data,
-            'other'=>$other
+            'other' => $other
         );
         die(json_encode($message));
     }
-    $message = array (
+    $message = array(
         'status' => $status,
         'msg' => $msg,
         'data' => $data

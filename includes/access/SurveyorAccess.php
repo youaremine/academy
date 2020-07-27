@@ -151,7 +151,7 @@ class SurveyorAccess
 				WHERE 1=1 ";
 		$sql = $sql . $query;
 		$this->db->query($sql);
-// 		echo $sql;
+// 		echo $sql.'------------';
 // 		exit();
 		$rows = array();
 		while ( $rs = $this->db->next_record() )

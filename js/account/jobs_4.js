@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
    let data= getInfo('q');
    $("#emptyWrap").hide();
    if (data!=="" && data!==null){
@@ -13,7 +14,6 @@ $(document).ready(function(){
         }
    }else{
        $("#emptyWrap").show();
-
    }
 })
 

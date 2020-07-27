@@ -998,6 +998,7 @@ class MainScheduleAccess
 
         $sql .= 'WHERE 1=1 ';
         $sql = $sql . $query;
+
 //        echo $sql;
 //        exit();
         $this->db->query($sql);
@@ -2013,6 +2014,7 @@ class MainScheduleAccess
 
         $sql = "SELECT COUNT(*) AS rowNum FROM Survey_MainSchedule " . " WHERE 1=1 ";
         $sql = $sql . $query;
+
         $this->db->query($sql);
         $rowNum = 0;
         if ($rs = $this->db->next_record()) {
@@ -3422,13 +3424,15 @@ class MainScheduleAccess
             WHERE surveyorCode='{$survId}'
             AND plannedSurveyDate = '{$plannedSurveyDate}'
             AND (
-                (startTime_1 >= '{$startTime1}' AND startTime_1 <= '{$endTime1}')
-                OR (endTime_1 >= '{$startTime1}' AND endTime_1 <= '{$endTime1}')
-                OR (endTime_1 >= '{$startTime1}' AND startTime_1 <= '{$startTime1}')
+                (startTime_1 > '{$startTime1}' AND startTime_1 < '{$endTime1}')
+                OR (endTime_1 > '{$startTime1}' AND endTime_1 < '{$endTime1}')
+                OR (startTime_1 = '{$startTime1}' AND endTime_1 = '{$endTime1}')
+                OR (endTime_1 > '{$startTime1}' AND startTime_1 < '{$startTime1}')
                 OR (startTime_1 > endTime_1 AND startTime_1<'{$endTime1}')
              )";
+
         $this->db->query($sql);
-//         echo $sql;exit();
+//        echo $sql;exit;
         if ($this->db->next_record()) {
             return true;
         }
@@ -3438,11 +3442,13 @@ class MainScheduleAccess
             WHERE mso.applySurvId='{$survId}' AND delFlag='no'
             AND ms.plannedSurveyDate = '{$plannedSurveyDate}'
             AND (
-                (ms.startTime_1 >= '{$startTime1}' AND ms.startTime_1 <= '{$endTime1}')
-                OR (ms.endTime_1 >= '{$startTime1}' AND ms.endTime_1 <= '{$endTime1}')
-                OR (ms.endTime_1 >= '{$startTime1}' AND ms.startTime_1 <= '{$startTime1}')
+                (ms.startTime_1 > '{$startTime1}' AND ms.startTime_1 < '{$endTime1}')
+                OR (ms.endTime_1 > '{$startTime1}' AND ms.endTime_1 < '{$endTime1}')
+                OR (ms.startTime_1 = '{$startTime1}' AND ms.endTime_1 = '{$endTime1}')
+                OR (ms.endTime_1 > '{$startTime1}' AND ms.startTime_1 < '{$startTime1}')
                 OR (ms.startTime_1 > ms.endTime_1 AND ms.startTime_1<'{$endTime1}')
              )";
+
         $this->db->query($sql);
 //         echo $sql;exit();
         if ($this->db->next_record()) {

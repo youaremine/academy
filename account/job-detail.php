@@ -19,7 +19,7 @@ if (SurveyorLogin::IsLogin())
 	//$selfBefore = $_SESSION['surveyorSelfBefore'];
 	//if(empty($selfBefore) || strtotime($selfBefore) < time()){
 		$btnDetailConfirmStatus = "";
-		$btnDetailConfirmText = '選取本事項';
+		$btnDetailConfirmText = '選取本課堂';
 	//}
 	$noCurrUser = "";
 }
@@ -55,13 +55,21 @@ if(isset($_GET['random']) && $_GET['random'] == true){
 
         //获取该课堂类型的选取情况
         $get_empty_sql = "SELECT jobNoNew,surveyorCode FROM Survey_MainSchedule where jobNo = '{$_GET['jobno']}' ";
+//        echo $get_empty_sql.'-------------------';
         if(isset($_GET['vehicle']) && !empty($_GET['vehicle'])){
+            $vehicle=$_GET['vehicle'];
+            $vehicle=str_replace('<br />','\n',$vehicle);
             $get_empty_sql .= " and vehicle = '{$_GET['vehicle']}'";
         }
 
         $surveyorCodes = array();
 
+//        exit();
+
+
         $db->query ( $get_empty_sql );
+//        var_dump($db->query ( $get_empty_sql ));
+//        exit();
         while ( $rs = $db->next_record () ) {
             $surveyorCodes[$rs['jobNoNew']] = $rs['surveyorCode'];
         }
@@ -153,7 +161,7 @@ if(count($rs) > 0){
         $isBusy = $msa->IsBusyTime($surveyorCode,$v->plannedSurveyDate,$v->startTime_1,$v->endTime_1);
         if($isBusy && $btnDetailConfirmStatus == ''){
             $btnDetailConfirmStatus = 'disabled="disabled"';
-            $btnDetailConfirmText = '事項時間與<br />已選取的衝突';
+            $btnDetailConfirmText = '課堂時間與<br />已選取的衝突';
         }
         //}
     }else{
@@ -161,7 +169,7 @@ if(count($rs) > 0){
         $btnClass = 'btn-success';
         $successBtnStyle = '';
         $btnDetailConfirmStatus = '';
-        $btnDetailConfirmText = '已選取本事項';
+        $btnDetailConfirmText = '已選取本課堂';
     }
 
 

@@ -431,6 +431,7 @@ function checkSign($data){
  * @param $data
  */
 function addPost($data){
+    file_put_contents('/tmp/third.log','~~~~~~~~~~~'.time().'Request:'.json_encode($_REQUEST)."\n\n",FILE_APPEND);
 	global $conf,$db;
 	if(empty($data['jobNoNew']) || empty($data['content'])){
 		$message = array (
@@ -451,6 +452,7 @@ function addPost($data){
 	$p->inputip = getIP();
 	$p->inputTime = date("Y-m-d H:i:s");
     $p->group_sending = isset($data['group_sending'])?$data['group_sending']:0;
+
     $s = new Surveyor();
     $s->survId = $data['signSurvId'];
     $s->status = '';
@@ -687,6 +689,7 @@ function getReplyList($data,$type="all"){
 	foreach($rs as $obj){
 		$dr = array();
 		$dr['postId'] = $obj->postId;
+		$dr['jobNo'] = $obj->jobNo;
 		$dr['jobNoNew'] = $obj->jobNoNew;
         $dr['surveyType'] = $obj->surveyType;
 		$dr['content'] = $obj->content;
@@ -713,6 +716,7 @@ function getReplyList($data,$type="all"){
 }
 
 function uploadPic($data){
+    file_put_contents('/tmp/third.log','~~~~~~~~~~~'.time().'Request:'.json_encode($_REQUEST)."\n\n",FILE_APPEND);
 	if(empty($data['jobNoNew'])){
 		$message = array (
 				'status' => 'failed',
@@ -747,6 +751,7 @@ function uploadPic($data){
 	$p->format = 'image';
 	$p->inputip = getIP();
 	$p->delFlag = 'no';
+    $p->group_sending = isset($data['group_sending'])?$data['group_sending']:0;
 	foreach($_FILES['picFile']['name'] as $k=>$v){
 		$fileName = $path.'/'.date('YmdHis').'-'.uniqid().'.'.fileext($v);
 		move_uploaded_file($_FILES['picFile']['tmp_name'][$k],$fileName);

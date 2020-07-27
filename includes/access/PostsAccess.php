@@ -174,12 +174,13 @@ class PostsAccess
 		$sql1 = "SELECT jobNo FROM Survey_MainSchedule where";
 
 		$lastMonthDay = date("Y-m-d",strtotime("-1 month"));
-		$sql = "SELECT ss2.chiName as s_chiName,ss2.survId as s_survId, ss2.engName as s_engName,sm.surveyType as type,sm2.surveyType as type2,p.*,ss.chiName,ss.engName FROM Survey_Posts p left join Survey_Surveyor ss on ss.survId=p.survId
+		$sql = "SELECT sm.jobNo as jobNo,sm2.jobNo as is_children,ss2.chiName as s_chiName,ss2.survId as s_survId, ss2.engName as s_engName,sm.surveyType as type,sm2.surveyType as type2,p.*,ss.chiName,ss.engName FROM Survey_Posts p left join Survey_Surveyor ss on ss.survId=p.survId
             left join Survey_Surveyor ss2 on p.jobNoNew = ss2.contact
 			INNER JOIN (
 			SELECT jobNoNew,MAX(postId) AS maxPostId FROM Survey_Posts
 			WHERE delFlag='no'
 			GROUP BY jobNoNew) pm ON pm.jobNoNew = p.jobNoNew AND pm.maxPostId=p.postId
+			
 			LEFT JOIN Survey_MainSchedule as sm on p.jobNoNew=sm.jobNoNew
 			 LEFT JOIN Survey_MainSchedule as sm2 on p.jobNoNew=sm2.jobNo
 			 WHERE 1=1 ";
@@ -189,8 +190,8 @@ class PostsAccess
         if($obj->pageLimit != '')
             $sql .= " ".$obj->pageLimit;
 		$this->db->query($sql);
-
 //		echo $sql;
+//		exit();
 		$rows = array();
 
 		while($rs = $this->db->next_record())
@@ -215,6 +216,8 @@ class PostsAccess
             $obj->s_survId = $rs["s_survId"];
             $obj->s_chiName = $rs["s_chiName"];
             $obj->s_engName = $rs["s_engName"];
+            $tmpvar=empty($rs["jobNo"])?$rs["jobNoNew"]:$rs["jobNo"];
+            $obj->jobNo =!empty($rs["is_children"])?$rs["is_children"]:$tmpvar;
 			$rows[] = $obj;
 		}
 

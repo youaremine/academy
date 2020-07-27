@@ -9,7 +9,7 @@
  * engName  英文名
  * survType 用户类型
  * avatar   用户头像Url
- * CHANNEL  客户端类型  默认0  1：安卓  2为苹果
+ * CHANNEL  客户端类型  默认0  2：安卓  3:为苹果
  * pass     密码
  * 用户信息
  * --------------------
@@ -36,24 +36,24 @@ if(empty($data_info)){
     $data_info=$_REQUEST;
 }
 
-$token = $data_info['TOKEN'];
-$user_type = $data_info['USERTYPE'];
+$token = addslashes($data_info['TOKEN']);
+$user_type = addslashes($data_info['USERTYPE']);
 $action_type = $data_info['q'];
-$channel = $data_info['channel'];
-$contact=$data_info['contact'];
-$chiName=$data_info['chiName'];
-$engName=$data_info['engName'];
-$survType=$data_info['survType'];
-$avatar=$data_info['avatar'];
-$pass=$data_info['pass'];
+$channel = addslashes($data_info['channel']);
+$contact=addslashes($data_info['contact']);
+$chiName=addslashes($data_info['chiName']);
+$engName=addslashes($data_info['engName']);
+$survType=addslashes($data_info['survType']);
+$avatar=addslashes($data_info['avatar']);
+$pass=addslashes($data_info['pass']);
 
-$email=$data_info['email'];//邮箱
-$whatsAPP=$data_info['whatsAPP'];//whatsAPP
-$remarks=$data_info['remarks'];//备注
-$survHome=$data_info['survHome'];//住址
-$birthday=$data_info['birthday'];//出生日期
-$dipaCode=$data_info['dipaCode'];//地区
-$vip_level=$data_info['vip_level'];//会员等级
+$email=addslashes($data_info['email']);//邮箱
+$whatsAPP=addslashes($data_info['whatsAPP']);//whatsAPP
+$remarks=addslashes($data_info['remarks']);//备注
+$survHome=addslashes($data_info['survHome']);//住址
+$birthday=addslashes($data_info['birthday']);//出生日期
+$dipaCode=addslashes($data_info['dipaCode']);//地区
+$vip_level=addslashes($data_info['vip_level']);//会员等级
 
 $unimInfo=array(
     'email'=>$email,
@@ -87,10 +87,10 @@ if (empty($channel)) {
 if (!empty($info)) {
     $info = json_decode($info);//将json格式转换为对象
 }
-//file_put_contents('/tmp/bindlog.log', json_encode($_REQUEST) . "\n\r", FILE_APPEND);
+    //file_put_contents('/tmp/bindlog.log', json_encode($_REQUEST) . "\n\r", FILE_APPEND);
+file_put_contents('/tmp/third.log','~~~~~~~~~~~'.time().'Request:'.json_encode($_REQUEST)."\n\n",FILE_APPEND);
+//
 
-
-file_put_contents('/tmp/third.log','~~~~~~~~~~~'.time().'Request:'.json_encode($_REQUEST)."\n",FILE_APPEND);
 
 switch ($action_type) {
     case 'verify':
@@ -103,25 +103,46 @@ switch ($action_type) {
     case 'bind':
         judgeToken($token,$user_type);
         $user->setInfo($user_type, $token);
+        if(empty($contact)){
+            $message = array(
+                'status' => 'success',
+                'msg' => "`contact` Data is empty",
+                'surveyor' => '',
+                'state' => 'writeFailed'
+            );
+            echo json_encode($message, JSON_UNESCAPED_UNICODE);
+            exit();
+        }
         $user->setContact($info->contact);
+        $user->inquire();//查询ID
         $sign = date("Ymd") . uniqid();
         $filename = $conf["path"]["sign"] . $sign;
-        //先判定是否已经绑定第三方
+        //通过手机号和token判定是否已经绑定第三方
         if ($user->verify()) {
             login($user, $channel, $filename, $sign);
             break;
         } else {
-            //判断绑定手机是否存在原先账户
+            //判定绑定手机是否存在原先账户
             $arr = $user->inquire();
             if ($arr['state']) {
-                //存在
-                writeUser($user, $arr, $channel, $filename, $sign);
+                //通过ID和手机号判断是否绑定第三方
+                if($user->verify(1)){
+                    $message = array(
+                        'status' => 'success',
+                        'msg' => "The third-party account has been bound",
+                        'surveyor' => '',
+                        'state' => 'repeatToWrite'
+                    );
+                    echo json_encode($message, JSON_UNESCAPED_UNICODE);
+                }else{
+                    writeUser($user, $arr, $channel, $filename, $sign);
+                }
             } else {
                 //不存在，注册账户并写入
                 $user->setUserInfo($info->chiName, $info->engName, $info->suryType, $info->avatar);
                 $infoUser = $user->register($unimInfo);
                 if ($infoUser['state']) {
-                    writeUser($user, $infoUser, $channel, $filename, $sign, 'initial');
+                    writeUser($user, $infoUser, $channel, $filename, $sign);
                 } else {
                     //写入失败
                     $message = array(
@@ -137,6 +158,17 @@ switch ($action_type) {
         break;
     case 'signIn':
         //判断电话号码是否注册
+        if(empty($contact)){
+            //写入失败
+            $message = array(
+                'status' => 'success',
+                'msg' => "`contact` Data is empty",
+                'surveyor' => '',
+                'state' => 'writeFailed'
+            );
+            echo json_encode($message, JSON_UNESCAPED_UNICODE);
+            exit();
+        }
         $user->setContact($contact);
         $arr=$user->inquire();
         if($arr['state']){
@@ -168,14 +200,15 @@ switch ($action_type) {
             if($infoUser['state']){
                 $infoPass=$user->getPassword();//写入密码信息
                 if($infoPass['state']){
+                    $message=$user->inpuierUser();
                     $sign = date("Ymd") . uniqid();
+
                     $filename = $conf["path"]["sign"] . $sign;
                     if ($channel == 2 || $channel == 3) {
                         //添加sign值并生成文件
                         $message['sign'] = $sign;
                         file_put_contents($filename, $user->getUserId());
                     }
-                    $message=$user->inpuierUser('pass');
                     echo json_encode($message, JSON_UNESCAPED_UNICODE);
                 }else{
                     //密码写入失败
@@ -216,12 +249,12 @@ switch ($action_type) {
  * @param $sign 手机端识别码
  * @param null $mark 是否需要返回密码
  */
-function login($user, $channel, $filename, $sign, $mark = null){
+function login($user, $channel, $filename, $sign){
     $judge = $user->verify();
     if ($judge) {
         //登录成功
         $user->SaveSession();//保存会话
-        $message = $user->inpuierUser($mark);//获取信息
+        $message = $user->inpuierUser();//获取信息
         if ($channel == 2 || $channel == 3) {
             $message['sign'] = $sign;
             file_put_contents($filename, $user->getUserId());
@@ -239,13 +272,13 @@ function login($user, $channel, $filename, $sign, $mark = null){
     }
 }
 
-function writeUser($user, $arr, $channel, $filename, $sign, $mark = null){
+function writeUser($user, $arr, $channel, $filename, $sign){
     //创建成功
     $user->setUserId($arr['info']['survId']);
     $state = $user->bindUser();
     if ($state) {
         //写入成功
-        login($user, $channel, $filename, $sign, $mark);
+        login($user, $channel, $filename, $sign);
     } else {
         //写入失败
         $message = array(

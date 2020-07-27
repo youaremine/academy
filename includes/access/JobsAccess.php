@@ -271,6 +271,7 @@ class JobsAccess {
         global $conf;
         $sql = makeSql($data, 'update');
         $sql = "UPDATE {$conf['table']['prefix']}MainSchedule SET {$sql} WHERE jobNo='{$jobNo}'";
+
         $this->db->query($sql);
 //        echo $sql."<br />";
     }
@@ -319,8 +320,8 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
             $row['signNumbers'] = 0;
             $row['startTime'] = date('H:i', strtotime(date('Y-m-d') . $dr['startTime']));
             $row['endTime'] = date('H:i', strtotime(date('Y-m-d') . $dr['endTime']));
-            $row['isOpen'] = $dr['isOpen'] == 1 ? 'yes' : 'no';
-            $row['isOpen2'] = $dr['isOpen2'] == 1 ? 'yes' : 'no';
+            $row['isOpen'] = $dr['isOpen'] >= 1 ? 'yes' : 'no';
+            $row['isOpen2'] = $dr['isOpen2'] >= 1 ? 'yes' : 'no';
             $row['realClass'] = $dr['realClass'];
             $row['bookLong'] = $dr['bookLong'];
             $row['bookLat'] = $dr['bookLat'];
@@ -700,20 +701,99 @@ WHERE
                 ";
                 break;
         }
-
         $datas = $this->db->query($sql);
         while ($data = mysqli_fetch_assoc($datas)) {
+            $data['project']=PROJECTNAME;//添加项目名，用于拼接图片url
             $arr[] = $data;
         }
+
         return json_encode($arr, JSON_UNESCAPED_UNICODE);
     }
 
-    function advImage($case,$arr){
+    /**广告图Url 存储和获取
+     * @param $case
+     * @param $arr
+     * @return array
+     */
+    function advImage($case, $arr=null) {
         global $conf;
-        switch ($case){
+        switch ($case) {
             case 1:
-                $sql="INSERT INTO `Survey_AdvImage`(`path`,`file_name`,`resolution`,`rate`) VALUES ('{$arr['path']}','{$arr['file_name']}','{$arr['resolution']}','{$arr['rate']}')";
-                $this->db->query($sql);
+                $setSql = "SELECT `id` FROM `Survey_AdvImage` WHERE `rate`='{$arr['rate']}' AND `ranking`='{$arr['ranking']}' AND `start`=1";
+                $info = $this->db->query($setSql);
+                $result = mysqli_fetch_array($info);
+                if (!empty($result)) {
+                    $id = $result['id'];
+                    $upeSql = "UPDATE `Survey_AdvImage` SET `start`=0 WHERE `id`='{$id}'";
+                    $this->db->query($upeSql);
+                }
+                $sql = "INSERT INTO `Survey_AdvImage`(`path`,`condense_path`,`file_name`,`resolution`,`rate`,`ranking`,`upload_time`,`start`) 
+                VALUES ('{$arr['path']}','{$arr['condense_path']}','{$arr['file_name']}','{$arr['resolution']}','{$arr['rate']}','{$arr['ranking']}','{$arr['upload_time']}','{$arr['start']}')";
+
+                $judge = $this->db->query($sql);
+
+                return $judge;
+                break;
+            case 2:
+                $sql="SELECT `resolution`,`file_name`,`path` FROM `Survey_AdvImage` WHERE `rate`='{$arr['rate']}'  AND `start`=1 GROUP BY `ranking`";
+                $datas=$this->db->query($sql);
+                while ($data = mysqli_fetch_assoc($datas)) {
+                    $arrs[] =$data;
+                }
+                if (!empty($arrs)) {
+                    $infoArr=array(
+                        'status'=>'success',
+                        'msg'=>'',
+                        'data'=>$arrs
+                    );
+                }else{
+                    $infoArr=array(
+                        'status'=>'failed',
+                        'data'=>''
+                    );
+                }
+                return $infoArr;
+                break;
+            case 3:
+                $sql="SELECT `file_name` FROM `Survey_AdvImage` WHERE `start`=1 AND `rate`='9:16'";
+                $datas=$this->db->query($sql);
+                while ($data = mysqli_fetch_assoc($datas)) {
+                    $arrs[] =$data;
+                }
+                if (!empty($arrs)) {
+                    $infoArr=array(
+                        'status'=>'success',
+                        'msg'=>'',
+                        'data'=>$arrs
+                    );
+                }else {
+                    $infoArr = array(
+                        'status' => 'failed',
+                        'data' => ''
+                    );
+                }
+                    return $infoArr;
+                    break;
+            case 4:
+                $sql="SELECT `condense_path` FROM `Survey_AdvImage` WHERE `ranking`='{$arr['ranking']}' AND `start`=1";
+                $urlArr=$this->db->query($sql);
+                while ( $url = mysqli_fetch_assoc($urlArr)) {
+                    $urls[] = $url;
+                }
+                if (!empty($urls)) {
+                    $urlInfo=array(
+                        'status'=>'success',
+                        'msg'=>'',
+                        'data'=>$urls
+                    );
+                }else{
+                    $urlInfo=array(
+                        'status'=>'failed',
+                        'data'=>''
+                    );
+                }
+                return $urlInfo;
+                break;
         }
     }
 }

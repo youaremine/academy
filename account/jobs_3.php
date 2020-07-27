@@ -100,7 +100,6 @@ $assignedNum = $msa->GetListSearchCount($ms);
 $t->set_var('assignedNum',$assignedNum);
 
 if($type == 'opening'){
-
     $msa->order = 'ORDER BY MS.plannedSurveyDate ASC';
     $confirmed_job = $msa->GetListSearch($ms);
     $ms->surveyorCode = '';
@@ -138,14 +137,24 @@ foreach($rs as $k=>$v){
         $res[$v->plannedSurveyDate][$v->jobNo]['surveyType'] = $v->surveyType;
         $res[$v->plannedSurveyDate][$v->jobNo]['diy_name'] = $v->diy_name;
         $res[$v->plannedSurveyDate][$v->jobNo]['diy_value'] = $v->diy_value;
-        $res[$v->plannedSurveyDate][$v->jobNo]['vehicle'][] = $v->vehicle;
+        $res[$v->plannedSurveyDate][$v->jobNo]['surveyTimeHours'] = $v->surveyTimeHours;
+//        $res[$v->plannedSurveyDate][$v->jobNo]['endTime_1'] = $v->endTime_1;
+        $res[$v->plannedSurveyDate][$v->jobNo]['vehicle'][] = htmlentities($v->vehicle);
     }else{
         if(!in_array($v->vehicle,$res[$v->plannedSurveyDate][$v->jobNo]['vehicle'])){
-            $res[$v->plannedSurveyDate][$v->jobNo]['vehicle'][] = $v->vehicle;
+            $res[$v->plannedSurveyDate][$v->jobNo]['vehicle'][] = htmlentities($v->vehicle);
         }
     }
 }
+
+//exit();
+
 include "../templates/account/jobs_3.html";
+
+function br2nl($text){
+    $text=preg_replace('/<br\\s*?\/??>/i',chr(13),$text);
+    return preg_replace('/&nbsp;/i',' ',$text);
+}
 
 function check_repeat_job($confirmed_job,$applied_job,$job_list){
 

@@ -7,11 +7,12 @@ $(document).ready(function () {
         let total=data[0].total;
         let surplus=data[0].surplus;
         let judgeInfo=judgePlan(iden);
+        let project=data[0].project;
         if(judgeInfo!==undefined){
-            analysisDate(judgeInfo[0].jobNoNew, info, imgUrl,total,surplus);
+            analysisDate(judgeInfo[0].jobNoNew, info, imgUrl,total,surplus,project);
             var url="ozzomonitoringsurvey://chat.app/?jobNo="+data[0].jobNoShort+"&refNo="+data[0].jobNoNew+"&surveyType="+data[0].surveyType;
         }else{
-            analysisDate(iden, info, imgUrl,total,surplus);
+            analysisDate(iden, info, imgUrl,total,surplus,project);
             var url="ozzomonitoringsurvey://chat.app/?jobNo="+data[0].jobNoShort+"&refNo="+data[0].jobNoNew+"&surveyType="+data[0].surveyType;
         }
         $('.serial').attr('href',url);
@@ -49,7 +50,7 @@ function getInfo(iden=null) {
  * @param total 传回的物品总数
  * @param surplus 传回剩余物品数量
  */
-function analysisDate(iden, info, imgUrl,total,surplus) {
+function analysisDate(iden, info, imgUrl,total,surplus,project) {
     $(".serial>em").text(iden);
     $(".info-table tr:nth-of-type(2)>td:nth-of-type(2)").text(info);
     $(".info-table tr:nth-of-type(3)>td:nth-of-type(2)").text(total);
@@ -65,10 +66,10 @@ function analysisDate(iden, info, imgUrl,total,surplus) {
                     break;
                 }
             }
-            imgPage(urlArr[i], i);
+            imgPage(urlArr[i], i,project);
         }
     }else{
-        imgPage("/images/goods/20191220150910-5dfc739692f10.jpg",0);
+        imgPage("/images/goods/20191220150910-5dfc739692f10.jpg",0,project);
     }
 }
 
@@ -77,7 +78,7 @@ function analysisDate(iden, info, imgUrl,total,surplus) {
  * @param url 图片的url
  * @param i 第i个url
  */
-function imgPage(url, i) {
+function imgPage(url, i,project) {
 // 第一步，生成元素标签
     let liElement = document.createElement("li");
     let divElement = document.createElement("div");
@@ -98,7 +99,8 @@ function imgPage(url, i) {
     imgElement.setAttribute("style", "object-fit:contain");
     liElement.setAttribute("style", "background-color:#088cf4");
 //添加url
-    imgElement.setAttribute("src", "/academy" + url);
+    imgElement.setAttribute("src", "/"+project+ url);
+    // imgElement.setAttribute("src", "/bni-hk-marvel" + url);
 //添加节点
     divElement.appendChild(imgElement);
     $('.img-indicator').append(liElement);

@@ -175,6 +175,7 @@ switch ($query) {
             die(json_encode($json));
         }
         break;*/
+    //上传文件接口
     case "uploadPic" :
         if(!isset($_FILES['file']) || !isset($_FILES['file']['name'])){
             $json = array (

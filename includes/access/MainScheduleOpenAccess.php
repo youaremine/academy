@@ -590,7 +590,7 @@ class MainScheduleOpenAccess
         if ($this->order != '')
             $query .= $this->order;
 
-        $sql = "SELECT jobNo,img_url,jobNoNew,plannedSurveyDate,startTime_1,endTime_1,surveyType,vehicle,surveyLocation,diy_name,diy_value,surveyorCode FROM Survey_MainSchedule " . " WHERE 1=1 ";
+        $sql = "SELECT jobNo,img_url,jobNoNew,surveyTimeHours,plannedSurveyDate,startTime_1,endTime_1,surveyType,vehicle,surveyLocation,diy_name,diy_value,surveyorCode FROM Survey_MainSchedule " . " WHERE 1=1 ";
         $sql = $sql . $query;
         $this->db->query($sql);
         $rows = array();
@@ -613,6 +613,8 @@ class MainScheduleOpenAccess
                     $obj->complateJobNo = $rs["complateJobNo"];
                     $obj->diy_name = $rs["diy_name"];
                     $obj->diy_value = $rs["diy_value"];
+                    $obj->surveyTimeHours = $rs["surveyTimeHours"];
+
                     $rows[] = $obj;
                 }
             }else{
@@ -632,6 +634,7 @@ class MainScheduleOpenAccess
                 $obj->complateJobNo = $rs["complateJobNo"];
                 $obj->diy_name = $rs["diy_name"];
                 $obj->diy_value = $rs["diy_value"];
+                $obj->surveyTimeHours = $rs["surveyTimeHours"];
                 $rows[] = $obj;
             }
         }
@@ -792,6 +795,7 @@ class MainScheduleOpenAccess
 		$sql = $sql . $query;
 		$this->db->query($sql);
 //		 echo $sql."<br />";
+//		 exit();
 		$rows = array();
 		$i = 1;
 		while ($rs = $this->db->next_record()) {

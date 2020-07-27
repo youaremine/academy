@@ -10,6 +10,7 @@ class Posts
 	var $parentId = '0';
 	var $categoryId;
 	var $format = 'text';
+	var $jobNo='';
 	var $jobNoNew;
 	var $title;
 	var $content;
@@ -21,8 +22,8 @@ class Posts
     var $voiceTime;
 	var $order;
 	var $pageLimit;
-
 	var $startPostId;
 	var $endPostId;
+    var $group_sending;
 }
 ?>
