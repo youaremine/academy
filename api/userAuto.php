@@ -32,50 +32,50 @@
 $rawJson = file_get_contents('php://input', 'r');
 $data_info = json_decode($rawJson, TRUE);
 
-if(empty($data_info)){
-    $data_info=$_REQUEST;
+if (empty($data_info)) {
+    $data_info = $_REQUEST;
 }
 
 $token = addslashes($data_info['TOKEN']);
 $user_type = addslashes($data_info['USERTYPE']);
 $action_type = $data_info['q'];
 $channel = addslashes($data_info['channel']);
-$contact=addslashes($data_info['contact']);
-$chiName=addslashes($data_info['chiName']);
-$engName=addslashes($data_info['engName']);
-$survType=addslashes($data_info['survType']);
-$avatar=addslashes($data_info['avatar']);
-$pass=addslashes($data_info['pass']);
+$contact = addslashes($data_info['contact']);
+$chiName = addslashes($data_info['chiName']);
+$engName = addslashes($data_info['engName']);
+$survType = addslashes($data_info['survType']);
+$avatar = addslashes($data_info['avatar']);
+$pass = addslashes($data_info['pass']);
 
-$email=addslashes($data_info['email']);//邮箱
-$whatsAPP=addslashes($data_info['whatsAPP']);//whatsAPP
-$remarks=addslashes($data_info['remarks']);//备注
-$survHome=addslashes($data_info['survHome']);//住址
-$birthday=addslashes($data_info['birthday']);//出生日期
-$dipaCode=addslashes($data_info['dipaCode']);//地区
-$vip_level=addslashes($data_info['vip_level']);//会员等级
+$email = addslashes($data_info['email']);//邮箱
+$whatsAPP = addslashes($data_info['whatsAPP']);//whatsAPP
+$remarks = addslashes($data_info['remarks']);//备注
+$survHome = addslashes($data_info['survHome']);//住址
+$birthday = addslashes($data_info['birthday']);//出生日期
+$dipaCode = addslashes($data_info['dipaCode']);//地区
+$vip_level = addslashes($data_info['vip_level']);//会员等级
 
-$unimInfo=array(
-    'email'=>$email,
-    'whatsAPP'=>$whatsAPP,
-    'remarks'=>$remarks,
-    'survHome'=>$survHome,
-    'birthday'=>$birthday,
-    'dipaCode'=>$dipaCode,
-    'vip_level'=>$vip_level
+$unimInfo = array(
+    'email' => $email,
+    'whatsAPP' => $whatsAPP,
+    'remarks' => $remarks,
+    'survHome' => $survHome,
+    'birthday' => $birthday,
+    'dipaCode' => $dipaCode,
+    'vip_level' => $vip_level
 );
 
-$arrs=array(
-    'contact'=>$contact,
-    'chiName'=>$chiName,
-    'engName'=>$engName,
-    'survType'=>$survType,
-    'avatar'=>$avatar,
+$arrs = array(
+    'contact' => $contact,
+    'chiName' => $chiName,
+    'engName' => $engName,
+    'survType' => $survType,
+    'avatar' => $avatar,
 );
-$info=json_encode($arrs);//进行json编码
-if(empty($unimInfo)){
-    $unimInfo=json_encode($unimInfo);//进行json编码
-    $unimInfo=json_decode($unimInfo);//将json格式转换为对象
+$info = json_encode($arrs);//进行json编码
+if (empty($unimInfo)) {
+    $unimInfo = json_encode($unimInfo);//进行json编码
+    $unimInfo = json_decode($unimInfo);//将json格式转换为对象
 }
 session_start();
 include('../includes/UserAuto.php');
@@ -87,23 +87,23 @@ if (empty($channel)) {
 if (!empty($info)) {
     $info = json_decode($info);//将json格式转换为对象
 }
-    //file_put_contents('/tmp/bindlog.log', json_encode($_REQUEST) . "\n\r", FILE_APPEND);
-file_put_contents('/tmp/third.log','~~~~~~~~~~~'.time().'Request:'.json_encode($_REQUEST)."\n\n",FILE_APPEND);
+//file_put_contents('/tmp/bindlog.log', json_encode($_REQUEST) . "\n\r", FILE_APPEND);
+file_put_contents('/tmp/third.log', '~~~~~~~~~~~' . time() . 'Request:' . json_encode($_REQUEST) . "\n\n", FILE_APPEND);
 //
 
 
 switch ($action_type) {
     case 'verify':
-        judgeToken($token,$user_type);
+        judgeToken($token, $user_type);
         $user->setInfo($user_type, $token);
         $sign = date("Ymd") . uniqid();
         $filename = $conf["path"]["sign"] . $sign;
         login($user, $channel, $filename, $sign);
         break;
     case 'bind':
-        judgeToken($token,$user_type);
+        judgeToken($token, $user_type);
         $user->setInfo($user_type, $token);
-        if(empty($contact)){
+        if (empty($contact)) {
             $message = array(
                 'status' => 'success',
                 'msg' => "`contact` Data is empty",
@@ -126,7 +126,7 @@ switch ($action_type) {
             $arr = $user->inquire();
             if ($arr['state']) {
                 //通过ID和手机号判断是否绑定第三方
-                if($user->verify(1)){
+                if ($user->verify(1)) {
                     $message = array(
                         'status' => 'success',
                         'msg' => "The third-party account has been bound",
@@ -134,7 +134,7 @@ switch ($action_type) {
                         'state' => 'repeatToWrite'
                     );
                     echo json_encode($message, JSON_UNESCAPED_UNICODE);
-                }else{
+                } else {
                     writeUser($user, $arr, $channel, $filename, $sign);
                 }
             } else {
@@ -158,23 +158,35 @@ switch ($action_type) {
         break;
     case 'signIn':
         //判断电话号码是否注册
-        if(empty($contact)){
+        if (empty($contact)) {
             //写入失败
             $message = array(
                 'status' => 'success',
                 'msg' => "`contact` Data is empty",
-                'surveyor' => '',
-                'state' => 'writeFailed'
+                'surveyor' => array(
+                    "survId" => "",
+                    "upSurvId" => "",
+                    "chiName" => "",
+                    "engName" => "",
+                    "contact" => "",
+                    "survType" => "",
+                    "vip_level" => "",
+                    "dipaCode" => "",
+                    "profilePhoto" => "",
+                    "password" => ""
+                ),
+                'state' => 'writeFailed',
+                'sign' => ''
             );
             echo json_encode($message, JSON_UNESCAPED_UNICODE);
             exit();
         }
         $user->setContact($contact);
-        $arr=$user->inquire();
-        if($arr['state']){
+        $arr = $user->inquire();
+        if ($arr['state']) {
             //存在 返回登录信息
             $user->setUserId($arr['info']['survId']);
-            $message=$user->inpuierUser();
+            $message = $user->inpuierUser();
             $sign = date("Ymd") . uniqid();
             $filename = $conf["path"]["sign"] . $sign;
             if ($channel == 2 || $channel == 3) {
@@ -182,25 +194,37 @@ switch ($action_type) {
                 file_put_contents($filename, $user->getUserId());
             }
             echo json_encode($message, JSON_UNESCAPED_UNICODE);
-        }else{
+        } else {
             //不存在进行注册
-            $user->setUserInfo($chiName,$engName,$survType);
+            $user->setUserInfo($chiName, $engName, $survType);
             if (empty($pass)) {
                 $message = array(
                     'status' => 'success',
                     'msg' => "`pass` Data is empty",
-                    'surveyor' => '',
-                    'state' => 'none'
+                    'surveyor' => array(
+                        "survId" => "",
+                        "upSurvId" => "",
+                        "chiName" => "",
+                        "engName" => "",
+                        "contact" => "",
+                        "survType" => "",
+                        "vip_level" => "",
+                        "dipaCode" => "",
+                        "profilePhoto" => "",
+                        "password" => ""
+                    ),
+                    'state' => 'none',
+                    'sign' => ''
                 );
                 echo json_encode($message, JSON_UNESCAPED_UNICODE);
                 exit();
             }
             $user->setPass($pass);
-            $infoUser=$user->register($unimInfo);//写入账号信息
-            if($infoUser['state']){
-                $infoPass=$user->getPassword();//写入密码信息
-                if($infoPass['state']){
-                    $message=$user->inpuierUser();
+            $infoUser = $user->register($unimInfo);//写入账号信息
+            if ($infoUser['state']) {
+                $infoPass = $user->getPassword();//写入密码信息
+                if ($infoPass['state']) {
+                    $message = $user->inpuierUser();
                     $sign = date("Ymd") . uniqid();
 
                     $filename = $conf["path"]["sign"] . $sign;
@@ -210,23 +234,47 @@ switch ($action_type) {
                         file_put_contents($filename, $user->getUserId());
                     }
                     echo json_encode($message, JSON_UNESCAPED_UNICODE);
-                }else{
+                } else {
                     //密码写入失败
                     $message = array(
                         'status' => 'success',
                         'msg' => "Password write failed,Please check the database `Survey_SurveyorPassword`",
-                        'surveyor' => '',
-                        'state' => 'writeFailed'
+                        'surveyor' => array(
+                            "survId" => "",
+                            "upSurvId" => "",
+                            "chiName" => "",
+                            "engName" => "",
+                            "contact" => "",
+                            "survType" => "",
+                            "vip_level" => "",
+                            "dipaCode" => "",
+                            "profilePhoto" => "",
+                            "password" => ""
+                        ),
+                        'state' => 'writeFailed',
+                        'sign' => ''
                     );
                     echo json_encode($message, JSON_UNESCAPED_UNICODE);
                 }
-            }else{
+            } else {
                 //账号写入失败
                 $message = array(
                     'status' => 'success',
                     'msg' => "Third party data write failed,Please check the database `Survey_Surveyor`",
-                    'surveyor' => '',
-                    'state' => 'writeFailed'
+                    'surveyor' => array(
+                        "survId" => "",
+                        "upSurvId" => "",
+                        "chiName" => "",
+                        "engName" => "",
+                        "contact" => "",
+                        "survType" => "",
+                        "vip_level" => "",
+                        "dipaCode" => "",
+                        "profilePhoto" => "",
+                        "password" => ""
+                    ),
+                    'state' => 'writeFailed',
+                    'sign' => ''
                 );
                 echo json_encode($message, JSON_UNESCAPED_UNICODE);
             }
@@ -237,7 +285,8 @@ switch ($action_type) {
             'status' => 'failed',
             'msg' => "No stored third party information",
             'surveyor' => $surveyor,
-            'state' => 'error'
+            'state' => 'error',
+            'sign' => ''
         );
         echo json_encode($message, JSON_UNESCAPED_UNICODE);
         break;
@@ -249,7 +298,7 @@ switch ($action_type) {
  * @param $sign 手机端识别码
  * @param null $mark 是否需要返回密码
  */
-function login($user, $channel, $filename, $sign){
+function login($user, $channel, $filename, $sign) {
     $judge = $user->verify();
     if ($judge) {
         //登录成功
@@ -265,14 +314,26 @@ function login($user, $channel, $filename, $sign){
         $message = array(
             'status' => 'success',
             'msg' => "No stored third party information",
-            'surveyor' => '',
-            'state' => 'none'
+            'surveyor' => array(
+                "survId" => "",
+                "upSurvId" => "",
+                "chiName" => "",
+                "engName" => "",
+                "contact" => "",
+                "survType" => "",
+                "vip_level" => "",
+                "dipaCode" => "",
+                "profilePhoto" => "",
+                "password" => ""
+            ),
+            'state' => 'none',
+            'sign' => '',
         );
         echo json_encode($message, JSON_UNESCAPED_UNICODE);
     }
 }
 
-function writeUser($user, $arr, $channel, $filename, $sign){
+function writeUser($user, $arr, $channel, $filename, $sign) {
     //创建成功
     $user->setUserId($arr['info']['survId']);
     $state = $user->bindUser();
@@ -284,8 +345,20 @@ function writeUser($user, $arr, $channel, $filename, $sign){
         $message = array(
             'status' => 'success',
             'msg' => "Third party data write failed,Please check the database`Survey_User_Auth`",
-            'surveyor' => '',
-            'state' => 'writeFailed'
+            'surveyor' => array(
+                "survId" => "",
+                "upSurvId" => "",
+                "chiName" => "",
+                "engName" => "",
+                "contact" => "",
+                "survType" => "",
+                "vip_level" => "",
+                "dipaCode" => "",
+                "profilePhoto" => "",
+                "password" => ""
+            ),
+            'state' => 'writeFailed',
+            'sign' => '',
         );
         echo json_encode($message, JSON_UNESCAPED_UNICODE);
     }
@@ -295,13 +368,25 @@ function writeUser($user, $arr, $channel, $filename, $sign){
  * @param $token
  * @param $user_type
  */
-function judgeToken($token,$user_type){
+function judgeToken($token, $user_type) {
     if (empty($token)) {
         $message = array(
             'status' => 'failed',
             'msg' => "`TOKEN` Data is empty",
-            'surveyor' => '',
-            'state' => 'error'
+            'surveyor' => array(
+                "survId" => "",
+                "upSurvId" => "",
+                "chiName" => "",
+                "engName" => "",
+                "contact" => "",
+                "survType" => "",
+                "vip_level" => "",
+                "dipaCode" => "",
+                "profilePhoto" => "",
+                "password" => ""
+            ),
+            'state' => 'error',
+            'sign' => '',
         );
         echo json_encode($message, JSON_UNESCAPED_UNICODE);
         exit();
@@ -310,8 +395,20 @@ function judgeToken($token,$user_type){
         $message = array(
             'status' => 'failed',
             'msg' => "`USERTYPE` Data is empty",
-            'surveyor' => '',
-            'state' => 'error'
+            'surveyor' => array(
+                "survId" => "",
+                "upSurvId" => "",
+                "chiName" => "",
+                "engName" => "",
+                "contact" => "",
+                "survType" => "",
+                "vip_level" => "",
+                "dipaCode" => "",
+                "profilePhoto" => "",
+                "password" => ""
+            ),
+            'state' => 'error',
+            'sign' => '',
         );
         echo json_encode($message, JSON_UNESCAPED_UNICODE);
         exit();

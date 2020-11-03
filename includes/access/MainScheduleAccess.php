@@ -801,7 +801,7 @@ class MainScheduleAccess
         return $rows;
     }
 
-    function GetListSearch($obj,$surveyorId = false,$is_goods=false){
+    function GetListSearch($obj,$surveyorId = false,$is_goods=-1,$term=null){
         $query = '';
         if ($obj->mascId != '')
             $query .= " AND MS.mascId = '" . $obj->mascId . "'";
@@ -971,9 +971,20 @@ class MainScheduleAccess
         if ($obj->noSS == true){
             $query .= " AND MS.jobNoNew NOT LIKE '%ss'"; // 去掉end with ss
         }
-        if($is_goods){
-            $query.= " AND MS.is_image='1'";
+        if($is_goods=="0"){
+            $query.= " AND MS.is_image='$is_goods'";
+        }else if($is_goods=="1"){
+            $query.= " AND MS.is_image='$is_goods'";
         }
+
+
+//        if($is_goods!=="0"){
+//            $query.= " AND MS.is_image='$is_goods'";
+//        }
+        if(!empty($term)){
+            $query .= " AND (`MS`.`jobNoNew` like '%".$term."%' or `MS`.`surveyType` like '%".$term."%' or `MS`.`vehicle` like '%".$term."%' or `MS`.`surveyLocation` like '%".$term."%')";
+        }
+
 
         if ($this->order != '')
             $query .= $this->order;
@@ -986,10 +997,14 @@ class MainScheduleAccess
         }
 
         $sql .= ",RF.fileName as rawFile
-				,MSC.mscId,MSC.company,MS.img_url,MS.is_image FROM Survey_MainSchedule MS
+				,MSC.mscId,MSC.company,MS.img_url,MS.is_image,sscp.path as surveyor_pdf FROM Survey_MainSchedule MS
 				LEFT JOIN Survey_MainScheduleRawFile RF ON RF.jobNoNew=MS.jobNoNew
 				LEFT JOIN Survey_MainScheduleContractor MSC ON MSC.delFlag='no' AND MSC.jobNoNew=MS.jobNoNew
 				LEFT JOIN Survey_SurveyJobOpen mso on mso.jobNo = MS.jobNo and mso.delFlag='no'
+		        LEFT JOIN (
+		        SELECT * FROM `Survey_SurveyorClassPDF`
+		        WHERE `id` IN (SELECT MAX(`id`) FROM `Survey_SurveyorClassPDF`
+		        GROUP BY `class_record_id`)) AS sscp ON `sscp`.`class_record_id` = MS.`class_record_id` 
 				";
 
         if($surveyorId != false){
@@ -998,9 +1013,8 @@ class MainScheduleAccess
 
         $sql .= 'WHERE 1=1 ';
         $sql = $sql . $query;
+//      echo  $sql;exit;
 
-//        echo $sql;
-//        exit();
         $this->db->query($sql);
 
 //         echo "{$sql}<br>";
@@ -1011,6 +1025,7 @@ class MainScheduleAccess
             $obj->weekNo = $rs ["weekNo"];
             $obj->jobNo = $rs ["jobNo"];
             $obj->jobNoNew = $rs ["jobNoNew"];
+            $obj->surveyor_pdf = $rs ["surveyor_pdf"];
             $obj->plannedSurveyDate = $rs ["plannedSurveyDate"];
             $obj->tdFileNo = $rs ["tdFileNo"];
             $obj->receivedDate = $rs ["receivedDate"];
@@ -3178,7 +3193,7 @@ class MainScheduleAccess
      * @param Surveyor $sur
      * @param string /array $jobNoNew
      */
-    function Assign2Surveyor($sur, $jobNoNew,$selfOperate = false,$record_surveyor = false)
+    function Assign2Surveyor($sur, $jobNoNew,$selfOperate = false,$record_surveyor = false,$is_image=false)
     {
 
         $sql = "UPDATE Survey_MainSchedule " . " SET surveyorCode = '{$sur->survId}'" . " ,surveyorName = '{$sur->engName}'" . " ,surveyorTelephone = '{$sur->contact}'";
@@ -3202,6 +3217,7 @@ class MainScheduleAccess
         }
         $class_num = count($relClass);
         $sql2 = "UPDATE Survey_Surveyor SET class_remain=class_remain-$class_num WHERE survId='{$sur->survId}'" ;
+//        echo $sql2;exit;
         $this->db->query($sql2);
 
         $name = '';
@@ -3209,7 +3225,12 @@ class MainScheduleAccess
             $name = empty($record_surveyor->chiName)?'('.$record_surveyor->engName.')':'('.$record_surveyor->chiName.')';
         }
         $record_surveyor_id = $record_surveyor->survId;
-        $remark = $selfOperate === true?'學員自選課堂':$name.'分配課堂';
+        if(!$is_image || $is_image=='0'){
+            $remark = $selfOperate === true?'學員自選課堂':$name.'分配課堂';
+        }else if($is_image==1){
+            $remark = $selfOperate === true?'學員自選物品':$name.'分配物品';
+        }
+
         $this->addClassRecord($sur->survId,$jobNoNew,0-$class_num,$sur->class_remain-$class_num,$remark,$record_surveyor_id);
     }
 
@@ -3270,6 +3291,11 @@ class MainScheduleAccess
         $this->db->query($sql);
         $sql2 = "UPDATE Survey_MainScheduleOpen " . " SET applySurvId = 0" . " WHERE 1=1  AND jobNoNew = '{$jobNoNew}' ";
         $this->db->query($sql2);
+
+        $sql3 = "UPDATE Survey_SurveyPart " . " SET delFlag = 'yes' WHERE 1=1  AND `refNo` = '{$jobNoNew}' ";
+        $this->db->query($sql3);
+
+
 
         $infoSql = "SELECT realClass FROM Survey_MainSchedule where jobNoNew = '{$jobNoNew}'";
         $this->db->query($infoSql);

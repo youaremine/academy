@@ -112,9 +112,9 @@ class MainScheduleOpenAccess
         $sql = "DELETE FROM Survey_SurveyorMainSchedule ".
             " WHERE 1=1  AND jobNoNew LIKE '{$jobNo}%'";
         $this->db->query($sql);
-        $sql = "DELETE FROM Survey_SurveyJobOpen ".
+        /*$sql = "DELETE FROM Survey_SurveyJobOpen ".
             " WHERE 1=1  AND jobNo LIKE '{$jobNo}'";
-        $this->db->query($sql);
+        $this->db->query($sql);*/
     }
 
 	function GetListSearch($obj)

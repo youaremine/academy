@@ -141,18 +141,25 @@ class SurveyorAccess
 			$query .= " AND s.survType IN(" . $obj->survMultiType . ")";
 		if ($obj->order != '')
 			$query .= $obj->order;
-		if ($obj->pageLimit != '')
-			$query .= $obj->pageLimit;
-		
+		if ($obj->pageLimit != ''){
+            $query .= $obj->pageLimit;
+        }
+        if($obj->term!=''){
+            $query .= " AND (`s`.survId like '%". $obj->term."%' or s.`chiName` like '%". $obj->term."%' or s.`engName` like '%". $obj->term."%' or s.`contact` like '%". $obj->term."%' or s.`vip_level` like '%". $obj->term."%')";
+        }
+		$query.=" ORDER BY `s`.survId";
 		$sql = "SELECT s.*,u.engName AS inputUsername,u2.engName AS updateUsername
 					FROM Survey_Surveyor s
 				LEFT JOIN Survey_Users u ON s.inputUserId = u.userId 
 				LEFT JOIN Survey_Users u2 ON s.updateUserId = u2.userId
 				WHERE 1=1 ";
 		$sql = $sql . $query;
+
+//        echo $sql.'------------';
+//        exit();
+
 		$this->db->query($sql);
-// 		echo $sql.'------------';
-// 		exit();
+
 		$rows = array();
 		while ( $rs = $this->db->next_record() )
 		{
@@ -516,8 +523,14 @@ class SurveyorAccess
 
 
 	function assign_new($sur, $jobNoNew,$surInfo){
-        $infoSql = "SELECT realClass FROM Survey_MainSchedule where jobNoNew = '{$jobNoNew}'";
+        $infoSql = "SELECT is_image,realClass FROM Survey_MainSchedule where jobNoNew = '{$jobNoNew}'";
         $this->db->query($infoSql);
+        $is_image=0;
+        if ($rs = $this->db->next_record())
+        {
+            $is_image = $rs["is_image"];
+        }
+
         /*if($this->db->next_record () == 1){
             if($sur->class_remain <=0 ) {
                 return array('msg'=>'剩餘課堂數不足，選取失敗','status'=>'failed');
@@ -525,9 +538,10 @@ class SurveyorAccess
         }*/
 
         $sql = "INSERT INTO Survey_SurveyorMainSchedule(survId,jobNoNew,inputUserId,inputTime)" . " VALUES('" . $sur->survId . "'" . ",'" . $jobNoNew . "'" . ",'0'" . ",'" . date("Y-m-d H:i:s") . "'" . ")";
+//        echo $sql;exit;
         $this->db->query($sql);
         $msa = new MainScheduleAccess($this->db);
-        $msa->Assign2Surveyor($sur, $jobNoNew,false,$surInfo);
+        $msa->Assign2Surveyor($sur, $jobNoNew,false,$surInfo,$is_image);
         return true;
     }
 

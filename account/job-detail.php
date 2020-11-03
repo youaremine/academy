@@ -9,7 +9,7 @@ include_once ("../includes/config.inc.php");
 include_once ("../includes/config.plugin.inc.php");
 
 $btnDetailConfirmStatus = 'disabled="disabled"';
-$btnDetailConfirmText = '聯繫Whatsapp:<br />92091806開通';
+$btnDetailConfirmText = '聯繫Whatsapp:<br />97026622開通';
 $btnClass = 'btn-danger';
 $successBtnStyle = 'display:none';
 // 检查是否登录

@@ -1,5 +1,8 @@
 $(document).ready(function () {
     let data = getInfo();
+    let aaa=document.getElementsByClassName('aaa')[0];
+    addPlan(aaa);
+
     if (data !== null && data !== "") {
         let iden = data[0].jobNoNew;
         let info = data[0].vehicle;
@@ -95,7 +98,7 @@ function imgPage(url, i,project) {
     liElement.setAttribute("data-target", "#carouselExampleIndicators");
     liElement.setAttribute("data-slide-to", i);
 //添加属性
-    divElement.setAttribute("style", "width:100%;height:18rem");
+    divElement.setAttribute("style", "width:100%;");
     imgElement.setAttribute("style", "object-fit:contain");
     liElement.setAttribute("style", "background-color:#088cf4");
 //添加url
@@ -150,24 +153,54 @@ function touchMove(e) {
  * 加入购物车
  * @param event
  */
+// function addPlan(event){
+//     var num=$(".serial>em").text();
+//     $.ajax({
+//         type : "GET",
+//         url : "./api.php",
+//         data : "q=selectJob&jobNoNew=" +num+"&identifier=0",
+//         dataType : "json",
+//         success : function(msg) {
+//             console.log(msg);
+//             if(msg.success){
+//                 event.innerHTML="已購買";
+//                 event.setAttribute('class','btn btn-danger');
+//                 event.setAttribute('onclick','');
+//             }
+//         }
+//     });
+// }
 function addPlan(event){
     var num=$(".serial>em").text();
     $.ajax({
         type : "GET",
-        url : "./api.php",
-        data : "q=selectJob&jobNoNew=" +num+"&identifier=0",
+        url : "../alipayRsa/payment.php",
+        data : {
+            type:"paymentInfo"
+        },
         dataType : "json",
         success : function(msg) {
+            event.setAttribute('href','ozzoacademy-pay://students.app/?info='+msg);
             console.log(msg);
-            if(msg.success){
-                event.innerHTML="已購買";
-                event.setAttribute('class','btn btn-danger');
-                event.setAttribute('onclick','');
-            }
         }
-    });
-}
+    })
 
+
+//    $.ajax({
+//        type : "GET",
+//        url : "./api.php",
+//        data : "q=selectJob&jobNoNew=" +num+"&identifier=0",
+//        dataType : "json",
+//        success : function(msg) {
+//            if(msg.success){
+//                event.innerHTML="已購買";
+//                event.setAttribute('class','btn btn-danger');
+//                event.setAttribute('onclick','');
+//            }
+//        }
+//    });
+
+}
 /**
  * 判斷是否已經
  * @param iden

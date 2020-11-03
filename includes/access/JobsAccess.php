@@ -271,7 +271,6 @@ class JobsAccess {
         global $conf;
         $sql = makeSql($data, 'update');
         $sql = "UPDATE {$conf['table']['prefix']}MainSchedule SET {$sql} WHERE jobNo='{$jobNo}'";
-
         $this->db->query($sql);
 //        echo $sql."<br />";
     }
@@ -284,30 +283,47 @@ class JobsAccess {
 //        echo $sql."<br />";
     }
 
-    function getList2($filter, $other = '', $limit = '', $is_goods = false) {
+    function getList2($filter, $other = '', $limit = '', $is_goods = false,$term=null) {
         global $conf;
         $where = makeSql($filter, 'where');
-        $sql = "SELECT s1.jobNo,s1.class_record_id,s1.jobNoNew,s1.realClass,MIN(surveyType) AS surveyType,MIN(vehicle) AS vehicle
-                    ,MIN(surveyTimeHours) AS surveyTimeHours,MIN(startTime_1) AS startTime,MIN(endTime_1) AS endTime,surveyLocationDistrict
-                    ,MIN(surveyLocation) AS surveyLocation,MIN(plannedSurveyDate) AS plannedSurveyDate,s2.isOpen2,s3.isOpen,s1.bookLat,s1.bookLong,s1.map_address,s1.diy_name,s1.diy_value,s1.`img_url`,s1.`is_image`
+        $sql = "SELECT s1.mascId,s1.jobNo,s1.class_record_id,s1.jobNoNew,s1.realClass,surveyType,vehicle
+                    ,surveyTimeHours,startTime_1,endTime_1,surveyLocationDistrict
+                    ,surveyLocation,plannedSurveyDate,s2.isOpen2,s3.isOpen,s1.bookLat,s1.bookLong,s1.map_address,s1.diy_name,s1.diy_value,s1.`img_url`,s1.`is_image`
                 FROM {$conf['table']['prefix']}MainSchedule as s1
 left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen where delFlag='no' group by jobNoNew) as s2 on s2.jobNoNew=s1.jobNoNew
 left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFlag='no' group by jobNo) as s3 on s3.jobNo=s1.jobNo
                 WHERE 1=1 {$where}";
+
+
         if ($is_goods) {
-            $sql .= " AND s1.is_image='1' ";
+            $sql .= " AND s1.is_image='1'";
+        }else{
+            $sql .= " AND s1.is_image='0'";
         }
-        $sql .= "GROUP BY jobNo,vehicle {$other} {$limit}";
+
+        if(!empty($term)){
+            $sql .= " AND (`s1`.jobNo like '%".$term."%' or `s1`.`surveyType` like '%".$term."%' or `s1`.`vehicle` like '%".$term."%')";
+        }
+
+        $sql .= " GROUP BY jobNo,vehicle {$other} {$limit}";
+
+            file_put_contents('/tmp/add1019.log', $sql. "\n\r", FILE_APPEND);
+
+//            echo $sql;exit;
         $this->db->query($sql);
-//		 echo $sql."<br />";
-//		 exit();
+
         $result = array();
         $jobNoArray = array();
         $index = 0;
         $jobNoIndex = array();
         while ($dr = $this->db->next_record()) {
+
+//            echo json_encode($dr);exit;
+
+
             $row = array();
             $jobNoArray[] = "'" . $dr['jobNo'] . "'";
+            $row['mascId'] = $dr['mascId'];
             $row['jobNoNew'] = $dr['jobNoNew'];
             $row['jobNo'] = $dr['jobNo'];
             $row['surveyType'] = $dr['surveyType'];
@@ -318,10 +334,10 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
             $row['surveyLocationDistrict'] = $dr['surveyLocationDistrict'];
             $row['surveyTimeHours'] = $dr['surveyTimeHours'];
             $row['signNumbers'] = 0;
-            $row['startTime'] = date('H:i', strtotime(date('Y-m-d') . $dr['startTime']));
-            $row['endTime'] = date('H:i', strtotime(date('Y-m-d') . $dr['endTime']));
-            $row['isOpen'] = $dr['isOpen'] >= 1 ? 'yes' : 'no';
-            $row['isOpen2'] = $dr['isOpen2'] >= 1 ? 'yes' : 'no';
+            $row['startTime'] = date('H:i', strtotime(date('Y-m-d') . $dr['startTime_1']));
+            $row['endTime'] = date('H:i', strtotime(date('Y-m-d') . $dr['endTime_1']));
+            $row['isOpen'] = $dr['isOpen'] == 1 ? 'yes' : 'no';//是否开启自行报道
+            $row['isOpen2'] = $dr['isOpen2'] == 1 ? 'yes' : 'no';//是否开放选取
             $row['realClass'] = $dr['realClass'];
             $row['bookLong'] = $dr['bookLong'];
             $row['bookLat'] = $dr['bookLat'];
@@ -363,6 +379,11 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
         }
         return $result;
     }
+
+    function getList3($term,$is_goods){
+
+    }
+
 
     function getList($filter, $other = '', $limit = '') {
         global $conf;
@@ -432,7 +453,7 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
         if (!empty($where)) {
             $where = 'AND ' . $where;
         }
-        $sql = "SELECT m.*,s.chiName,s.profilePhoto FROM {$conf['table']['prefix']}MainSchedule m
+        $sql = "SELECT m.*,s.chiName,s.profilePhoto,s.class_remain FROM {$conf['table']['prefix']}MainSchedule m
                 LEFT JOIN {$conf['table']['prefix']}Surveyor s ON s.survId = m.surveyorCode
                 WHERE 1=1 {$where}
             {$other} {$limit}  ORDER BY m.vehicle,s.survId";
@@ -456,10 +477,72 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
             $row['surveyorProfilePhoto'] = $dr['profilePhoto'];
             $row['class_record_id'] = $dr['class_record_id'];
             $row['vehicle'] = $dr['vehicle'];
+            $row['class_remain'] = $dr['class_remain'];
             //$row['surveyorTelephone'] = $dr['surveyorTelephone'];
             $result[] = $row;
         }
         return $result;
+    }
+
+
+    /**
+     * 管理员设置学员状态（已到，缺席，迟到，替代者，病假）
+     * @param $data
+     */
+    function setDataEntryNew($data) {
+        global $conf;
+        $signJobInfos = $data['signJobInfos'];
+        $_tmpInfos = explode(',', $signJobInfos);
+        $signInfos = array();
+        foreach ($_tmpInfos as $v) {
+            $signInfo = array();
+            $_tmpInfo = explode('|', $v);
+            $signInfo['jobNoNew'] = $_tmpInfo[0];
+            $signInfo['surveyorCode'] = $_tmpInfo[1];
+            $signInfos[] = $signInfo;
+        }
+        if (count($signInfos) <= 0) {
+            return false;
+        }
+        $inputTime = date("Y-m-d H:i:s");
+        foreach ($signInfos as $v) {
+            $newData = array();
+            $newData['inputTime'] = $inputTime;
+            $newData['userId'] = $data['survId'];
+            $newData['userName'] = $data['engName'];
+            $newData['refNo'] = $v['jobNoNew'];
+            if (strtolower($v['jobNoNew']) == 'new') {
+                //如果检测到是新job，则把最新没排期的加进来
+                $sql = "SELECT m.jobNo,m.jobNoNew FROM {$conf['table']['prefix']}MainSchedule m
+                     LEFT JOIN {$conf['table']['prefix']}SurveyPart sp ON sp.refNo = m.jobNoNew AND sp.delFlag='no'
+                     WHERE m.jobNo = '{$data['jobNo']}'
+                        AND m.surveyorCode<=0 AND sp.survId IS NULL
+                     ORDER BY m.jobNoNew ASC
+                     LIMIT 1";
+                $this->db->query($sql);
+                if ($dr = $this->db->next_record()) {
+                    $newData['refNo'] = $dr['jobNoNew'];
+                } else {
+                    //TODO 报名名额已经用完的情况
+                }
+            }
+            $newData['survId'] = $v['surveyorCode'];
+            $sql = "UPDATE {$conf['table']['prefix']}SurveyPart
+                    SET delFlag='yes',modifyUserId='{$data['survId']}'
+                    ,modifyUserName='{$data['engName']}',modifyTime='{$inputTime}'
+                    WHERE refNo='{$newData['refNo']}'";
+            $this->db->query($sql);
+            if (strtolower($newData['survId']) == 'delete') {
+                continue;
+            }
+            $newData['status'] = $data['status'];
+            $newData['status_mark'] = $data['status_mark'];
+
+            $sql = makeSql($newData);
+            $sql = "INSERT INTO {$conf['table']['prefix']}SurveyPart" . $sql;
+            $this->db->query($sql);
+        }
+        return true;
     }
 
     function setDataEntry($data) {
@@ -531,7 +614,7 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
                 m.surveyType,m.surveyorCode,m.surveyorName,m.surveyorTelephone,
                 s.chiName as surveyorChiName,s.profilePhoto,
                 s.survId,s.engName,s.contact
-                FROM Survey_MainSchedule m 
+                FROM Survey_MainSchedule m
                 LEFT JOIN Survey_SurveyPart sp  ON sp.refNo = m.jobNoNew AND sp.delFlag='no'
                 LEFT JOIN Survey_Surveyor s on s.survId = sp.survId
                 WHERE jobNo = '{$jobNo}' and surveyorTelephone like '{$phone}%'";*/
@@ -577,19 +660,23 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
             $where = 'AND ' . $where;
         }
         $sql = "SELECT m.jobNo,m.jobNoNew,m.class_record_id,m.plannedSurveyDate,m.surveyTimeHours,m.surveyType
-                    ,m.surveyorCode,m.surveyorName,m.surveyorTelephone
-                    ,s.survId,s.chiName,s.engName,s.contact,s.profilePhoto
+                    ,m.surveyorCode,m.surveyorName,m.surveyorTelephone,s2.chiName as surveyorChiName2
+                    ,s.survId,s.chiName,s.engName,s.contact,s.profilePhoto,sp.status,sp.status_mark
                 FROM {$conf['table']['prefix']}MainSchedule m
                 LEFT JOIN {$conf['table']['prefix']}SurveyPart sp ON sp.refNo = m.jobNoNew AND sp.delFlag='no'
                 LEFT JOIN {$conf['table']['prefix']}Surveyor s ON s.survId = sp.survId
+                 LEFT JOIN {$conf['table']['prefix']}Surveyor s2 ON m.surveyorCode = s2.survId
                 WHERE 1=1 {$where}
             {$other} {$limit}";
         $this->db->query($sql);
-//		 echo $sql."<br />";
+//		 echo $sql."<br />";exit;
         $result = array();
         $noEnterSurveyors = array();
         while ($dr = $this->db->next_record()) {
-            if (empty($dr['survId']) && !empty($dr['surveyorCode'])) {
+            if(empty($dr['surveyorCode']) && empty($dr['survId'])){
+                continue;
+            }
+            if (!empty($dr['survId']) || !empty($dr['surveyorCode'])) {
                 $noEnterSurveyors[] = $dr['surveyorCode'];
             }
             $row = array();
@@ -599,7 +686,7 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
             $row['surveyTimeHours'] = $dr['surveyTimeHours'];
             $row['surveyType'] = $dr['surveyType'];
             $row['surveyorCode'] = $dr['surveyorCode'];
-            $row['surveyorChiName'] = $dr['chiName'];
+            $row['surveyorChiName'] = $dr['surveyorChiName2'];
             $row['surveyorName'] = $dr['surveyorName'];
             $row['surveyorTelephone'] = $dr['surveyorTelephone'];
             $row['survId'] = $dr['survId'];
@@ -609,8 +696,11 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
             $row['profilePhoto'] = !empty($dr['profilePhoto']) ? 'http://' . $_SERVER['SERVER_NAME'] . '/' . PROJECTNAME . $dr['profilePhoto'] : '';
             $row['isOpen'] = '';
             $row['class_record_id'] = $dr['class_record_id'];
+            $row['status'] = $dr['status'];
+            $row['status_mark'] = $dr['status_mark'];
             $result[] = $row;
         }
+//        echo json_encode($result);exit;
         if (count($noEnterSurveyors) > 0) {
             //加上未点名的中文名，头像
             $where = "AND survId IN (" . implode(',', $noEnterSurveyors) . ")";
@@ -703,19 +793,19 @@ WHERE
         }
         $datas = $this->db->query($sql);
         while ($data = mysqli_fetch_assoc($datas)) {
-            $data['project']=PROJECTNAME;//添加项目名，用于拼接图片url
+            $data['project'] = PROJECTNAME;//添加项目名，用于拼接图片url
             $arr[] = $data;
         }
-
         return json_encode($arr, JSON_UNESCAPED_UNICODE);
     }
+
 
     /**广告图Url 存储和获取
      * @param $case
      * @param $arr
      * @return array
      */
-    function advImage($case, $arr=null) {
+    function advImage($case, $arr = null) {
         global $conf;
         switch ($case) {
             case 1:
@@ -735,65 +825,99 @@ WHERE
                 return $judge;
                 break;
             case 2:
-                $sql="SELECT `resolution`,`file_name`,`path` FROM `Survey_AdvImage` WHERE `rate`='{$arr['rate']}'  AND `start`=1 GROUP BY `ranking`";
-                $datas=$this->db->query($sql);
+                $sql = "SELECT `resolution`,`file_name`,`path` FROM `Survey_AdvImage` WHERE `rate`='{$arr['rate']}'  AND `start`=1 GROUP BY `ranking`";
+//               echo $sql;
+////               exit();
+                $datas = $this->db->query($sql);
                 while ($data = mysqli_fetch_assoc($datas)) {
-                    $arrs[] =$data;
+                    $arrs[] = $data;
                 }
                 if (!empty($arrs)) {
-                    $infoArr=array(
-                        'status'=>'success',
-                        'msg'=>'',
-                        'data'=>$arrs
+                    $infoArr = array(
+                        'status' => 'success',
+                        'msg' => '',
+                        'data' => $arrs
                     );
-                }else{
-                    $infoArr=array(
-                        'status'=>'failed',
-                        'data'=>''
-                    );
-                }
-                return $infoArr;
-                break;
-            case 3:
-                $sql="SELECT `file_name` FROM `Survey_AdvImage` WHERE `start`=1 AND `rate`='9:16'";
-                $datas=$this->db->query($sql);
-                while ($data = mysqli_fetch_assoc($datas)) {
-                    $arrs[] =$data;
-                }
-                if (!empty($arrs)) {
-                    $infoArr=array(
-                        'status'=>'success',
-                        'msg'=>'',
-                        'data'=>$arrs
-                    );
-                }else {
+                } else {
                     $infoArr = array(
                         'status' => 'failed',
                         'data' => ''
                     );
                 }
-                    return $infoArr;
-                    break;
+                return $infoArr;
+                break;
+            case 3:
+                $sql = "SELECT `file_name` FROM `Survey_AdvImage` WHERE `start`=1 AND `rate`='9:16' GROUP BY `ranking`";
+                $datas = $this->db->query($sql);
+                while ($data = mysqli_fetch_assoc($datas)) {
+                    $arrs[] = $data;
+                }
+                if (!empty($arrs)) {
+                    $infoArr = array(
+                        'status' => 'success',
+                        'msg' => '',
+                        'data' => $arrs
+                    );
+                } else {
+                    $infoArr = array(
+                        'status' => 'failed',
+                        'data' => ''
+                    );
+                }
+                return $infoArr;
+                break;
             case 4:
-                $sql="SELECT `condense_path` FROM `Survey_AdvImage` WHERE `ranking`='{$arr['ranking']}' AND `start`=1";
-                $urlArr=$this->db->query($sql);
-                while ( $url = mysqli_fetch_assoc($urlArr)) {
+                $sql = "SELECT `condense_path` FROM `Survey_AdvImage` WHERE `ranking`='{$arr['ranking']}' AND `start`=1";
+                $urlArr = $this->db->query($sql);
+                while ($url = mysqli_fetch_assoc($urlArr)) {
                     $urls[] = $url;
                 }
                 if (!empty($urls)) {
-                    $urlInfo=array(
-                        'status'=>'success',
-                        'msg'=>'',
-                        'data'=>$urls
+                    $urlInfo = array(
+                        'status' => 'success',
+                        'msg' => '',
+                        'data' => $urls
                     );
-                }else{
-                    $urlInfo=array(
-                        'status'=>'failed',
-                        'data'=>''
+                } else {
+                    $urlInfo = array(
+                        'status' => 'failed',
+                        'data' => ''
                     );
                 }
                 return $urlInfo;
                 break;
+            case 5:
+                $fileName = '';
+                for ($i = 0; $i < count($arr); $i++) {
+                    if ($i == 0) {
+                        $fileName = "'" . $arr[$i] . "'";
+                    } else {
+                        $fileName .= ",'" . $arr[$i] . "'";
+                    }
+                }
+                $sql = "SELECT `path`,`file_name` FROM `Survey_AdvImage` WHERE `file_name` in ({$fileName}) AND `start`=1 GROUP BY `file_name`";
+//                echo $sql;
+//                exit();
+                $datas = $this->db->query($sql);
+                while ($data = mysqli_fetch_assoc($datas)) {
+                    $arrs[] = $data;
+                }
+                if (!empty($arrs)) {
+                    $infoArr = array(
+                        'status' => 'success',
+                        'msg' => '',
+                        'data' => $arrs
+                    );
+                } else {
+                    $infoArr = array(
+                        'status' => 'failed',
+                        'data' => ''
+                    );
+                }
+                return $infoArr;
+                break;
         }
     }
 }
+
+

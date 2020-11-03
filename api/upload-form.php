@@ -7,21 +7,17 @@
  */
 
 include_once ("../includes/config.inc.php");
-
-$rawJson = file_get_contents('php://input','r');
-
-if(empty($rawJson)){
-    $data = $_REQUEST;
-    if(empty($data['channel'])){
-        $data['channel'] = 0;
+$tmp1 = json_decode(file_get_contents('php://input', 'r'),true);
+$tmp2 = $_REQUEST;
+if(!empty($tmp1)){//旧版本请求
+    $data = $tmp1;
+    if(!isset($data['q'])){
+        $data['q'] = $tmp2['q'];
     }
 }else{
-    $data = json_decode($rawJson,TRUE);
-    if(empty($data['q'])){
-        $data['q'] = $_REQUEST ['q'];
-    }
+    $data = $tmp2;
 }
-
+file_put_contents('/tmp/wkktest.logg',"start time".date('Y-m-d H:i:s')."\n",FILE_APPEND);
 $query = $_REQUEST ['q'];
 if(empty($query)){
     $query = 'uploadForm';
@@ -221,9 +217,8 @@ function getClassRecord($class_record_id){
 
 function uploadPDFForm($data){
     global $db,$conf;
-
     $surInfo = getSurInfo($data['sign']);
-
+    file_put_contents('/tmp/wkktest.logg',"start time".date('Y-m-d H:i:s')."\n",FILE_APPEND);
     $class_record_id = getArrNoNull($data,'class_record_id');
 
     $class_record = getClassRecord($class_record_id);
@@ -232,6 +227,7 @@ function uploadPDFForm($data){
     }
 
     $jobNoNew = $class_record['jobNoNew'];
+
     if(isset($data['surveyor_id'])){
         $surveyor_id = $data['surveyor_id'];
         $ss = new Surveyor();
@@ -272,9 +268,6 @@ function uploadPDFForm($data){
     $m->jobNoNewSigle = $jobNoNew;
     $m->surveyorCode = $surveyor_id;
 
-
-    file_put_contents('/tmp/wkktest.logg','jobNoNew:'.$jobNoNew."\n".'data:'.json_encode($data)."\n".'surveyor_id:'.$surveyor_id,FILE_APPEND);
-
     $rs = $ma->GetListSearch($m);
     if(isset($rs[0]) && !empty($rs[0])){
         $m = $rs[0];
@@ -290,9 +283,13 @@ function uploadPDFForm($data){
             is_file($path) or mkdir($path,0755);
         }
 
+//        file_put_contents('/tmp/wkktest.logg',json_encode($_FILES),FILE_APPEND);
+        file_put_contents('/tmp/wkktest.logg',"\n\n\n",FILE_APPEND);
+
         foreach($_FILES['formFile']['name'] as $k=>$v){
             $fileExt = fileext($v);
             $fileExt = strtolower($fileExt);
+            file_put_contents('/tmp/wkktest.logg',"uploaderorr:".$_FILES['formFile']."\n",FILE_APPEND);
 
             if($fileExt == 'pdf'){
                 $fileName = $jobNoNew.'-'.date('YmdHis').'.'.fileext($v);
@@ -306,6 +303,7 @@ function uploadPDFForm($data){
             if(!$moveres){
                 returnJson('failed','','Move file failed');
             }else{
+                //插入到Survey_SurveyorClassPDF表
                 addClassPDF($surveyor_id,$jobNoNew,$urlPath.$fileName,$surInfo->survId,$class_record_id);
             }
         }

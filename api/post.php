@@ -7,17 +7,15 @@
  */
 include_once ("../includes/config.inc.php");
 
-if(empty($_POST) || count($_POST)<2){
-	$rawJson = file_get_contents('php://input','r');
-}
-if(empty($rawJson)){
-	$data = $_REQUEST;
-	$data['channel'] = 0;
+$tmp1 = json_decode(file_get_contents('php://input', 'r'),true);
+$tmp2 = $_REQUEST;
+if(!empty($tmp1)){//旧版本请求
+    $data = $tmp1;
+    if(!isset($data['q'])){
+        $data['q'] = $tmp2['q'];
+    }
 }else{
-	$data = json_decode($rawJson,TRUE);
-	if(empty($data['q'])){
-		$data['q'] = $_REQUEST ['q'];
-	}
+    $data = $tmp2;
 }
 // start output
 //if ($data['callback']) {

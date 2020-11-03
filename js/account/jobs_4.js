@@ -1,5 +1,4 @@
 $(document).ready(function(){
-
    let data= getInfo('q');
    $("#emptyWrap").hide();
    if (data!=="" && data!==null){

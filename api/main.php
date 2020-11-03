@@ -7,25 +7,25 @@
  */
 include_once("../includes/config.inc.php");
 
-$rawJson = file_get_contents('php://input', 'r');
-
-if (empty($rawJson)) {
-    $data = $_REQUEST;
-    if (empty($data['channel'])) {
-        $data['channel'] = 0;
+//$rawJson = json_decode(file_get_contents('php://input', 'r'),true);
+//$data = !empty($rawJson['sign']) ? $rawJson:$_REQUEST;
+//if(empty($rawJson['q'])){
+//    $data['q'] = $_REQUEST['q'];
+//}
+$tmp1 = json_decode(file_get_contents('php://input', 'r'),true);
+$tmp2 = $_REQUEST;
+if(!empty($tmp1)){//旧版本请求
+    $data = $tmp1;
+    if(!isset($data['q'])){
+        $data['q'] = $tmp2['q'];
     }
-} else {
-    $data = json_decode($rawJson, TRUE);
-    if (empty($data['q'])) {
-        $data['q'] = $_REQUEST ['q'];
-    }
+}else{
+    $data = $tmp2;
 }
+
+
+
 $ja = new JobsAccess($db);
-
-
-
-
-
 switch ($data['q']) {
 
     case "adpic":
@@ -380,7 +380,6 @@ function adaptRecursion($ja,$arr, $n, $differ1, $differ2, $differ3, $differ4, $d
                 //查询数据成功返回数据
                 echo json_encode($message, JSON_UNESCAPED_UNICODE);
             } else {
-//                echo 1111;
                 $message = array(
                     'status' => 'failed',
                     'msg' => 'no data',
@@ -402,7 +401,6 @@ function adaptRecursion($ja,$arr, $n, $differ1, $differ2, $differ3, $differ4, $d
                 //查询数据成功返回数据
                 echo json_encode($message, JSON_UNESCAPED_UNICODE);
             } else {
-//                echo 2222;
                 $message = array(
                     'status' => 'failed',
                     'msg' => 'no data',
@@ -415,7 +413,6 @@ function adaptRecursion($ja,$arr, $n, $differ1, $differ2, $differ3, $differ4, $d
             $arr['rate'] = '1:2';
             $info = $ja->advImage(2, $arr);
             if ($info['status'] == 'success') {
-                echo 3333;
                 $adpics = adaptImage($arr, $info);
                 $message = array(
                     'status' => 'success',
@@ -446,7 +443,6 @@ function adaptRecursion($ja,$arr, $n, $differ1, $differ2, $differ3, $differ4, $d
                 //查询数据成功返回数据
                 echo json_encode($message, JSON_UNESCAPED_UNICODE);
             } else {
-                echo 4444;
                 $message = array(
                     'status' => 'failed',
                     'msg' => 'no data',
