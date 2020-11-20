@@ -10,8 +10,8 @@
           <option name="port" value="10107" />
         </fileTransfer>
       </webServer>
-      <webServer id="0468cf7c-20ff-48ba-903e-017c59381713" name="正式" url="http://120.27.202.77">
-        <fileTransfer host="120.27.202.77" port="10107" privateKey="C:\wamp\www\root120.27.202.77.ppk" rootFolder="/data0/htdocs/www.ozzotec.com/academy" accessType="SFTP" keyPair="true">
+      <webServer id="0468cf7c-20ff-48ba-903e-017c59381713" name="正式" url="http://8.210.215.85">
+        <fileTransfer host="8.210.215.85" port="10107" privateKey="C:\wamp\www\root120.27.202.77.ppk" rootFolder="/data0/htdocs/www.ozzotec.com/academy" accessType="SFTP" keyPair="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

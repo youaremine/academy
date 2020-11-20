@@ -5,13 +5,13 @@
  * Auther: Jamblues.
  */
 error_reporting(E_ALL & ~E_NOTICE);
-define('SITEVESION',201612142242);
-define('PROJECTNAME','academy');
+define('SITEVESION', 201612142242);
+define('PROJECTNAME', 'academy');
 session_start();
 header('content-Type: text/html; charset=utf-8');
-$conf = array ();
+$conf = array();
 // current path
-$conf["path"]["root"] = dirname(dirname(__FILE__)).'/';
+$conf["path"]["root"] = dirname(dirname(__FILE__)) . '/';
 $conf["path"]["access"] = $conf["path"]["root"] . "includes/access/";
 $conf["path"]["entity"] = $conf["path"]["root"] . "includes/entity/";
 $conf["path"]["currDir"] = "./";
@@ -27,7 +27,7 @@ $conf["path"]["surveyor"] = "./surveyor/";
 $conf["path"]["main_schedule"] = "./main_schedule/";
 $conf["path"]["flowChartTemplate"] = "./flow/chart-template/";
 //$conf["path"]["sign"] = $conf["path"]["root"] ."runtime/sign/";
-$conf["path"]["sign"] = $conf["path"]["root"] ."./runtime/sign/";
+$conf["path"]["sign"] = $conf["path"]["root"] . "./runtime/sign/";
 // file name
 // surveyor
 $conf["file"]["surveyor"] = "surveyor_list.xls";
@@ -95,36 +95,39 @@ $conf['page']['pagesize'] = 20;
 // database product
 $conf["dbConnectStr"]["BusSurvey"]["host"] = "localhost";
 $conf["dbConnectStr"]["BusSurvey"]["dataBase"] = "academy";
-$conf["dbConnectStr"]["BusSurvey"]["user"] = "root";
-$conf["dbConnectStr"]["BusSurvey"]["password"] = "ozzo2019";
+$conf["dbConnectStr"]["BusSurvey"]["user"] = "gogolunadm_alex";
+$conf["dbConnectStr"]["BusSurvey"]["password"] = "stanleyalex";
 $conf["dbConnectStr"]["BusSurvey"]["characterSet"] = "latin1";
 
-include_once ($conf["path"]["root"] . "../library/database/DataBase.php");
-include_once ($conf["path"]["root"] . "../library/phplib/Template.php");
-include_once ($conf["path"]["root"] . "../library/phplib/CacheTemplate.php");
-include_once ($conf["path"]["root"] . "../library/json/json.class.php");
-include_once ($conf["path"]["root"] . "includes/function.php");
+include_once($conf["path"]["root"] . "../library/database/DataBase.php");
+include_once($conf["path"]["root"] . "../library/phplib/Template.php");
+include_once($conf["path"]["root"] . "../library/phplib/CacheTemplate.php");
+include_once($conf["path"]["root"] . "../library/json/json.class.php");
+include_once($conf["path"]["root"] . "includes/function.php");
 
 $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
 
 /**
  * 自动载入classes
  *
- * @param string $name        	
+ * @param string $name
  * @return bool
  */
-function __autoload($name){
-	global $conf;
-	if(strstr(strtolower($name),"pear")){
-		return true;
-	}
-	if(file_exists($conf["path"]["access"] . $name . '.php')){
-		require_once ($conf["path"]["access"] . $name . '.php');
-	}else if(file_exists($conf["path"]["entity"] . $name . '.php')){
-		require_once ($conf["path"]["entity"] . $name . '.php');
-	}else{
-		require_once ($conf["path"]["root"] . "includes/" . $name . '.php');
-	}
-	return true;
+function __autoload($name) {
+    global $conf;
+    if (strstr(strtolower($name), "pear")) {
+        return true;
+    }
+    if (file_exists($conf["path"]["access"] . $name . '.php')) {
+        require_once($conf["path"]["access"] . $name . '.php');
+    } else if (file_exists($conf["path"]["entity"] . $name . '.php')) {
+        require_once($conf["path"]["entity"] . $name . '.php');
+    } else {
+        if ($name !== "Redis") {
+            require_once($conf["path"]["root"] . "includes/" . $name . '.php');
+        }
+    }
+    return true;
 }
+
 ?>

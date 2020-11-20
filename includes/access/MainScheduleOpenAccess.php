@@ -109,6 +109,7 @@ class MainScheduleOpenAccess
         $sql = "DELETE FROM Survey_MainScheduleOpen ".
             " WHERE 1=1  AND jobNoNew LIKE '{$jobNo}%'";
         $this->db->query($sql);
+        //file_put_contents('/tmp/add1019.log', '`````````````````````````'."\n".$sql. "\n\r", FILE_APPEND);
         $sql = "DELETE FROM Survey_SurveyorMainSchedule ".
             " WHERE 1=1  AND jobNoNew LIKE '{$jobNo}%'";
         $this->db->query($sql);

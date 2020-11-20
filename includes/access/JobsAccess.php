@@ -336,8 +336,8 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
             $row['signNumbers'] = 0;
             $row['startTime'] = date('H:i', strtotime(date('Y-m-d') . $dr['startTime_1']));
             $row['endTime'] = date('H:i', strtotime(date('Y-m-d') . $dr['endTime_1']));
-            $row['isOpen'] = $dr['isOpen'] == 1 ? 'yes' : 'no';//是否开启自行报道
-            $row['isOpen2'] = $dr['isOpen2'] == 1 ? 'yes' : 'no';//是否开放选取
+            $row['isOpen'] = $dr['isOpen'] >= 1 ? 'yes' : 'no';//是否开启自行报道
+            $row['isOpen2'] = $dr['isOpen2'] >= 1 ? 'yes' : 'no';//是否开放选取
             $row['realClass'] = $dr['realClass'];
             $row['bookLong'] = $dr['bookLong'];
             $row['bookLat'] = $dr['bookLat'];

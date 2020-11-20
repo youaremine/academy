@@ -8,6 +8,7 @@
 
 set_time_limit(0);
 include_once("../includes/config.inc.php");
+include_once("./swoole/push/php/src/MsgPush.php");
 
 //$rawJson = json_decode(file_get_contents('php://input', 'r'),true);
 //$data = !empty($rawJson['sign']) ? $rawJson:$_REQUEST;
@@ -301,7 +302,6 @@ function tmpInitData233() {
     }
 }
 
-
 /*
  * 获取课堂记录
  * */
@@ -312,13 +312,13 @@ function getClassRecord($data) {
     $start_time = isset($data['start_time']) ? $data['start_time'] : false;
     $end_time = isset($data['end_time']) ? $data['end_time'] : false;
     $is_goods = isset($data['is_goods']) ? $data['is_goods'] : -1;
-    $status=isset($data['is_status'])?$data['is_status']:0;
+    $status = isset($data['is_status']) ? $data['is_status'] : 0;
 
 //    file_put_contents('/tmp/add1019.log', json_encode($data) . "\n\r", FILE_APPEND);
 
     if ($class_surId != $surInfo->survId) {
         if ($surInfo->survType == 'admin' || $surInfo->survType == 'teach') {
-            $res = _getClassRecord($class_surId, $start_time, $end_time,$is_goods,$status);
+            $res = _getClassRecord($class_surId, $start_time, $end_time, $is_goods, $status);
             //分页
             returnJson('success', $res, '');
         } else {
@@ -328,25 +328,23 @@ function getClassRecord($data) {
         if ($class_surId != $surInfo->survId) {
             if ($surInfo->survType == 'admin' || $surInfo->survType == 'teach') {
                 //管理员能查看所有人的
-                $res = _getClassRecord($class_surId, $start_time, $end_time,$is_goods,$status);
+                $res = _getClassRecord($class_surId, $start_time, $end_time, $is_goods, $status);
 
             } else {
                 returnJson('failed', '', 'Permission Error');
             }
         } else {
             //学员自己只能查自己的
-            $res = _getClassRecord($class_surId, $start_time, $end_time,$is_goods,$status);
+            $res = _getClassRecord($class_surId, $start_time, $end_time, $is_goods, $status);
         }
         //分页
-
-
 
 
         returnJson('success', $res, '');
     }
 }
 
-function _getClassRecord($survId, $start_time = false, $end_time = false, $is_goods = -1,$is_status=0) {
+function _getClassRecord($survId, $start_time = false, $end_time = false, $is_goods = -1, $is_status = 0) {
     global $db;
 
     $sql = "SELECT ssc.id as id,ssc.surveyor_id,ssc.jobNoNew,ssc.use_class,ssc.class_remain,ssc.remark,ssc.record_surveyor_id,ssc.record_time,ssc.is_del,ssc.status,ssc.confirm_pdf_create_time,ssc.record_time,
@@ -361,29 +359,28 @@ left Join (select * from Survey_SurveyorClassPDF where id in (select max(id) fro
 WHERE ";
 
     if ($start_time !== false && $end_time !== false) {
-        $end_time=date('Y-m-d H:i:s',strtotime($end_time)+24*60*60-1);
+        $end_time = date('Y-m-d H:i:s', strtotime($end_time) + 24 * 60 * 60 - 1);
 //        $sql .= "sm.plannedSurveyDate >= '$start_time' and sm.plannedSurveyDate <= '$end_time' and ";
         $sql .= "ssc.record_time >= '$start_time' and ssc.record_time <= '$end_time' and ";
     }
 
 
-        if ($is_goods=='1') {
-            $sql .= "sm.is_image='1' and ";
-        }else if($is_goods=='0'){
-            $sql .= "sm.is_image='0' and ";
-        }
+    if ($is_goods == '1') {
+        $sql .= "sm.is_image='1' and ";
+    } else if ($is_goods == '0') {
+        $sql .= "sm.is_image='0' and ";
+    }
 
 
-
-    if(!empty($is_status)){
-        if($is_status=='3'){
-            $sql.="ssc.status in ('0','1') and ";
-        }else if($is_status==1 || $is_status==2){
-            $sql.="ssc.status = '".$is_status."' and ";
-        }else if($is_status==4){
-            $sql.="sscp.path is not null and ssc.status =1 and ";
-        }else if($is_status==5){
-            $sql.="sscp.path is null and  ssc.status =1 and ";
+    if (!empty($is_status)) {
+        if ($is_status == '3') {
+            $sql .= "ssc.status in ('0','1') and ";
+        } else if ($is_status == 1 || $is_status == 2) {
+            $sql .= "ssc.status = '" . $is_status . "' and ";
+        } else if ($is_status == 4) {
+            $sql .= "sscp.path is not null and ssc.status =1 and ";
+        } else if ($is_status == 5) {
+            $sql .= "sscp.path is null and  ssc.status =1 and ";
         }
     }
 
@@ -422,16 +419,16 @@ WHERE ";
         $tmp['pdfid'] = $rs['pdfid'];
         $tmp['confirm_pdfid'] = $rs['confirm_pdfid'];
         $tmp['is_image'] = $rs['is_image'];
-        if(!empty($rs['img_url'])){
-            $imgString=$rs['img_url'];
-            $imgList=explode(',',$imgString);
-            if(!empty($imgList)){
-                $tmp['img_url'] =$imgList[0];
-            }else{
-                $tmp['img_url'] ='';
+        if (!empty($rs['img_url'])) {
+            $imgString = $rs['img_url'];
+            $imgList = explode(',', $imgString);
+            if (!empty($imgList)) {
+                $tmp['img_url'] = $imgList[0];
+            } else {
+                $tmp['img_url'] = '';
             }
-        }else{
-            $tmp['img_url'] ='';
+        } else {
+            $tmp['img_url'] = '';
         }
 
 
@@ -661,7 +658,7 @@ function batchUnsign($data) {
 
         if ($classInfo['plannedSurveyDate'] != '0000-00-00') {
             if (strtotime($nowTime) >= strtotime($classStartTime)) {
-                    returnJson('failed', [], '該課堂已完結');
+                returnJson('failed', [], '該課堂已完結');
             }
 
             if ($limitTimeArr['config_value'] == '99999') {
@@ -713,7 +710,6 @@ WHERE sm.jobNo='{$jobNo}' and sm.surveyorCode in($surveyors_str) ";
 
     $sa = new SurveyorAccess($db);
     $sur = new Surveyor();
-
 
 
     foreach ($dataArr as $v) {
@@ -796,8 +792,8 @@ function unSignList($data) {
         }
         $allSql = "SELECT survId,chiName,engName,contact,class_remain,survType,profilePhoto FROM Survey_Surveyor WHERE  status = 'active' ";
 
-        if(isset($data['term'])){
-            $allSql .= " AND (survId like '%".$data['term']."%' or `chiName` like '%". $data['term']."%' or `engName` like '%".$data['term']."%' or `contact` like '%". $data['term']."%')";
+        if (isset($data['term'])) {
+            $allSql .= " AND (survId like '%" . $data['term'] . "%' or `chiName` like '%" . $data['term'] . "%' or `engName` like '%" . $data['term'] . "%' or `contact` like '%" . $data['term'] . "%')";
         }
 
 
@@ -1483,10 +1479,67 @@ function batchOpenJob($data) {
         $msoa->Add($mso);
     }
 
+    //通知,现实批量写入。然后用户自己请求接口进行通知
     $title = '新消息通知';
     $content = '開放新課堂啦';
     $type = 1;
     addNotifition($title, $content, $type);
+
+//    //发送离线通知
+    $msgPush = new MsgPush("5caacd2661f564547b000d50", "bzxrxjmxgvlqtuwzrhiysniywl3k87yv");
+    $getTokenSql = "SELECT `survId`,`msg_token`,`deviceType` FROM Survey_Surveyor WHERE  `msg_token`!=''";
+    $tokenList = $db->query($getTokenSql);
+    while ($re = mysqli_fetch_assoc($tokenList)) {
+        if ($re['deviceType'] == 1) {
+            //安卓
+            $androidList[] = ['user_id' => $re['survId'], 'msg_token' => $re['msg_token']];
+        } else if ($re['deviceType'] == 2) {
+            //ios
+            $iosList[] = ['user_id' => $re['survId'], 'msg_token' => $re['msg_token']];
+        }
+    }
+
+    $data = array();
+    $data['ticker'] = "你有一條新消息";
+    $data['title'] = "新消息通知";
+    $data['text'] = "開放新課堂啦";//内容
+    $data['description'] = "";
+
+    $redis = new Redis();
+    if ($redis->exists('push_ident')) {
+        $redis->incr('push_ident');//推送数量+1
+    } else {
+        $redis->set('push_ident', 1);//设置push次数
+    }
+
+
+
+    //进行离线推送
+    if (!empty($androidList)) {
+        //推送次数大于10  或者在10分钟内未使用广播推送
+        if ($redis->get('push_ident') < 10 && !$redis->exists('push_timer')) {
+            $msgPush->sendAndroidBroadcast($data);//广播推送
+            $redis->expire('push_timer', 10 * 60);//设置计时器
+        } else {
+            foreach ($androidList as $v) {
+                $data['msg_token'] = $v['msg_token'];
+                $msgPush->sendAndroidUnicast($data);
+            }
+        }
+    }
+
+    if (!empty($iosList)) {
+        //ios暂时还未写，需调整发送的格式,先修改方法中要使用的参数
+//        if ($redis->get('push_ident') < 10 && !$redis->exists('push_timer')) {
+//            $msgPush->sendAndroidBroadcast($data);
+//            $redis->expire('push_timer', 10 * 60);//设置计时器
+//        } else {
+//            foreach ($androidList as $v) {
+//                $data['msg_token'] = $v['msg_token'];
+//                $msgPush->sendIOSUnicast($data);
+//            }
+//        }
+    }
 
 
     $message = array(
@@ -1895,15 +1948,14 @@ function getJobs($data) {
         die(json_encode($message));
     }
     //分页和排序
-    $paging=!empty($data['paging'])?$data['paging']:1;//第几页
-    $term=$data['term'];
+    $paging = !empty($data['paging']) ? $data['paging'] : 1;//第几页
+    $term = $data['term'];
     $ja = new JobsAccess($db);
-    if($term !== '0' && empty($term)){
+    if ($term !== '0' && empty($term)) {
         $rs = $ja->getList2(array(), '', '', $is_goods);
-    }else{
-        $rs=$ja->getList2(array(), '', '', $is_goods,$term);
+    } else {
+        $rs = $ja->getList2(array(), '', '', $is_goods, $term);
     }
-
 
 
     foreach ($rs as $k => $v) {
@@ -1923,7 +1975,7 @@ function getJobs($data) {
     }
     //数组排序
     $date = date('Y-m-d');
-    $arr=array();//最終的
+    $arr = array();//最終的
     $oneArr = array();//未超时
     $twoArr = array();//已超时
     $threeArr = array();//未点名
@@ -1953,21 +2005,20 @@ function getJobs($data) {
         $oneArr = array_merge_recursive($threeArr, $fourArr);
     }
     if (!empty($twoArr)) {
-        foreach ($twoArr as $k=> $v){
-            if($v['plannedSurveyDate']=='0000-00-00'){
-                $arr[]=$v;
+        foreach ($twoArr as $k => $v) {
+            if ($v['plannedSurveyDate'] == '0000-00-00') {
+                $arr[] = $v;
                 unset($twoArr[$k]);
             }
         }
-        $twoArr=array_values($twoArr);
+        $twoArr = array_values($twoArr);
         $twoArr = quickSort($twoArr);
     }
 
 
-
-    $rs = array_merge_recursive($arr,$oneArr, $twoArr);
+    $rs = array_merge_recursive($arr, $oneArr, $twoArr);
     //搜索的不要分页
-    if($term!=='0' && empty($term) && isset($data['paging']) ) {
+    if ($term !== '0' && empty($term) && isset($data['paging'])) {
         //需要分页
         $num = 20;
         $length = ceil(count($rs) / $num);//有多少分页
@@ -1985,7 +2036,7 @@ function getJobs($data) {
             'data' => $res
         );
         die(json_encode($message));
-    }else{
+    } else {
         $message = array(
             'status' => 'success',
             'msg' => '',
@@ -2020,11 +2071,6 @@ function quickSort($arr) {
     //合并
     return array_merge($right_array, array($base_num), $left_array);
 }
-
-
-
-
-
 
 
 /** 冒泡排序，时间戳小的在前
@@ -2280,7 +2326,7 @@ function getDataEntryList($data) {
  * @param $data
  */
 function setJobOpenStatus($data) {
-    file_put_contents('/tmp/loginPass.log', json_encode($data) . "\n\r", FILE_APPEND);
+//    file_put_contents('/tmp/loginPass.log', json_encode($data) . "\n\r", FILE_APPEND);
     global $conf, $db;
     if (empty($data['sign'])) {
         $message = array(
@@ -2309,6 +2355,7 @@ function setJobOpenStatus($data) {
         die(json_encode($message));
     }
 
+    //下面才是业务代码
     $sjoa = new SurveyJobOpenAccess($db);
     $sjo = new SurveyJobOpen();
     $sjo->inputTime = date("Y-m-d H:i:s");

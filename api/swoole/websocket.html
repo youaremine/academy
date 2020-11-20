@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+
+</body>
+<script>
+    let user_id = 4;
+    let i=1;
+    // let user_id = getFormatDate();
+    let websocket = new WebSocket('ws://47.75.165.42:3333?user_id=' + user_id);
+    //连接
+    websocket.onopen = function (evt) {
+
+        console.log(evt);
+    };
+    //结束
+    websocket.onclose = function (evt) {
+        console.log("断开连接");
+    };
+    //接收消息后
+    websocket.onmessage = function (evt) {
+        let arr = {"type": "info", "mode": 2, "group_id": "I001", "user_id": user_id,"to_user_id":5, "mss_content": "hello world"};
+        // type: info or img  消息/图片
+        // mode: 1 or 2  私聊/群发
+        // group_id: 群id 或者使用jobNoNew
+        // user_id: 当前用户ID
+        // to_user_id: 需要私聊发送用户ID
+        // mss_content: 需要发送的消息
+        if(i==1){
+            websocket.send(JSON.stringify(arr));
+            i++;
+        }
+        console.log('接收到服务器消息: ' + evt.data);
+    };
+
+    //生成随机ID
+    function getFormatDate() {
+        var nowDate = new Date();
+        var year = nowDate.getFullYear();
+        var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+        var date = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+        var hour = nowDate.getHours() < 10 ? "0" + nowDate.getHours() : nowDate.getHours();
+        var minute = nowDate.getMinutes() < 10 ? "0" + nowDate.getMinutes() : nowDate.getMinutes();
+        var second = nowDate.getSeconds() < 10 ? "0" + nowDate.getSeconds() : nowDate.getSeconds();
+        return year + "" + month + "" + date + "" + hour + "" + minute + "" + second;
+    }
+</script>
+
+</html>
