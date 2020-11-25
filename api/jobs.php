@@ -1506,6 +1506,7 @@ function batchOpenJob($data) {
     $data['description'] = "";
 
     $redis = new Redis();
+    $redis->connect('127.0.0.1', 6379);
     if ($redis->exists('push_ident')) {
         $redis->incr('push_ident');//推送数量+1
     } else {
@@ -1514,10 +1515,10 @@ function batchOpenJob($data) {
 
 
 
-    //进行离线推送
-    if (!empty($androidList)) {
-        //推送次数大于10  或者在10分钟内未使用广播推送
-        if ($redis->get('push_ident') < 10 && !$redis->exists('push_timer')) {
+    //进行离线推送  10分钟内只能推送一次
+    if (!empty($androidList) && !$redis->exists('push_timer')) {
+        //推送次数大于10  无法使用广播推送
+        if ($redis->get('push_ident') < 10) {
             $msgPush->sendAndroidBroadcast($data);//广播推送
             $redis->expire('push_timer', 10 * 60);//设置计时器
         } else {

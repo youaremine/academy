@@ -64,18 +64,30 @@ class WebsocketServer {
         $msg_token = $request->get['deviceToken'];
         $deviceType = $request->get['deviceType'];
 
+        $sqlOld="SELECT msg_token FROM Survey_Surveyor WHERE survId='{$user_id}'";
+        $tokenOldSql=$this->db->query($sqlOld);
+        $tokenOld=mysqli_fetch_assoc($tokenOldSql)['msg_token'];//获取之前的token
+
+
+        //保存token 之前先判断是否已经存在相同token,有的话先删掉
+        $sql = "UPDATE Survey_Surveyor SET msg_token='' WHERE msg_token='{$msg_token}'";
+        $this->db->query($sql);
+
         //保存下 token-user_id 到用户表
         $sql = "UPDATE Survey_Surveyor SET msg_token='{$msg_token}',deviceType='{$deviceType}' WHERE survId='{$user_id}'";
         $this->db->query($sql);
 
-        //判断如果存在此用户，给原先连接发送离线通知
+        //判断如果存在此用户，且登录的设备不同，给原先设备连接发送离线通知
         if($this->redis->hexists("fd_hash", 'fd_' . $user_id)){
             $offFd= $this->redis->hget("fd_hash", 'fd_' . $user_id);
-            $returnDate['status']='success';
-            $returnDate['msg']='';
-            $returnDate['type']='off_line';
-            $returnDate['data']=[];
-            $server->push($offFd, json_encode($returnDate));
+            $this->close($server,$offFd);//主动断开之前连接
+            if($tokenOld !== $msg_token){
+                $returnDate['status']='success';
+                $returnDate['msg']='';
+                $returnDate['type']='off_line';
+                $returnDate['data']=[];
+                $server->push($offFd, json_encode($returnDate));
+            }
         }
 
         //用redis保存user_id和fd的关系
@@ -116,6 +128,7 @@ class WebsocketServer {
             case 1:
                 //私聊功能暂时不需要开发
                 break;
+
             //群发
             case 2:
                 $arr = $this->getSendUser($info);//所有要发送的名单
@@ -140,11 +153,12 @@ class WebsocketServer {
                 $this->db->query($sql);
                 $sqls = "SELECT LAST_INSERT_ID()";
                 $postId = mysqli_fetch_assoc($this->db->query($sqls))['LAST_INSERT_ID()'];
+
                 //拿到需要发送的消息
                 $returnDate = $this->returnDate($info, $timer, $postId);
 
                 if (!empty($onArr)) {
-                    //在线的进行广播发送
+                    //在线的进行websocket发送
                     foreach ($onArr as $v) {
                         $extra = ['status' => 'success', 'msg' => '', 'type'=>'msg','data' => [$returnDate]];
                         $server->push($v, json_encode($extra));
@@ -172,7 +186,10 @@ class WebsocketServer {
                     //获取离线用户的msg_token 和 设备类型
                     $iosList=array();
                     $androidList=array();
+
+                    //过滤重复的 token 避免发送多次推送
                     $getTokenSql = "SELECT `survId`,`msg_token`,`deviceType` FROM Survey_Surveyor WHERE `survId` IN ({$off_user_id}) AND `msg_token`!=''";
+
                     $tokenList=$this->db->query($getTokenSql);
                     while ($re = mysqli_fetch_assoc($tokenList)) {
                         if($re['deviceType']==1){
@@ -186,6 +203,14 @@ class WebsocketServer {
 
                     //进行离线推送
                     if(!empty($androidList)){
+
+                        echo "====Start====";
+                        echo "\n";
+                        echo 'From:'.$engName."\n".'TO:'.json_encode($androidList);
+                        echo "\n";
+                        echo "====End======";
+
+
                         foreach ($androidList as $v){
                             $data=array();
                             $data['msg_token']=$v['msg_token'];
@@ -327,6 +352,8 @@ class WebsocketServer {
                 $arr[] = $data['survId'];
             }
         }
+
+
 
         return $arr;
     }
