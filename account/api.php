@@ -49,6 +49,18 @@ WHERE 1=1 and config_name = 'chargedLimit' ";
             if($chargedLimit_rs = $db->next_record()){
                 $chargedLimit = $chargedLimit_rs['config_value'];
             }
+
+
+            if($s->class_remain <= 0-$chargedLimit ){
+                $message = array (
+                    'status' => 'failed',
+                    'message' => '所欠課堂數已達上限，選取失敗',
+                    'data' => array()
+                );
+                die(json_encode($message));
+            }
+
+
             if($s->class_remain <= 0-$chargedLimit ){
                 $message = array (
                     'status' => 'failed',

@@ -46,7 +46,9 @@ switch ($data['q']) {
         $username = $data['username'];
         $password = $data['password'];
         $login = new SurveyorLogin ($db);
-        if ($login->Login($username, $password)) {//判断密码是否正确
+        $res = $login->Login($username, $password);
+        $res = $res?1:0;
+        if ($res) {//判断密码是否正确
 
             $s = new Surveyor ();
             $s->company = '';
@@ -95,7 +97,7 @@ switch ($data['q']) {
                 'sign' => ''
             );
         }
-        file_put_contents('/tmp/loginPass.log', json_encode($message) . "\n\r", FILE_APPEND);
+
         die(json_encode($message));
         break;
 
@@ -2227,6 +2229,7 @@ function getAllInfo($data) {
             $dr['profilePhoto'] = $v->profilePhoto;
             $dr['vip_level'] = $v->vip_level;
             $dr['avatar'] = $v->avatar;
+            $dr['class_remain'] = $v->class_remain;
             $rsData[] = $dr;
         }
         $num = 20;

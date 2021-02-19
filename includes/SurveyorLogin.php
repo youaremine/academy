@@ -16,7 +16,7 @@ class SurveyorLogin
 	
 	/**
 	 * 用户登录
-	 * 
+	 *
 	 * @access public
 	 */
 	function Login($userName, $passWord)

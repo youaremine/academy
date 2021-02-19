@@ -90,6 +90,15 @@ abstract class UmengNotification {
         $curlErrNo = curl_errno($ch);
         $curlErr = curl_error($ch);
         curl_close($ch);
+
+        file_put_contents('/tmp/ios_brotest.log',"\n",8);
+        file_put_contents('/tmp/ios_brotest.log',"c22h:".$result,8);
+
+        file_put_contents('/tmp/ios_brotest.log',"postBody:".$postBody,8);
+        file_put_contents('/tmp/ios_brotest.log',"\n",8);
+
+
+
 //        print($result . "\r\n");
 //        if ($httpCode == "0") {
 //          	 // Time out

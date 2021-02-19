@@ -1,10 +1,10 @@
 $(document).ready(function () {
     let data = getInfo();
-    let aaa=document.getElementsByClassName('aaa')[0];
-    addPlan(aaa);
+   /* let aaa=document.getElementsByClassName('aaa')[0];
+    addPlan(aaa);*/
 
     if (data !== null && data !== "") {
-        let iden = data[0].jobNoNew;
+        let iden = data[0].jobNoShort;
         let info = data[0].vehicle;
         let imgUrl = data[0].img_url;
         let total=data[0].total;
@@ -12,10 +12,10 @@ $(document).ready(function () {
         let judgeInfo=judgePlan(iden);
         let project=data[0].project;
         if(judgeInfo!==undefined){
-            analysisDate(judgeInfo[0].jobNoNew, info, imgUrl,total,surplus,project);
+            analysisDate(judgeInfo[0].jobNoShort +'咨詢', info, imgUrl,total,surplus,project);
             var url="ozzomonitoringsurvey://chat.app/?jobNo="+data[0].jobNoShort+"&refNo="+data[0].jobNoNew+"&surveyType="+data[0].surveyType;
         }else{
-            analysisDate(iden, info, imgUrl,total,surplus,project);
+            analysisDate(iden + '咨詢', info, imgUrl,total,surplus,project);
             var url="ozzomonitoringsurvey://chat.app/?jobNo="+data[0].jobNoShort+"&refNo="+data[0].jobNoNew+"&surveyType="+data[0].surveyType;
         }
         $('.serial').attr('href',url);
@@ -53,7 +53,7 @@ function getInfo(iden=null) {
  * @param total 传回的物品总数
  * @param surplus 传回剩余物品数量
  */
-function analysisDate(iden, info, imgUrl,total,surplus,project) {
+function  analysisDate(iden, info, imgUrl,total,surplus,project) {
     $(".serial>em").text(iden);
     $(".info-table tr:nth-of-type(2)>td:nth-of-type(2)").text(info);
     $(".info-table tr:nth-of-type(3)>td:nth-of-type(2)").text(total);
@@ -153,23 +153,25 @@ function touchMove(e) {
  * 加入购物车
  * @param event
  */
-// function addPlan(event){
-//     var num=$(".serial>em").text();
-//     $.ajax({
-//         type : "GET",
-//         url : "./api.php",
-//         data : "q=selectJob&jobNoNew=" +num+"&identifier=0",
-//         dataType : "json",
-//         success : function(msg) {
-//             console.log(msg);
-//             if(msg.success){
-//                 event.innerHTML="已購買";
-//                 event.setAttribute('class','btn btn-danger');
-//                 event.setAttribute('onclick','');
-//             }
-//         }
-//     });
-// }
+/*function addPlan(event){
+    var num=$(".serial>em").text();
+    $.ajax({
+        type : "GET",
+        url : "./api.php",
+        data : "q=selectJob&jobNoNew=" +num+"&identifier=0",
+        dataType : "json",
+        success : function(msg) {
+            console.log(msg);
+            if(msg.success){
+                event.innerHTML="已購買";
+                event.setAttribute('class','btn btn-danger');
+                event.setAttribute('onclick','');
+            }
+        }
+    });
+}
+*/
+
 function addPlan(event){
     var num=$(".serial>em").text();
     $.ajax({

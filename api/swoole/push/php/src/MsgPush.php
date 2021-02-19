@@ -11,14 +11,26 @@ require_once(dirname(__FILE__) . '/' . 'notification/ios/IOSUnicast.php');
 require_once(dirname(__FILE__) . '/' . 'notification/ios/IOSCustomizedcast.php');
 
 class MsgPush {
+
+    protected $android_key = '5caacd2661f564547b000d50';
+    protected $android_secret = 'bzxrxjmxgvlqtuwzrhiysniywl3k87yv';
+    protected $ios_key = '5d26d23f4ca357258a0003b7';
+    protected $ios_secret = 'qz7efzs8ku468026z9d2hhosprr6nvbh';
+
     protected $appkey           = NULL;
     protected $appMasterSecret     = NULL;
     protected $timestamp        = NULL;
     protected $validation_token = NULL;
 
-    function __construct($key, $secret) {
-        $this->appkey = $key;
-        $this->appMasterSecret = $secret;
+    function __construct($type = 'android') {
+        if($type == 'android'){
+            $this->appkey = $this->android_key;
+            $this->appMasterSecret = $this->android_secret;
+        }else{
+            $this->appkey = $this->ios_key;
+            $this->appMasterSecret = $this->ios_secret;
+        }
+
     }
 
     /**
@@ -36,14 +48,15 @@ class MsgPush {
             $brocast->setPredefinedKeyValue("after_open",       "go_app");
             // Set 'production_mode' to 'false' if it's a test device.
             // For how to register a test device, please see the developer doc.
-            $brocast->setPredefinedKeyValue("production_mode", "false");
+            $brocast->setPredefinedKeyValue("production_mode", "true");
             // [optional]Set extra fields
-            $brocast->setExtraField("test", "helloworld");
+            $puth_type = $data['push_type'] == 'other'?'other':'msg';
+            $brocast->setExtraField("push_type", $puth_type);
 //            print("Sending broadcast notification, please wait...\r\n");
             $brocast->send();
 //            print("Sent SUCCESS\r\n");
         } catch (Exception $e) {
-            print("Caught exception: " . $e->getMessage());
+            print("Caught sendAndroidBroadcast exception: " . $e->getMessage());
         }
     }
 
@@ -74,9 +87,11 @@ class MsgPush {
             $unicast->setPredefinedKeyValue("description", $data['description']);//消息描述
             $unicast->setPredefinedKeyValue("display_type","notification");
 
-            $unicast->setPredefinedKeyValue("mi_activity","com.ozzo.interacademy.ui.start.OzzoStartActivity");//厂商识别
-//            $unicast->setPredefinedKeyValue("mi_activity","com.ozzo.interacademy.ui.tab_bar.activity.TabBarActivity");//厂商识别
+  //          $unicast->setPredefinedKeyValue("mi_activity","com.ozzo.interacademy.ui.start.OzzoStartActivity");//厂商识别
+            $unicast->setPredefinedKeyValue("mi_activity","com.ozzo.interacademy.ui.push.MipushTestActivity");//厂商识别
             $unicast->setPredefinedKeyValue("mipush",true);
+            $puth_type = $data['push_type'] == 'other'?'other':'msg';
+            $unicast->setExtraField("push_type", $puth_type);
 
             // Set extra fields
 
@@ -84,7 +99,7 @@ class MsgPush {
             $unicast->send();
 //            print("Sent SUCCESS\r\n");
         } catch (Exception $e) {
-            print("Caught exception: " . $e->getMessage());
+            print("Caught sendAndroidUnicast exception: " . $e->getMessage());
         }
     }
 
@@ -203,48 +218,68 @@ class MsgPush {
         }
     }
 
-    function sendIOSBroadcast() {
+    function sendIOSBroadcast($data) {
         try {
             $brocast = new IOSBroadcast();
             $brocast->setAppMasterSecret($this->appMasterSecret);
             $brocast->setPredefinedKeyValue("appkey",           $this->appkey);
-            $brocast->setPredefinedKeyValue("timestamp",        $this->timestamp);
 
-            $brocast->setPredefinedKeyValue("alert", "IOS 广播测试");
+
+            $brocast->setPredefinedKeyValue("timestamp",        strval(time()));
+
+            $brocast->setPredefinedKeyValue("alert", $data['text']);
             $brocast->setPredefinedKeyValue("badge", 0);
             $brocast->setPredefinedKeyValue("sound", "chime");
             // Set 'production_mode' to 'true' if your app is under production mode
-            $brocast->setPredefinedKeyValue("production_mode", "false");
+            $brocast->setPredefinedKeyValue("production_mode", true);
             // Set customized fields
-            $brocast->setCustomizedField("test", "helloworld");
-            print("Sending broadcast notification, please wait...\r\n");
+            if(isset($data['message'])){
+                if(isset($data['message']['type'])){
+                    $data['message']['type'] = $data['message']['type'] == 'other'?'other':'msg';
+                }
+            }
+            $brocast->setCustomizedField("message", $data['message']);
+
+
             $brocast->send();
-            print("Sent SUCCESS\r\n");
         } catch (Exception $e) {
-            print("Caught exception: " . $e->getMessage());
+            print("Caught sendIOSBroadcast exception: " . $e->getMessage());
         }
     }
 
     function sendIOSUnicast($data) {
+
         try {
             $unicast = new IOSUnicast();
             $unicast->setAppMasterSecret($this->appMasterSecret);
             $unicast->setPredefinedKeyValue("appkey",           $this->appkey);
-            $unicast->setPredefinedKeyValue("timestamp",        $this->timestamp);
+            $unicast->setPredefinedKeyValue("timestamp",        strval(time()));
             // Set your device tokens here
             $unicast->setPredefinedKeyValue("device_tokens",   $data['msg_token']);
-            $unicast->setPredefinedKeyValue("alert", $data['text']);
-            $unicast->setPredefinedKeyValue("badge", 0);
-            $unicast->setPredefinedKeyValue("sound", "chime");
+
+            $alert_arr = array();
+            $alert_arr['title'] = $data['title'];
+            $alert_arr['subtitle'] = '';
+            $alert_arr['body'] = $data['text'];
+            $unicast->setPredefinedKeyValue("alert",$alert_arr);
+            $unicast->setPredefinedKeyValue("badge", '+1');
+            $unicast->setPredefinedKeyValue("sound", "defautl");
             // Set 'production_mode' to 'true' if your app is under production mode
-            $unicast->setPredefinedKeyValue("production_mode", "false");
+            $unicast->setPredefinedKeyValue("production_mode", true);
             // Set customized fields
-            $unicast->setCustomizedField("test", "helloworld");
-            print("Sending unicast notification, please wait...\r\n");
+            if(isset($data['message']) && !empty($data['message'])){
+                if(isset($data['message']['type'])){
+                    $data['message']['type'] = $data['message']['type'] == 'other'?'other':'msg';
+                }
+            }else{
+                $data['message'] = '';
+            }
+            $unicast->setCustomizedField("message", $data['message']);
+            //print("Sending unicast notification, please wait...\r\n");
             $unicast->send();
-            print("Sent SUCCESS\r\n");
+            //print("Sent SUCCESS\r\n");
         } catch (Exception $e) {
-            print("Caught exception: " . $e->getMessage());
+            print("Caught sendIOSUnicast exception: " . $e->getMessage());
         }
     }
 
@@ -259,7 +294,7 @@ class MsgPush {
             $filecast->setPredefinedKeyValue("badge", 0);
             $filecast->setPredefinedKeyValue("sound", "chime");
             // Set 'production_mode' to 'true' if your app is under production mode
-            $filecast->setPredefinedKeyValue("production_mode", "false");
+            $filecast->setPredefinedKeyValue("production_mode", true);
             print("Uploading file contents, please wait...\r\n");
             // Upload your device tokens, and use '\n' to split them if there are multiple tokens
             $filecast->uploadContents("aa"."\n"."bb");
@@ -293,7 +328,7 @@ class MsgPush {
             $groupcast->setPredefinedKeyValue("badge", 0);
             $groupcast->setPredefinedKeyValue("sound", "chime");
             // Set 'production_mode' to 'true' if your app is under production mode
-            $groupcast->setPredefinedKeyValue("production_mode", "false");
+            $groupcast->setPredefinedKeyValue("production_mode", "true");
             print("Sending groupcast notification, please wait...\r\n");
             $groupcast->send();
             print("Sent SUCCESS\r\n");
@@ -319,7 +354,7 @@ class MsgPush {
             $customizedcast->setPredefinedKeyValue("badge", 0);
             $customizedcast->setPredefinedKeyValue("sound", "chime");
             // Set 'production_mode' to 'true' if your app is under production mode
-            $customizedcast->setPredefinedKeyValue("production_mode", "false");
+            $customizedcast->setPredefinedKeyValue("production_mode", "true");
             print("Sending customizedcast notification, please wait...\r\n");
             $customizedcast->send();
             print("Sent SUCCESS\r\n");

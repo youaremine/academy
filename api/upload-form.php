@@ -17,7 +17,7 @@ if(!empty($tmp1)){//旧版本请求
 }else{
     $data = $tmp2;
 }
-file_put_contents('/tmp/wkktest.logg',"start time".date('Y-m-d H:i:s')."\n",FILE_APPEND);
+
 $query = $_REQUEST ['q'];
 if(empty($query)){
     $query = 'uploadForm';
@@ -218,7 +218,7 @@ function getClassRecord($class_record_id){
 function uploadPDFForm($data){
     global $db,$conf;
     $surInfo = getSurInfo($data['sign']);
-    file_put_contents('/tmp/wkktest.logg',"start time".date('Y-m-d H:i:s')."\n",FILE_APPEND);
+    //file_put_contents('/tmp/wkktest.logg',"start time".date('Y-m-d H:i:s')."\n",FILE_APPEND);
     $class_record_id = getArrNoNull($data,'class_record_id');
 
     $class_record = getClassRecord($class_record_id);
@@ -284,12 +284,12 @@ function uploadPDFForm($data){
         }
 
 //        file_put_contents('/tmp/wkktest.logg',json_encode($_FILES),FILE_APPEND);
-        file_put_contents('/tmp/wkktest.logg',"\n\n\n",FILE_APPEND);
+//        file_put_contents('/tmp/wkktest.logg',"\n\n\n",FILE_APPEND);
 
         foreach($_FILES['formFile']['name'] as $k=>$v){
             $fileExt = fileext($v);
             $fileExt = strtolower($fileExt);
-            file_put_contents('/tmp/wkktest.logg',"uploaderorr:".$_FILES['formFile']."\n",FILE_APPEND);
+            //file_put_contents('/tmp/wkktest.logg',"uploaderorr:".$_FILES['formFile']."\n",FILE_APPEND);
 
             if($fileExt == 'pdf'){
                 $fileName = $jobNoNew.'-'.date('YmdHis').'.'.fileext($v);
@@ -308,13 +308,58 @@ function uploadPDFForm($data){
             }
         }
 
-        $title = '新消息通知';
+        /**
+         * 用友盟发 推送到管理员与教练
+         * */
+        $to_list = array(); // 需要收到推送的人员列表
+        $getAdminSql = "SELECT `survId`,`msg_token`,`deviceType` FROM Survey_Surveyor WHERE `survType` = 'admin' OR `survType` = 'teach'";
+        $getAdminInfo = $db->query($getAdminSql);
+        while ($data = mysqli_fetch_assoc($getAdminInfo)) {
+            $tmp['survId'] = $data['survId'];
+            $tmp['msg_token'] = $data['msg_token'];
+            $tmp['deviceType'] = $data['deviceType'];
 
+            $to_list[] = $tmp;
+        }
+
+        file_put_contents('/tmp/wkktest.logg',"\n\n\n",FILE_APPEND);
+        file_put_contents('/tmp/wkktest.logg',"=========================\n",FILE_APPEND);
+        file_put_contents('/tmp/wkktest.logg',"to_list".json_encode($to_list)."\n",FILE_APPEND);
+
+        if(!empty($to_list)){
+            include_once("./swoole/push/php/src/MsgPush.php");
+            $msgPush = new \MsgPush();//初始化离线推送
+            foreach($to_list as $one){
+                $data=array();
+                if(!empty($one['msg_token']) && $one['deviceType'] == 1){
+                    $data['msg_token']=$one['msg_token'];
+                    $data['ticker']="你有一条新消息";
+                    $data['title']='新消息通知';
+                    $data['text']=$content;//内容
+                    $data['description']="";
+                    $data['push_type'] = 'other';
+                    file_put_contents('/tmp/wkktest.logg',"android".json_encode($data)."\n",FILE_APPEND);
+                    $msgPush->sendAndroidUnicast($data);
+                }elseif(!empty($one['msg_token']) && $one['deviceType'] == 2){
+                    $data['msg_token']=$one['msg_token'];
+                    $data['ticker']="你有一条新消息";
+                    $data['title']='新消息通知';
+                    $data['text']=$content;//内容
+                    $data['description']="";
+                    $data['type'] = 'other';
+                    $msgPush->sendIOSUnicast($data);
+                    file_put_contents('/tmp/wkktest.logg',"android".json_encode($data)."\n",FILE_APPEND);
+                }
+            }
+        }
+
+
+        //TODO 转用友盟推送后， 去掉旧版本的通知
+        $title = '新消息通知';
         $type = 3;
         addNotifition($title,$content,$type);
 
         returnJson('success','','');
-
     }else{
         returnJson('failed','','沒有找到對應的課堂資料');
     }
@@ -346,10 +391,10 @@ function addClassPDF($surveyor_id,$jobNoNew,$path,$upload_surveyor_id,$class_rec
     global $db;
 
     $upload_pdf_time = date('Y-m-d H:i:s');
-//插入到pdf表
+    //插入到pdf表
     $sql = "INSERT into Survey_SurveyorClassPDF(surveyor_id,class_record_id,jobNoNew,path,upload_surveyor_id,upload_pdf_time) values ('$surveyor_id','$class_record_id','$jobNoNew','$path','$upload_surveyor_id','$upload_pdf_time')";
     $res = $db->query($sql);
-return $res;
+    return $res;
 
 
 }

@@ -88,8 +88,6 @@ if (!empty($info)) {
     $info = json_decode($info);//将json格式转换为对象
 }
 //file_put_contents('/tmp/bindlog.log', json_encode($_REQUEST) . "\n\r", FILE_APPEND);
-file_put_contents('/tmp/third.log', '~~~~~~~~~~~' . time() . 'Request:' . json_encode($_REQUEST) . "\n\n", FILE_APPEND);
-//
 
 
 switch ($action_type) {

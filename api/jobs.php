@@ -1478,70 +1478,98 @@ function batchOpenJob($data) {
         $mso->jobNoNew = $v;
         $msoa->Add($mso);
     }
+    $is_image_sql = "select is_image from Survey_MainSchedule where jobNo = '{$data['jobNo']}'";
 
-    //通知,现实批量写入。然后用户自己请求接口进行通知
-    $title = '新消息通知';
-    $content = '開放新課堂啦';
-    $type = 1;
-    addNotifition($title, $content, $type);
+    $db->query($is_image_sql);
 
-//    //发送离线通知
-    $msgPush = new MsgPush("5caacd2661f564547b000d50", "bzxrxjmxgvlqtuwzrhiysniywl3k87yv");
-    $getTokenSql = "SELECT `survId`,`msg_token`,`deviceType` FROM Survey_Surveyor WHERE  `msg_token`!=''";
-    $tokenList = $db->query($getTokenSql);
-    while ($re = mysqli_fetch_assoc($tokenList)) {
-        if ($re['deviceType'] == 1) {
-            //安卓
-            $androidList[] = ['user_id' => $re['survId'], 'msg_token' => $re['msg_token']];
-        } else if ($re['deviceType'] == 2) {
-            //ios
-            $iosList[] = ['user_id' => $re['survId'], 'msg_token' => $re['msg_token']];
+    $is_image = false;
+    while ($rs = $db->next_record()) {
+        if($rs['is_image'] == 1){
+            $is_image = true;
+            break;
         }
     }
 
-    $data = array();
-    $data['ticker'] = "你有一條新消息";
-    $data['title'] = "新消息通知";
-    $data['text'] = "開放新課堂啦";//内容
-    $data['description'] = "";
+    if (!$is_image){
 
-    $redis = new Redis();
-    $redis->connect('127.0.0.1', 6379);
-    if ($redis->exists('push_ident')) {
-        $redis->incr('push_ident');//推送数量+1
-    } else {
-        $redis->set('push_ident', 1);//设置push次数
-    }
+        //通知,现实批量写入。然后用户自己请求接口进行通知
+        $title = '新消息通知';
+        $content = '開放新課堂啦';
+        $type = 1;
+        addNotifition($title, $content, $type);
+
+//    //发送离线通知
+
+        $getTokenSql = "SELECT `survId`,`msg_token`,`deviceType` FROM Survey_Surveyor WHERE  `msg_token`!=''";
+        $tokenList = $db->query($getTokenSql);
+        while ($re = mysqli_fetch_assoc($tokenList)) {
+            if ($re['deviceType'] == 1) {
+                //安卓
+                $androidList[] = ['user_id' => $re['survId'], 'msg_token' => $re['msg_token']];
+            } else if ($re['deviceType'] == 2) {
+                //ios
+                $iosList[] = ['user_id' => $re['survId'], 'msg_token' => $re['msg_token']];
+            }
+        }
+
+        $data = array();
+        $data['ticker'] = "你有一條新消息";
+        $data['title'] = "新消息通知";
+        $data['text'] = "開放新課堂啦";//内容
+        $data['description'] = "";
+
+        $redis = new Redis();
+        $redis->connect('127.0.0.1', 6379);
+
+        //进行离线推送  10分钟内只能推送一次
+        if (!empty($androidList) && !$redis->exists('android_broadcast_timer')) {
+            $msgPush = new MsgPush('android');
+
+            if ($redis->exists('android_push_ident')) {
+                $redis->incr('android_push_ident');//推送数量+1
+            } else {
+                $redis->set('android_push_ident', 1);//设置push次数
+            }
+
+            //推送次数大于10  无法使用广播推送
+            if ($redis->get('android_push_ident') < 10) {
+                $data['push_type'] = 'other';
+                $msgPush->sendAndroidBroadcast($data);//广播推送
+                $redis->expire('android_broadcast_timer', 10 * 60);//设置计时器
+            } else {
+                foreach ($androidList as $v) {
+                    $data['msg_token'] = $v['msg_token'];
+                    $data['push_type'] = 'other';
+                    $msgPush->sendAndroidUnicast($data);
+                }
+            }
+        }
 
 
 
-    //进行离线推送  10分钟内只能推送一次
-    if (!empty($androidList) && !$redis->exists('push_timer')) {
-        //推送次数大于10  无法使用广播推送
-        if ($redis->get('push_ident') < 10) {
-            $msgPush->sendAndroidBroadcast($data);//广播推送
-            $redis->expire('push_timer', 10 * 60);//设置计时器
-        } else {
-            foreach ($androidList as $v) {
-                $data['msg_token'] = $v['msg_token'];
-                $msgPush->sendAndroidUnicast($data);
+        if (!empty($iosList) && !$redis->exists('ios_broadcast_timer')) {
+            $msgPush = new MsgPush('ios');
+
+            if ($redis->exists('ios_push_ident')) {
+                $redis->incr('ios_push_ident');//推送数量+1
+            } else {
+                $redis->set('ios_push_ident', 1);//设置push次数
+            }
+
+            //推送次数大于10  无法使用广播推送
+            if ($redis->get('ios_push_ident') < 10) {
+                $data['message']['type'] = 'other';
+                $msgPush->sendIOSBroadcast($data);//广播推送
+                $redis->expire('ios_broadcast_timer', 10 * 60);//设置计时器
+            } else {
+                foreach ($iosList as $v) {
+                    $data['message']['type'] = 'other';
+                    $data['msg_token'] = $v['msg_token'];
+                    $msgPush->sendIOSUnicast($data);
+                }
             }
         }
     }
-
-    if (!empty($iosList)) {
-        //ios暂时还未写，需调整发送的格式,先修改方法中要使用的参数
-//        if ($redis->get('push_ident') < 10 && !$redis->exists('push_timer')) {
-//            $msgPush->sendAndroidBroadcast($data);
-//            $redis->expire('push_timer', 10 * 60);//设置计时器
-//        } else {
-//            foreach ($androidList as $v) {
-//                $data['msg_token'] = $v['msg_token'];
-//                $msgPush->sendIOSUnicast($data);
-//            }
-//        }
-    }
-
 
     $message = array(
         'status' => 'success',
@@ -1608,9 +1636,31 @@ function batchDelJobs($data) {
     }
 
     $hadRes = $ja->hadAssignSurveryor($data['jobNo']);
+
+
+
     if ($hadRes) {
-        returnJson('failed', "", '該課堂有已分配學員，請取消分配后再刪除');
+        $is_image_sql = "select is_image from Survey_MainSchedule where jobNo = '{$data['jobNo']}'";
+
+        $db->query($is_image_sql);
+
+        $is_image = false;
+        while ($rs = $db->next_record()) {
+            if($rs['is_image'] == 1){
+                $is_image = true;
+                break;
+            }
+        }
+
+        if ($is_image){
+            returnJson('failed', "", '該商品有已購買會員，請取消後刪除');
+        }else{
+            returnJson('failed', "", '該課堂有已分配，請取消分配后再刪除');
+        }
+
     }
+
+
 
     $ja->batchDelete($data['jobNo']);
     $message = array(
@@ -2760,7 +2810,7 @@ function paymentHistory($data) {
     }
     switch ($verdict) {
         case 1:
-            $sql = "SELECT `class_record_id`,`surveyor_id`,`path`,`jobNoNew` FROM `Survey_SurveyorClassPDF` WHERE `jobNoNew` LIKE '{$jobNo}%' GROUP BY `jobNoNew`,`surveyor_id` ORDER BY `surveyor_id`";
+            $sql = "SELECT a.`class_record_id`,a.`surveyor_id`,a.`path`,a.`jobNoNew`,b.surveyType FROM `Survey_SurveyorClassPDF`as a left join Survey_MainSchedule as b on a.jobNoNew = b.jobNoNew WHERE a.`jobNoNew` LIKE '{$jobNo}%' GROUP BY a.`jobNoNew`,a.`surveyor_id` ORDER BY a.`surveyor_id`";
             $db->query($sql);
             //获取已上传pdf名单
             while ($rs = $db->next_record()) {
@@ -2768,6 +2818,8 @@ function paymentHistory($data) {
                 $userCodes['jobNoNew'] = $rs['jobNoNew'];
                 $userCodes['path'] = $rs['path'];
                 $userCodes['class_record_id'] = $rs['class_record_id'];
+                $userCodes['jobNo'] = $jobNo;
+                $userCodes['surveyType'] = $rs['surveyType'];
                 $userCode[] = $userCodes;
             }
             if (!empty($userCode)) {
@@ -2793,6 +2845,8 @@ function paymentHistory($data) {
                 //添加信息
                 for ($i = 0; $i < count($info); $i++) {
                     $info[$i]['jobNoNew'] = $userCode[$i]['jobNoNew'];
+                    $info[$i]['jobNo'] = $userCode[$i]['jobNo'];
+                    $info[$i]['surveyType'] = $userCode[$i]['surveyType'];
                     $info[$i]['class_record_id'] = $userCode[$i]['class_record_id'];
                     $info[$i]['path'] = $userCode[$i]['path'];
                 }
@@ -2814,12 +2868,14 @@ function paymentHistory($data) {
                 break;
             }
         case 2:
-            $sql = "SELECT `surveyorCode`,`jobNoNew`,`class_record_id` FROM `Survey_MainSchedule` WHERE `jobNo`='{$jobNo}' AND `surveyorCode`!=''";
+            $sql = "SELECT `surveyorCode`,`jobNoNew`,`class_record_id`,`surveyType` FROM `Survey_MainSchedule` WHERE `jobNo`='{$jobNo}' AND `surveyorCode`!=''";
             $db->query($sql);
             while ($rs = $db->next_record()) {
                 $userCodes['surveyorCode'] = $rs['surveyorCode'];
                 $userCodes['jobNoNew'] = $rs['jobNoNew'];
                 $userCodes['class_record_id'] = $rs['class_record_id'];
+                $userCodes['surveyType'] = $rs['surveyType'];
+                $userCodes['jobNo'] =  $jobNo;
                 $userCode[] = $userCodes;
             }
 
@@ -2868,6 +2924,8 @@ function paymentHistory($data) {
                     for ($i = 0; $i < count($info); $i++) {
                         $info[$i]['jobNoNew'] = $result[$i]['jobNoNew'];
                         $info[$i]['class_record_id'] = $result[$i]['class_record_id'];
+                        $info[$i]['surveyType'] = $result[$i]['surveyType'];
+                        $info[$i]['jobNo'] = $result[$i]['jobNo'];
                         $info[$i]['path'] = '';
                     }
                     $urlInfo = array(
@@ -2895,11 +2953,14 @@ function paymentHistory($data) {
                         $rs['chiName'] = $rss['chiName'];
                         $rs['engName'] = $rss['engName'];
                         $rs['contact'] = $rss['contact'];
+                        $rs['contact'] = $rss['contact'];
                         $info[] = $rs;
                     }
                     for ($i = 0; $i < count($info); $i++) {
                         $info[$i]['jobNoNew'] = $userCode[$i]['jobNoNew'];
                         $info[$i]['class_record_id'] = $userCode[$i]['class_record_id'];
+                        $info[$i]['surveyType'] = $userCode[$i]['surveyType'];
+                        $info[$i]['jobNo'] = $userCode[$i]['jobNo'];
                         $info[$i]['path'] = '';
                     }
                     $urlInfo = array(
@@ -2921,7 +2982,7 @@ function paymentHistory($data) {
                 break;
             }
         case 3:
-            $sql = "SELECT A.`surveyorCode`,A.`jobNoNew`,A.class_record_id,
+            $sql = "SELECT A.`surveyorCode`,A.`jobNoNew`,A.class_record_id,A.jobNo,A.surveyType,
 (SELECT B.`path` FROM `Survey_SurveyorClassPDF` B WHERE B.`jobNoNew`=A.`jobNoNew` order by `B`.`id` limit 1 ) AS path,
 C.`chiName`,C.`engName`,C.`contact` FROM `Survey_MainSchedule` A,`Survey_Surveyor` C WHERE
 A.`jobNo`='{$jobNo}' AND A.`surveyorCode`!='' AND A.`surveyorCode`=C.`survId`";
@@ -2933,6 +2994,9 @@ A.`jobNo`='{$jobNo}' AND A.`surveyorCode`!='' AND A.`surveyorCode`=C.`survId`";
                 $rs['engName'] = $rss['engName'];
                 $rs['contact'] = $rss['contact'];
                 $rs['jobNoNew'] = $rss['jobNoNew'];
+                $rs['jobNo'] = $rss['jobNo'];
+                $rs['surveyType'] = $rss['surveyType'];
+
                 if (!empty($rss['class_record_id'])) {
                     $rs['class_record_id'] = $rss['class_record_id'];
                 } else {
@@ -3025,6 +3089,7 @@ function objectsSerial($data) {
         (SELECT `jobNo` FROM Survey_MainSchedule WHERE jobNo Like ('T%') ORDER BY `jobNo` DESC LIMIT 1) AS T
         FROM Survey_MainSchedule LIMIT 1";
 //        echo $sql;exit;
+
         $db->query($sql);
         $info = $db->next_record();
         $sqls = "SELECT * FROM Survey_Objects  WHERE `serial`!='Q' AND `serial`!='W' AND `serial`!='E'";
@@ -3049,6 +3114,7 @@ function objectsSerial($data) {
         }
     } else {
         $sql = "SELECT `jobNo` FROM Survey_MainSchedule WHERE jobNo Like ('{$serial}%') ORDER BY `jobNo` DESC LIMIT 1";
+
         $db->query($sql);
         $rss = $db->next_record();
         if (!empty($rss)) {
