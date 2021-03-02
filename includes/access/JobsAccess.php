@@ -288,7 +288,7 @@ class JobsAccess {
         $where = makeSql($filter, 'where');
         $sql = "SELECT s1.mascId,s1.jobNo,s1.class_record_id,s1.jobNoNew,s1.realClass,surveyType,vehicle
                     ,surveyTimeHours,startTime_1,endTime_1,surveyLocationDistrict
-                    ,surveyLocation,plannedSurveyDate,s2.isOpen2,s3.isOpen,s1.bookLat,s1.bookLong,s1.map_address,s1.diy_name,s1.diy_value,s1.`img_url`,s1.`is_image`
+                    ,surveyLocation,plannedSurveyDate,s2.isOpen2,s3.isOpen,s1.bookLat,s1.bookLong,s1.map_address,s1.diy_name,s1.diy_value,s1.`img_url`,s1.`is_image`,s1.`amount`
                 FROM {$conf['table']['prefix']}MainSchedule as s1
 left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen where delFlag='no' group by jobNoNew) as s2 on s2.jobNoNew=s1.jobNoNew
 left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFlag='no' group by jobNo) as s3 on s3.jobNo=s1.jobNo
@@ -306,8 +306,6 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
         }
 
         $sql .= " GROUP BY jobNo,vehicle {$other} {$limit}";
-
-            file_put_contents('/tmp/add1019.log', $sql. "\n\r", FILE_APPEND);
 
 //            echo $sql;exit;
         $this->db->query($sql);
@@ -346,6 +344,7 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
             $row['diy_value'] = $dr['diy_value'];
             $row['class_record_id'] = $dr['class_record_id'];
             $row['is_image'] = $dr['is_image'];
+            $row['amount'] = $dr['amount'];
             if (empty($dr['img_url'])) {
                 $row['img_url'] = "";
             } else {
@@ -749,6 +748,7 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
     `img_url`,
     `surveyType`,
     `vehicle`
+   
 FROM
     Survey_MainSchedule
 WHERE
@@ -761,6 +761,7 @@ WHERE
         delFlag = 'no' AND applySurvId = 0 
 ) AND is_image = 1 AND `surveyorCode` = '' AND `surveyorName` = '' AND `surveyorTelephone` = ''
 GROUP BY `jobNoShort` ASC";
+
                 break;
             case 2:
                 $sql = "SELECT
@@ -769,6 +770,7 @@ GROUP BY `jobNoShort` ASC";
     `vehicle`,
     `img_url`,
     `surveyType`,
+     `amount`,
     (SELECT COUNT(*) FROM Survey_MainSchedule WHERE `jobNoShort` = '{$jobNoShort}') as 'total',
     (SELECT COUNT(*) FROM Survey_MainSchedule WHERE `jobNoShort` = '{$jobNoShort}' AND `surveyorCode` = '' AND `surveyorName` = '' AND `surveyorTelephone` = '') as 'surplus'
 FROM
@@ -796,6 +798,7 @@ WHERE
             $data['project'] = PROJECTNAME;//添加项目名，用于拼接图片url
             $arr[] = $data;
         }
+
         return json_encode($arr, JSON_UNESCAPED_UNICODE);
     }
 

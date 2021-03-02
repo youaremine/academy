@@ -1,5 +1,6 @@
 $(document).ready(function(){
    let data= getInfo('q');
+   console.log(data);
    $("#emptyWrap").hide();
    if (data!=="" && data!==null){
        let length=data.length;
@@ -14,6 +15,8 @@ $(document).ready(function(){
    }else{
        $("#emptyWrap").show();
    }
+
+
 })
 
 /**
@@ -31,9 +34,9 @@ function getInfo(n,iden=null){
             REQUEST:n,
             IDEN:iden
         },
-        success:function(e){
-            result=e;
-            return result;
+        success:function(data){
+            console.log(data);
+            result = data;
         }
     })
     return result;
@@ -85,7 +88,7 @@ function goodsStyle(goods,sign){
     if(sign){
         button.innerHTML="已購買";
     }else{
-        button.innerHTML="加入購物車";
+        button.innerHTML="立即購買";
     }
     button.setAttribute('data-num',goods.jobNoNew);
 //添加URL

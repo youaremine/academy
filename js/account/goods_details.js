@@ -2,24 +2,29 @@ $(document).ready(function () {
     let data = getInfo();
    /* let aaa=document.getElementsByClassName('aaa')[0];
     addPlan(aaa);*/
+   console.log(data);
 
     if (data !== null && data !== "") {
         let iden = data[0].jobNoShort;
         let info = data[0].vehicle;
         let imgUrl = data[0].img_url;
-        let total=data[0].total;
-        let surplus=data[0].surplus;
-        let judgeInfo=judgePlan(iden);
-        let project=data[0].project;
+        let total = data[0].total;
+        let surplus = data[0].surplus;
+        let judgeInfo = judgePlan(iden);
+        let project = data[0].project;
+        let amount = data[0].amount;
+
         if(judgeInfo!==undefined){
-            analysisDate(judgeInfo[0].jobNoShort +'咨詢', info, imgUrl,total,surplus,project);
+            analysisDate(judgeInfo[0].jobNoShort +'咨詢', info, imgUrl,total,surplus,project,amount);
             var url="ozzomonitoringsurvey://chat.app/?jobNo="+data[0].jobNoShort+"&refNo="+data[0].jobNoNew+"&surveyType="+data[0].surveyType;
         }else{
-            analysisDate(iden + '咨詢', info, imgUrl,total,surplus,project);
+            analysisDate(iden + '咨詢', info, imgUrl,total,surplus,project,amount);
             var url="ozzomonitoringsurvey://chat.app/?jobNo="+data[0].jobNoShort+"&refNo="+data[0].jobNoNew+"&surveyType="+data[0].surveyType;
         }
+
         $('.serial').attr('href',url);
     }
+
 })
 
 /**
@@ -53,11 +58,12 @@ function getInfo(iden=null) {
  * @param total 传回的物品总数
  * @param surplus 传回剩余物品数量
  */
-function  analysisDate(iden, info, imgUrl,total,surplus,project) {
+function  analysisDate(iden, info, imgUrl,total,surplus,project,amount) {
     $(".serial>em").text(iden);
     $(".info-table tr:nth-of-type(2)>td:nth-of-type(2)").text(info);
     $(".info-table tr:nth-of-type(3)>td:nth-of-type(2)").text(total);
     $(".info-table tr:nth-of-type(4)>td:nth-of-type(2)").text(surplus);
+    $("#amount").text(amount);
 
     if(imgUrl!==null && imgUrl!==""){
         let urlArr = imgUrl.split(",");
@@ -150,7 +156,7 @@ function touchMove(e) {
 }
 
 /**
- * 加入购物车
+ * 不用付款流程
  * @param event
  */
 /*function addPlan(event){
@@ -172,8 +178,43 @@ function touchMove(e) {
 }
 */
 
+/**
+ * 支付寶支付
+ * */
 function addPlan(event){
-    var num=$(".serial>em").text();
+    let pay_type = $("#select_pay input[type='radio']:checked").val();
+    console.log(pay_type);
+
+   if(pay_type == 'wechat'){
+
+   }else if(pay_type == 'stripe'){
+
+   }else if(pay_type == 'alipay'){
+       alipay();
+   }else{
+       alert('Nothing');
+   }
+}
+
+
+/**
+ * Stripe 支付
+ * */
+function stripePay(){
+
+}
+
+/**
+* 微信支付
+* */
+function weChatPay(){
+
+}
+
+/**
+* 支付寶支付
+* */
+function alipay(){
     $.ajax({
         type : "GET",
         url : "../alipayRsa/payment.php",
@@ -182,26 +223,10 @@ function addPlan(event){
         },
         dataType : "json",
         success : function(msg) {
-            event.setAttribute('href','ozzoacademy-pay://students.app/?info='+msg);
+            window.location.href = 'ozzoacademy-pay://students.app/?info='+msg;
             console.log(msg);
         }
     })
-
-
-//    $.ajax({
-//        type : "GET",
-//        url : "./api.php",
-//        data : "q=selectJob&jobNoNew=" +num+"&identifier=0",
-//        dataType : "json",
-//        success : function(msg) {
-//            if(msg.success){
-//                event.innerHTML="已購買";
-//                event.setAttribute('class','btn btn-danger');
-//                event.setAttribute('onclick','');
-//            }
-//        }
-//    });
-
 }
 /**
  * 判斷是否已經
@@ -211,9 +236,9 @@ function judgePlan(iden){
     iden=iden.substring(0,4);
     var judgeInfo=getInfo(iden);
     if (judgeInfo!==null && judgeInfo!==""){
-        $('.table-button button:first').attr('class','btn btn-danger');
-        $('.table-button button:first').attr('onclick','');
-        $('.table-button button:first').text('已購買');
+        $('#buy_btn').attr('class','btn btn-danger');
+        $('#buy_btn').attr('onclick','');
+        $('#buy_btn').text('已購買');
         return judgeInfo;
     }
 }

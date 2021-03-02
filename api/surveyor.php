@@ -162,7 +162,7 @@ switch ($data['q']) {
         }
         //是否搜索
         $term = $data['term'];
-        if ($term !== '0' && empty($term)) {
+        if (empty($term)) {
             $rs = $ma->GetListSearch($m, $m->surveyorCode, $is_goods);
         } else {
             $rs = $ma->GetListSearch($m, $m->surveyorCode, $is_goods, $term);
@@ -197,6 +197,7 @@ switch ($data['q']) {
             $dr['img_url'] = $obj->img_url;
             $dr['is_image'] = $obj->is_image;
             $dr['surveyor_pdf'] = $obj->surveyor_pdf;
+            $dr['amount'] = $obj->amount;
             $jsonArr[] = $dr;
         }
 

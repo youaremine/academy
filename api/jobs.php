@@ -1068,6 +1068,7 @@ function batchEditJobs($data) {
         $sqlData['estimatedManHour'] = addslashes($data['estimatedManHour']);
         $sqlData['totalHours'] = addslashes($data['totalHours']);
         $sqlData['img_url'] = $data['img_url'];
+        $sqlData['amount'] = $data['amount'];
 
         foreach ($sqlData as $k => $v) {
             if (is_null($v)) {
@@ -1171,6 +1172,7 @@ function insert_Class($jobNo, $insert_num, $insert_data, $countStart = 0) {
         $sqlData['map_address'] = addslashes($insert_data['map_address']);
         $sqlData['diy_name'] = addslashes($insert_data['diy_name']);
         $sqlData['diy_value'] = addslashes($insert_data['diy_value']);
+        $sqlData['amount'] = $insert_data['amount'];
 
         if (array_key_exists('img_url', $insert_data)) {
             $sqlData['img_url'] = addslashes($insert_data['img_url']);
@@ -2002,7 +2004,7 @@ function getJobs($data) {
     $paging = !empty($data['paging']) ? $data['paging'] : 1;//第几页
     $term = $data['term'];
     $ja = new JobsAccess($db);
-    if ($term !== '0' && empty($term)) {
+    if (empty($term)) {
         $rs = $ja->getList2(array(), '', '', $is_goods);
     } else {
         $rs = $ja->getList2(array(), '', '', $is_goods, $term);
@@ -2033,7 +2035,7 @@ function getJobs($data) {
     $fourArr = array();//已点名
 
     foreach ($rs as $k => $v) {
-        if (strtotime($v['plannedSurveyDate']) > strtotime($date)) {
+        if (strtotime($v['plannedSurveyDate']) >= strtotime($date)) {
             $v['timestamp'] = strtotime($v['plannedSurveyDate']);
             $oneArr[] = $v;
         } else {

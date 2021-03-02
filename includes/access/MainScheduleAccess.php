@@ -1098,6 +1098,7 @@ class MainScheduleAccess
             $obj->checkIn = is_null($rs['checkIn'])?'no':'yes';
             $obj->img_url=$rs['img_url'];
             $obj->is_image=$rs['is_image'];
+            $obj->amount=$rs['amount'];
             $rows [] = $obj;
         }
         return $rows;
