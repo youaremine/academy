@@ -15,7 +15,9 @@
 </head>
 <body>
 <div>
-
+    <div id="jobNoShort" style="display: none">{jobNoShort}</div>
+    <div id="jobNo" style="display: none">{jobNo}</div>
+    <div id="jobNoNew" style="display: none">{jobNoNew}</div>
 
     <!-- Modal -->
     <div class="modal fade" id="select_type" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="" aria-hidden="true">
@@ -29,21 +31,21 @@
                 </div>
                 <div class="modal-body" id="select_pay">
                     <div class="custom-control custom-radio">
-                        <input type="radio" id="wechat_pay" name="pay_type" value="wechat" class="custom-control-input">
-                        <label class="custom-control-label" for="wechat_pay">WeChat Pay</label>
-                    </div>
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="stripe_pay" name="pay_type" value="stripe" class="custom-control-input">
+                        <input type="radio" id="stripe_pay" name="pay_type" value="stripe" class="custom-control-input" checked>
                         <label class="custom-control-label" for="stripe_pay">Stripe</label>
                     </div>
                     <div class="custom-control custom-radio">
                         <input type="radio" id="alipay" name="pay_type" value="alipay" class="custom-control-input">
                         <label class="custom-control-label" for="alipay">Alipay HK</label>
                     </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="wechat_pay" name="pay_type" value="wechat" class="custom-control-input">
+                        <label class="custom-control-label" for="wechat_pay">WeChat Pay</label>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消購買</button>
-                    <button type="button" class="btn btn-primary" onclick="addPlan()">確認購買</button>
+                    <button type="button" class="btn btn-primary" onclick="payment()">確認購買</button>
                 </div>
             </div>
         </div>
@@ -99,14 +101,10 @@
             <table class="table-button mt-2">
                 <tr>
                     <td>
-                        <a class="btn btn-primary aaa" id="buy_btn" style="    width: 7rem;
-    height: 3rem;
-    color: white;
-    line-height: 2rem;
-    font-size: 1rem;" data-toggle="modal" data-target="#select_type">立即購買</a>
+                        <a class="btn btn-primary aaa" id="buy_btn" style="width: 7rem; height: 3rem; color: white; line-height: 2rem; font-size: 1rem;" data-toggle="modal" data-target="#select_type">立即購買</a>
                     </td>
                     <td>
-                        <button class="btn btn-info" onclick="returnTop()">返回列表</button>
+                        <button class="btn btn-info" onclick="javascript:top.location='./jobs_4.php';">返回列表</button>
                     </td>
                 </tr>
             </table>
@@ -119,6 +117,8 @@
         <li></li>
     </ul>
 </div>
+
+<script src="https://js.stripe.com/v3/"></script>
 
 <script type="text/javascript" src="../js/account/goods_details.js"></script>
 </body>

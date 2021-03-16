@@ -352,6 +352,11 @@ class MainScheduleOpenAccess
 		}elseif($type=='applied'){
 			$query .= " AND jobNoNew IN (SELECT jobNoNew FROM Survey_MainScheduleOpen WHERE delFlag='no' AND applySurvId={$applySurvId})";
 		}
+
+		if($obj->is_image === true){
+            $query .= " AND is_image = 1 ";
+        }
+
 		if ($this->order != '')
 			$query .= $this->order;
 
@@ -588,6 +593,10 @@ class MainScheduleOpenAccess
         }elseif($type=='applied'){
             $query .= " AND jobNoNew IN (SELECT jobNoNew FROM Survey_MainScheduleOpen WHERE delFlag='no' AND applySurvId={$applySurvId})";
         }
+        if($obj->is_image === true){
+            $query .= " AND is_image = 1 ";
+        }
+
         if ($this->order != '')
             $query .= $this->order;
 

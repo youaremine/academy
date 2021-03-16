@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>支付結果</title>
+    <script src="../js/bootstrap-3.3.5/js/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css">
+    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable = 0" />
+    <style>
+        #emptyWrap{
+            margin-top:50px;
+            text-align: center;
+        }
+        #emptyWrap img{
+            width: 80px;
+            height: 80px;
+        }
+        .empty_text{
+            line-height: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div id="emptyWrap">
+        <div class="empty_img">
+            <img src="../images/failed_toast.png" alt="Pay failed">
+        </div>
+        <h3 class="empty_text">
+            支付取消
+        </h3>
+        <button class="btn btn-success" onclick="javascript:top.location='./jobs_4.php';">返回商品列表</button>
+    </div>
+</body>
+</html>

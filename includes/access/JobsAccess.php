@@ -732,6 +732,119 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
         return $result;
     }
 
+
+    /**
+     * 判断是否已购买该商品
+     *
+     * */
+    function checkBuyed($jobNoShort,$userId){
+        $sql = "SELECT
+    `jobNo`,
+    `jobNoNew`
+FROM
+      `Survey_MainSchedule`
+WHERE
+    `jobNo` = '{$jobNoShort}' AND `surveyorCode` = '{$userId}'";
+
+
+        $datas = $this->db->query($sql);
+        while ($data = mysqli_fetch_assoc($datas)) {
+            $data['project'] = PROJECTNAME;//添加项目名，用于拼接图片url
+            $arr[] = $data;
+        }
+
+        return json_encode($arr, JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * 判断 jobNoNew 是否在待支付
+     *
+     * */
+    function inOrder($jobNoNew){
+
+        $res = false;
+
+        $sql = "SELECT order_no from Survey_SurveyorOrder where jobNoNew = '{$jobNoNew}' and status = 0";
+
+        $datas = $this->db->query($sql);
+        if ($data = mysqli_fetch_assoc($datas)) {
+            if(!empty($data['order_no'])) $res = true;
+        }
+
+        return $res;
+    }
+
+    /**
+     * 获取商品总数
+     * */
+    function getGoodsTotal($jobNo){
+        $sql = "SELECT count(mascId) as total FROM
+    Survey_MainSchedule
+WHERE
+        `jobNo` = '{$jobNo}' ";
+
+        $datas = $this->db->query($sql);
+        while ($res = mysqli_fetch_assoc($datas)) {
+           return  $res['total'];
+        }
+    }
+
+    /**
+     * 获取商品剩余数量
+     * */
+    function getGoodsRemain($jobNo){
+        $sql = "SELECT count(mascId) as total FROM
+    Survey_MainSchedule WHERE `jobNo` = '{$jobNo}' and `surveyorCode` = ''";
+
+        $datas = $this->db->query($sql);
+        while ($res = mysqli_fetch_assoc($datas)) {
+            return  $res['total'];
+        }
+    }
+
+
+    /**
+     * 获取剩余商品详情
+     * */
+    function getRemainGoodsDetail($jobNoShort){
+        $sql = "SELECT
+    `jobNoNew`,
+    `jobNoShort`,
+    `vehicle`,
+    `img_url`,
+    `surveyType`,
+     `amount`
+FROM
+    Survey_MainSchedule
+WHERE
+        `jobNoShort` = '{$jobNoShort}' and `surveyorCode` = ''";
+
+        $datas = $this->db->query($sql);
+        while ($data = mysqli_fetch_assoc($datas)) {
+            $data['project'] = PROJECTNAME;//添加项目名，用于拼接图片url
+            $arr[] = $data;
+        }
+        return $arr;
+    }
+
+    function getGoodsList(){
+        $sql = "SELECT 
+                jobNo,img_url,jobNoNew,surveyType,vehicle,amount
+                FROM Survey_MainSchedule  
+                WHERE 1=1  
+                AND is_image = 1 
+                AND jobNoNew IN (SELECT jobNoNew FROM Survey_MainScheduleOpen WHERE delFlag='no' AND applySurvId=0) group by jobNo";
+
+        $datas = $this->db->query($sql);
+        while ($data = mysqli_fetch_assoc($datas)) {
+            $data['project'] = PROJECTNAME;//添加项目名，用于拼接图片url
+            $arr[] = $data;
+        }
+
+        return $arr;
+    }
+
+
     /**
      * @param $case 参数为1是，获取开放的物品资料，参数为2时，获取指定物品ID资料，参数3时获取已购买物品资料
      * @param null $jobNoShort 当参数1等于2时，此参数代表指定的物品ID。当参数1等于3是,此参数代表用户id
@@ -748,11 +861,10 @@ left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen wher
     `img_url`,
     `surveyType`,
     `vehicle`
-   
 FROM
     Survey_MainSchedule
 WHERE
-    1 = 1 AND jobNoNew NOT LIKE '%ss' AND jobNoNew NOT LIKE '%tt' AND jobNoNew NOT LIKE '%uu' AND jobNoNew IN(
+    1 = 1  AND jobNoNew IN(
     SELECT
         `jobNoNew`
     FROM
@@ -793,13 +905,15 @@ WHERE
                 ";
                 break;
         }
+
+
         $datas = $this->db->query($sql);
         while ($data = mysqli_fetch_assoc($datas)) {
             $data['project'] = PROJECTNAME;//添加项目名，用于拼接图片url
             $arr[] = $data;
         }
 
-        return json_encode($arr, JSON_UNESCAPED_UNICODE);
+        return $arr;
     }
 
 

@@ -18,9 +18,6 @@ if (!empty($tmp1)) {//旧版本请求
 }
 
 
-file_put_contents('/tmp/loginPass.log', "request:" . json_encode($_REQUEST) . "\n\r", FILE_APPEND);
-file_put_contents('/tmp/loginPass.log', "php_input:" . $a . "\n\r", FILE_APPEND);
-
 /*$rawJson = json_decode(file_get_contents('php://input', 'r'),true);
 $data = !empty($rawJson['sign']) ? $rawJson:$_REQUEST;
 if(empty($rawJson['q'])){

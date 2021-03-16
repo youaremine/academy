@@ -72,80 +72,68 @@ WHERE 1=1 and config_name = 'chargedLimit' ";
         }
 
 
-        /*$used_class_num_sql = "SELECT count(jobNoNew) as class_num_sql  FROM Survey_MainScheduleOpen WHERE delFlag='no' AND applySurvId={$s->survId}";
-        $db->query ( $used_class_num_sql );
-        while ( $jobNoNew = $db->next_record () ) {
-            $used_class_num = $s->class_sum - $jobNoNew['class_num_sql'];
-        }
-        if($used_class_num <= 0){
-            $message = array (
-                'status' => 'failed',
-                'message' => '剩餘課堂數不足，選取失敗',
-                'data' => array()
-            );
-            die(json_encode($message));
-        }*/
-
         $jobNoNew = $_REQUEST['jobNoNew'];
         $jobNoNew2 = $_REQUEST['jobNoNew2'];
         $jobNoNew3 = $_REQUEST['jobNoNew3'];
         $jobNoNew4 = $_REQUEST['jobNoNew4'];
-        if($_REQUEST['identifier']=='0'){
+        if($v->is_image == 1){
             $identifier=false;
         }else{
             $identifier=true;
         }
+
         //调用此处检测是否加入购物车
         $jobNoNewArr = array($jobNoNew,$jobNoNew2,$jobNoNew3,$jobNoNew4);
 
         if($identifier){
-        //检测是否有冲突
-        $isBusy = false;
-        $currJobNoNews = array();
-        foreach ($jobNoNewArr as $item) {
-            if (!empty($item)) {
-                $currJobNoNews[] = $item;
-                $_tmpIsBusy = _checkIsBusy($db,$surveyorCode,$item);
+            //检测是否有冲突
+            $isBusy = false;
+            $currJobNoNews = array();
+            foreach ($jobNoNewArr as $item) {
+                if (!empty($item)) {
+                    $currJobNoNews[] = $item;
+                    $_tmpIsBusy = _checkIsBusy($db,$surveyorCode,$item);
 
-                if($_tmpIsBusy) {
-                    $isBusy = $_tmpIsBusy;
-                    break;
+                    if($_tmpIsBusy) {
+                        $isBusy = $_tmpIsBusy;
+                        break;
+                    }
                 }
             }
-        }
 
-        if($isBusy) {
-            $message = array (
-                'success' => false,
-                'message' => '課堂時間衝突'
-            );
-            die(json_encode($message));
-        }
+            if($isBusy) {
+                $message = array (
+                    'success' => false,
+                    'message' => '課堂時間衝突'
+                );
+                die(json_encode($message));
+            }
         }
         if (!empty($s))
         {
             $sur = $rs[0];
         }
         if($identifier){
-        //檢查項目是否已經被人領取
-        $msoa = new MainScheduleOpenAccess($db);
+            //檢查項目是否已經被人領取
+            $msoa = new MainScheduleOpenAccess($db);
 
-        $_tmpInJobNoNews = "'" . implode("','", $currJobNoNews) . "'";
-        $existJobNoNews = $msoa->GetOpenJobNoNews($_tmpInJobNoNews);
-        $isOtherSelectedJob = false;
-        foreach($existJobNoNews as $item){
-            if(!empty($item['applySurvId'])){
-                $isOtherSelectedJob = true;
-                break;
+            $_tmpInJobNoNews = "'" . implode("','", $currJobNoNews) . "'";
+            $existJobNoNews = $msoa->GetOpenJobNoNews($_tmpInJobNoNews);
+            $isOtherSelectedJob = false;
+            foreach($existJobNoNews as $item){
+                if(!empty($item['applySurvId'])){
+                    $isOtherSelectedJob = true;
+                    break;
+                }
             }
-        }
-        if($isOtherSelectedJob){
-            $message = array (
-                'success' => false,
-                'message' => '抱歉，該課堂已被其他學員搶先一步。'
-            );
-            die(json_encode($message));
-        }
+
+            if($isOtherSelectedJob){
+                $message = array (
+                    'success' => false,
+                    'message' => '抱歉，該課堂已被其他學員搶先一步。'
+                );
+                die(json_encode($message));
+            }
         }
 
         //檢查通過, 直接插入數據.

@@ -1,48 +1,45 @@
 <?php
-
+/*
+ * Header:
+ * Create: 2015-12-06
+ * Auther: Jamblues.
+ */
 include_once ("../includes/config.inc.php");
 include_once ("../includes/config.plugin.inc.php");
 
 // 检查是否登录
-if (SurveyorLogin::IsLogin())
-{
-    $surveyorCode = $_SESSION['surveyorId'];
-    $noCurrUser = "";
-}
-else
-{
-    header("Location:../surveyor_login.php");
-    exit();
-}
+if (!SurveyorLogin::IsLogin()) header("Location:../surveyor_login.php");
 
+$t = new CacheTemplate("../templates/account");
+$t->set_file("HdIndex", "jobs_4.html");
+$t->set_caching($conf["cache"]["valid"]);
+$t->set_cache_dir($conf["cache"]["dir"]);
+$t->set_expire_time($conf["cache"]["timeout"]);
+$t->print_cache();
+$t->set_block("HdIndex", "JobRow", "JobRows");
+$t->set_var("JobRows", "");
 
-
-$msoa = new MainScheduleOpenAccess($db);
 //获取总数
-$ms = new MainSchedule();
-$ms->surveyorCode = $surveyorCode;
+$jobA = new JobsAccess($db);
 
+$rs = $jobA->getGoodsList();
 
-$msa = new MainScheduleAccess($db);
-$assignedNum = $msa->GetListSearchCount($ms);
-
-$type = empty($_GET['type'])?'opening':$_GET['type'];
-if($type == 'opening'){
-    $ms->surveyorCode = '';
-    $rs = $msoa->GetListSearchOpening2($ms,'opening',$surveyorCode,true);//查询控制，输出其开放状态下的物品数据库数据
-}elseif($type == 'applied'){
-    $ms->surveyorCode = '';
-    $msoa->order = 'ORDER BY plannedSurveyDate ASC ';
-    $rs = $msoa->GetListSearchOpening($ms,$type,$surveyorCode);
-}else{
-    $msa->order = 'ORDER BY MS.plannedSurveyDate ASC';
-    $rs = $msa->GetListSearch($ms);
+foreach($rs as $v){
+    $img_url = !empty($v['img_url'])?explode(',',$v['img_url'])[0]:'/images/goods/20191220150910-5dfc739692f10.jpg';
+    $t->set_var ( array (
+        "i" => $i,
+        "mscId" => $v['mscId'],
+        "jobNo" => $v['jobNo'],
+        "jobNoNew" => $v['jobNoNew'],
+        "surveyType" => $v['surveyType'],
+        "vehicle" => $v['vehicle'],
+        "jobNoShort" => $v['jobNoShort'],
+        "img_url" => $img_url,
+        "amount" => $v['amount']
+    ) );
+    $t->parse("JobRows", "JobRow", true);
 }
-$timeIcon = "";
-if($type == 'opening'){
-    $timeIcon = "";
-}
-include "../templates/account/jobs_4.html";
 
 
-
+$t->pparse("Output", "HdIndex");
+?>

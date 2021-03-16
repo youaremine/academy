@@ -45,6 +45,7 @@ $chiName = addslashes($data_info['chiName']);
 $engName = addslashes($data_info['engName']);
 $survType = addslashes($data_info['survType']);
 $avatar = addslashes($data_info['avatar']);
+
 $pass = addslashes($data_info['pass']);
 
 $email = addslashes($data_info['email']);//邮箱
