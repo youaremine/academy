@@ -1013,6 +1013,7 @@ class MainScheduleAccess
 
         $sql .= 'WHERE 1=1 ';
         $sql = $sql . $query;
+
 //      echo  $sql;exit;
 
         $this->db->query($sql);

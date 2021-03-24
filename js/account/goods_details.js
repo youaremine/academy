@@ -10,6 +10,9 @@ $(document).ready(function () {
  * 支付
  * */
 function payment(){
+
+    $('#go_payment').attr('disabled', 'disabled');
+
     let key = 'pk_test_51IBweYKfjMsC8JpVYa69N3EGmc5MXNagdLf3W3ZJpQ3BopHd96K0mTQBqwQtQjBAQpXvI2ubuTLAeFxsmMUT2PbX00vavBARBp';
     let pay_type = $("#select_pay input[type='radio']:checked").val();
     let jobNoShort = $("#jobNoShort").text();
@@ -24,8 +27,16 @@ function payment(){
         url : "./Payment.php",
         data : {'type':pay_type,'jobNoShort':jobNoShort,'jobNoNew':jobNoNew},
         dataType : "json",
+        beforeSend: function () {
+            $('#go_payment').attr('disabled', 'disabled');
+
+            $('#go_payment').text('请稍后...');
+        },
+        complete: function () {
+            $('#go_payment').removeAttr('disabled');
+            $('#go_payment').text('確認購買');
+        },
         success : function(data) {
-            console.log(data);
             if(data.code == 200){
                 if(pay_type == 'stripe'){
 
@@ -33,9 +44,16 @@ function payment(){
                     return stripe.redirectToCheckout({ sessionId: data.data });
 
                 }else if(pay_type == 'wechat'){
-                    window.location.href = 'ozzoacademy-wechat-pay://students.app/?info='+data;
+
+                    window.location.href = 'ozzoacademy-wechat-pay://students.app/?info='+data.data.prepay_id+'&order_no='+data.data.order_no;
+
+                    setTimeout(function(){
+                        window.location.href = 'PaymentCheck.php?type=wechat&order_no='+data.data.order_no;
+
+                    },1500);
+
                 }else if(pay_type == 'alipay'){
-                    window.location.href = 'ozzoacademy-wechat-pay://students.app/?info='+data;
+                    window.location.href = 'ozzoacademy-alipay-pay://students.app/?info='+data;
                 }
             }else{
                 alert(data.msg);
@@ -136,7 +154,7 @@ function getInfo(jobNo = null) {
 /**
 * 支付寶支付
 * */
-function alipay(){
+/*function alipay(){
     $.ajax({
         type : "GET",
         url : "../alipayRsa/payment.php",
@@ -145,11 +163,15 @@ function alipay(){
         },
         dataType : "json",
         success : function(msg) {
+
+            if(){
+
+            }
             window.location.href = 'ozzoacademy-pay://students.app/?info='+msg;
             console.log(msg);
         }
     })
-}
+}*/
 
 
 /**

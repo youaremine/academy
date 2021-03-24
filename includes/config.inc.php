@@ -107,27 +107,40 @@ include_once($conf["path"]["root"] . "includes/function.php");
 
 $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
 
+
+function myautoload($name) {
+    global $conf;
+
+    try {
+        if (strstr(strtolower($name), "pear")) {
+            return true;
+        }
+        if (file_exists($conf["path"]["access"] . $name . '.php')) {
+            require_once($conf["path"]["access"] . $name . '.php');
+        } else if (file_exists($conf["path"]["entity"] . $name . '.php')) {
+            require_once($conf["path"]["entity"] . $name . '.php');
+        } else {
+            if ($name !== "Redis" || $name !== "MsgPush") {
+                if(file_exists($conf["path"]["root"] . "includes/" . $name . '.php')){
+                    require_once($conf["path"]["root"] . "includes/" . $name . '.php');
+                }
+
+            }
+        }
+
+    } catch (Exception $e) {
+        var_dump($name);exit;
+        // die(); // 终止异常
+    }
+
+    return true;
+}
 /**
  * 自动载入classes
  *
  * @param string $name
  * @return bool
  */
-function __autoload($name) {
-    global $conf;
-    if (strstr(strtolower($name), "pear")) {
-        return true;
-    }
-    if (file_exists($conf["path"]["access"] . $name . '.php')) {
-        require_once($conf["path"]["access"] . $name . '.php');
-    } else if (file_exists($conf["path"]["entity"] . $name . '.php')) {
-        require_once($conf["path"]["entity"] . $name . '.php');
-    } else {
-        if ($name !== "Redis") {
-            require_once($conf["path"]["root"] . "includes/" . $name . '.php');
-        }
-    }
-    return true;
-}
+spl_autoload_register("myautoload");
 
-?>
+require_once ($conf["path"]["root"] .'vendor/autoload.php');

@@ -7,6 +7,8 @@
 
 require_once("../includes/config.inc.php");
 require_once("PaymentConf.php");
+use WechatPay\GuzzleMiddleware\Util\AesUtil;
+
 Class PaymentBack extends PaymentConf {
     protected $payment_type = null;
     protected $return_data = null;
@@ -17,7 +19,6 @@ Class PaymentBack extends PaymentConf {
         global $db;
         $this->payment_type = $_GET['type'];
         $this->return_data = $_REQUEST;
-
 
         $this->db = $db;
         $this->redis = new redis();
@@ -36,8 +37,80 @@ Class PaymentBack extends PaymentConf {
             case 'stripe' :
                 $this->stripe_back();
                 break;
+            default:
+                $this->checkBack();
         }
     }
+
+    /**
+     * 确认是微信支付的通知还是其他通知
+     * */
+    public function checkBack(){
+        if(isset($_SERVER['HTTP_WECHATPAY_NONCE']) && isset($_SERVER['HTTP_WECHATPAY_SERIAL'])
+            && isset($_SERVER['HTTP_WECHATPAY_SIGNATURE']) && isset($_SERVER['HTTP_WECHATPAY_TIMESTAMP'])){
+            $this->wechat_back();
+        }elseif('支付宝支付回调' == true){//TODO
+
+        }else{
+            echo json_encode(['code'=>'FAILED','message'=>'失败',]);exit;
+        }
+    }
+
+    /**
+     * 验证微信回调
+     * */
+    protected function VerifySign($data, $signature){
+        $signature = base64_decode($signature);//解密应答签名
+        // 微信支付平台证书
+        $wechatpayCertificate = openssl_pkey_get_public(file_get_contents($this->wechatpayCertificate_path));
+        $retCode = openssl_verify($data, $signature, $wechatpayCertificate, OPENSSL_ALGO_SHA256);
+        if ($retCode == 1) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 微信 支付回调
+     * */
+    protected function wechat_back(){
+        $nonce = $_SERVER['HTTP_WECHATPAY_NONCE'];
+        $serial = $_SERVER['HTTP_WECHATPAY_SERIAL'];
+        $signature = $_SERVER['HTTP_WECHATPAY_SIGNATURE'];
+        $timestamp = $_SERVER['HTTP_WECHATPAY_TIMESTAMP'];
+        $params = file_get_contents('php://input');
+
+        $contents = json_decode($params,true)['resource'];
+        $bf_msg = $timestamp . "\n" . $nonce . "\n" . $params . "\n";
+        $res = $this->VerifySign($bf_msg,$signature);//验证是否微信回调
+
+        if(!$res){
+            $this->payment_log('VerifySign FAILED','',json_encode($params),'Wechat VerifySign Failed');
+            echo json_encode(['code'=>'FAILED','msg'=>'failed']);exit;
+        }
+
+        $decrypter = new AesUtil($this->apis);
+        $decrypter_res = $decrypter->decryptToString($contents['associated_data'], $contents['nonce'], $contents['ciphertext']);
+        $decrypter_res = json_decode($decrypter_res,true);
+        if(!is_array($decrypter_res)){//如果解密
+            $this->payment_log('decrypter_res FAILED','',json_encode($params),'Wechat decrypter_res');
+            echo json_encode(['code'=>'FAILED','msg'=>'failed']);exit;
+        }
+
+        if($decrypter_res['appid'] != $this->appid){
+            $this->payment_log('decrypter_res FAILED','',json_encode($params),'appid error');
+        }
+
+        if($decrypter_res['trade_state'] == 'SUCCESS'){
+            $this->payment_success($decrypter_res['out_trade_no'],json_encode($decrypter_res),false);
+            echo json_encode(['code'=>'SUCCESS','msg'=>'success']);exit;
+        }else{
+            $this->payment_failed($decrypter_res['out_trade_no'],json_encode($decrypter_res),false);
+            echo json_encode(['code'=>'FAILED','msg'=>'failed']);exit;
+        }
+    }
+
 
     /**
      * stripe 支付回调
@@ -63,8 +136,9 @@ Class PaymentBack extends PaymentConf {
     /**
      * 支付成功邏輯
      * */
-    public function payment_success($order_no,$return_bak_str = ''){
-
+    public function payment_success($order_no,$return_bak_str = '',$show_page = true){
+        global $conf;
+        $this->payment_log('SUCCESS',$order_no,$return_bak_str,'SUCCESS step 1');
         $select_sql = "SELECT * FROM Survey_SurveyorOrder WHERE order_no = '{$order_no}' and status = 0";
         $this->db->query ( $select_sql );
         $order_detail = array();
@@ -82,7 +156,7 @@ Class PaymentBack extends PaymentConf {
             $res = $this->db->query($sql);
 
             if(!$res){
-                $this->payment_log('ERROR',$order_no,$return_bak_str,'【pay success but update failed】');
+                $this->payment_log('ERROR',$order_no,$return_bak_str,'【pay success but update failed1】');
             }
 
 
@@ -103,19 +177,26 @@ Class PaymentBack extends PaymentConf {
             $msoa->Apply($mso);
             $this->autoAssign($rs [0],  $order_detail['jobNoNew']);
         }
-
-
-
-        include_once '../templates/account/payment_success.html';
-
+        if($show_page){
+            $t = new CacheTemplate("../templates/account");
+            $t->set_caching($conf["cache"]["valid"]);
+            $t->set_cache_dir($conf["cache"]["dir"]);
+            $t->set_expire_time($conf["cache"]["timeout"]);
+            $t->set_file("HdIndex", "payment_success.html");
+            $t->set_var ( array (
+                "order_no" => $order_no
+            ) );
+            $t->pparse("Output", "HdIndex");
+        }
     }
 
 
     /**
      * 支付失敗邏輯
      * */
-    public function payment_failed($order_no,$return_bak_str,$is_cancel){
-
+    public function payment_failed($order_no,$return_bak_str,$is_cancel,$show_page = true){
+        global $conf;
+        $this->payment_log('Failed',$order_no,$return_bak_str,'Failed step 1');
         $select_sql = "SELECT * FROM Survey_SurveyorOrder WHERE order_no = '{$order_no}' and status = 0";
         $this->db->query ( $select_sql );
         $order_detail = array();
@@ -143,8 +224,18 @@ Class PaymentBack extends PaymentConf {
 
             $this->redis->rpush($key,$order_detail['jobNoNew']);
 
+            if($show_page){
+                $t = new CacheTemplate("../templates/account");
+                $t->set_caching($conf["cache"]["valid"]);
+                $t->set_cache_dir($conf["cache"]["dir"]);
+                $t->set_expire_time($conf["cache"]["timeout"]);
+                $t->set_file("HdIndex", "payment_failed.html");
+                $t->set_var ( array (
+                    "order_no" => $order_no
+                ) );
+                $t->pparse("Output", "HdIndex");
+            }
 
-            include_once '../templates/account/payment_failed.html';
         }
     }
 

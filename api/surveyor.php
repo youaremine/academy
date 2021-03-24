@@ -654,9 +654,98 @@ switch ($data['q']) {
         PDFRecord($data);
     case 'getRecordById':
         getRecordById($data);
+    case 'cancel_payment':
+        cancel_payment($data);
     default:
         echo "Params Error";
         break;
+}
+
+
+/**
+ * 用户主动取消支付
+ */
+function cancel_payment($data){
+    global $db,$conf;
+
+    $filename = $conf["path"]["sign"] . $data['sign'];
+    if(is_file($filename)){
+        $survId = file_get_contents($filename);
+        if (empty($survId)) {
+            $message = array(
+                'status' => 'failed',
+                'msg' => 'Login has expired.',
+                'data' => array()
+            );
+            die(json_encode($message));
+        }
+    }else{
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+
+
+    $status = 2;
+    $order_no = $data['order_no'];
+    payment_log('Failed',$order_no,'用户取消支付','Cancel step 1');
+    $select_sql = "SELECT * FROM Survey_SurveyorOrder WHERE order_no = '{$order_no}' and status = 0 and survId = '{$survId}'";
+    $db->query ( $select_sql );
+    $order_detail = array();
+    if($select_res = $db->next_record()){
+        $order_detail['survId'] = $select_res['survId'];
+        $order_detail['jobNo'] = $select_res['jobNo'];
+        $order_detail['jobNoNew'] = $select_res['jobNoNew'];
+    }
+
+    if(empty($order_detail)){
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'order_no and survId No Found',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+
+    $sql = "UPDATE Survey_SurveyorOrder SET status={$status} WHERE order_no = '{$order_no}'";
+
+    $res = $db->query($sql);
+
+    if(!$res){
+        payment_log('【ERROR】',$order_no,'用户取消之后，更新数据库失败','【pay cancel and update failed】');
+    }
+
+    $key = 'list_'.$order_detail['jobNo'];
+    $redis = new redis();
+    $redis->connect('127.0.0.1',6379);
+    $redis->select(1);
+    $redis->rpush($key,$order_detail['jobNoNew']);
+    $message = array(
+        'status' => 'success',
+        'msg' => '',
+        'data' => array()
+    );
+    die(json_encode($message));
+}
+
+
+/**
+ * 记录异常订单
+ * */
+function payment_log($status,$order_no,$return_bak_str,$msg = ''){
+
+
+    $content = "\n=========".$status."==========";
+    $content .= "\n=========".date('Y-m-d H:i:s')."==========";
+    $content .= "\nOrder No:".$order_no;
+    $content .= "\nReturn_bak_str:".$return_bak_str;
+    $content .= "\nMsg:".$msg;
+
+    file_put_contents('/tmp/payment_log'.PROJECTNAME.'.log',$content,FILE_APPEND);
+
 }
 
 function cmp($a, $b) {

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>支付結果</title>
+    <script src="../js/bootstrap-3.3.5/js/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css">
+    <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0, maximum-scale = 1.0, user-scalable = 0" />
+    <style>
+        #emptyWrap{
+            margin-top:50px;
+            text-align: center;
+        }
+        #emptyWrap img{
+
+        }
+        .empty_text{
+            line-height: 80px;
+        }
+        .btn_wrap{
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div id="emptyWrap">
+        <div class="empty_img" style="width: 80px; height: 80px; margin: auto;">
+            <div id="" class="layui-layer-content layui-layer-loading0"></div>
+            <img src="../images/loading-0.gif" alt="Waiting Payment">
+        </div>
+        <h3 class="empty_text">
+            等待 {type} 支付
+        </h3>
+
+        <h6>訂單號:{order_no}</h6>
+
+        <div class="btn_wrap">
+            <button class="btn btn-success" id="complete_btn" type="submit" style="color: #fff">已完成支付</button>
+        </div>
+
+    </div>
+</body>
+</html>
+
+<script>
+
+    $(function(){
+
+        $('#cancel_btn').on('click',function(){
+
+        });
+
+        $('#complete_btn').on('click',function(){
+
+        });
+
+
+        var inter = setInterval(send_check,1500);
+
+        setTimeout(function(){
+            clearInterval(inter);
+        },1000*60*2);
+
+    })
+
+    function send_check(isclick){
+        $.ajax({
+            type : "POST",
+            url : "./Payment.php",
+            data : {'type':'check','order_no':'{order_no}','payment_type':'{type}'},
+            dataType : "json",
+            success : function(data) {
+                if(data.code == 200){
+                    if(data.data.status == 1){
+                        window.location.href = 'PaymentCheck.php?type=success&order_no={order_no}';
+                    }else if(data.data.status == 2){
+                        window.location.href = 'PaymentCheck.php?type=cancel&order_no={order_no}';
+                    }else{
+
+                    }
+
+                }else{
+                    console.log(data.msg);
+                }
+            }
+        });
+    }
+
+</script>

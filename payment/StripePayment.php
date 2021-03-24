@@ -48,8 +48,6 @@ class StripePayment extends PaymentConf
             'cancel_url' => $this->host_name . '/account/PaymentBack.php?type=stripe&action=cancel&session_id={CHECKOUT_SESSION_ID}',
         ]);
 
-        $sql = "UPDATE Survey_SurveyorMainSchedule SET delFlag='yes' WHERE  ";
-
         return $checkout_session->id;
     }
 

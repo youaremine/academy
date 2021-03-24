@@ -41,7 +41,7 @@ if($type=="paymentInfo"){
 
     $payInfo=new PayInfo();
     $info=$payInfo->paymentInfo($alipay_config);
-//    $info="alipayhk://platformapi/startapp?appId=20000067&url=".$info;
+    //$info="alipayhk://platformapi/startapp?appId=20000067&url=".$info;
     echo  json_encode($info);
 }
 
