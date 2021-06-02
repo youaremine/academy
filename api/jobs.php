@@ -10,6 +10,7 @@ set_time_limit(0);
 include_once("../includes/config.inc.php");
 include_once("./swoole/push/php/src/MsgPush.php");
 
+
 //$rawJson = json_decode(file_get_contents('php://input', 'r'),true);
 //$data = !empty($rawJson['sign']) ? $rawJson:$_REQUEST;
 //if(empty($rawJson['q'])){
@@ -1232,7 +1233,7 @@ function setVehicleClass($data) {
     if ($surInfo->survType == 'admin' || $surInfo->survType == 'teach') {
 
         $sql = <<<EOF
-SELECT s1.*,count(s2.vehicle) as class_num, count(s1.vehicle) as all_num,s1.vehicle,s1.surveyType 
+SELECT s1.*,count(s2.vehicle) as class_num, count(s1.vehicle) as all_num
 FROM 
 Survey_MainSchedule as s1 
 left join (SELECT vehicle,mascId FROM Survey_MainSchedule WHERE  jobNo = '$jobNo' and (surveyorCode = '' or surveyorCode is null) ) as s2 on s2.mascId=s1.mascId
@@ -1248,6 +1249,7 @@ EOF;
                 $hadSearched = true;
                 $countChange = $rs['class_num'];
                 $res = $rs;
+                $res['isImage'] = $rs['is_image'];
                 $res['surveyorCode'] = '';
                 $res['surveyorName'] = '';
                 $res['surveyorTelephone'] = '';
