@@ -1527,6 +1527,8 @@ function batchOpenJob($data) {
 
         //进行离线推送  10分钟内只能推送一次
         if (!empty($androidList) && !$redis->exists('android_broadcast_timer')) {
+            $redis->set('android_broadcast_timer', '1', ['nx', 'ex' => 10*60]);//设置计时器
+
             $msgPush = new MsgPush('android');
 
             if ($redis->exists('android_push_ident')) {
@@ -1535,11 +1537,13 @@ function batchOpenJob($data) {
                 $redis->set('android_push_ident', 1);//设置push次数
             }
 
+
+
             //推送次数大于10  无法使用广播推送
             if ($redis->get('android_push_ident') < 10) {
                 $data['push_type'] = 'other';
                 $msgPush->sendAndroidBroadcast($data);//广播推送
-                $redis->expire('android_broadcast_timer', 10 * 60);//设置计时器
+
             } else {
                 foreach ($androidList as $v) {
                     $data['msg_token'] = $v['msg_token'];
@@ -1552,6 +1556,7 @@ function batchOpenJob($data) {
 
 
         if (!empty($iosList) && !$redis->exists('ios_broadcast_timer')) {
+            $redis->set('ios_broadcast_timer', '1', ['nx', 'ex' => 10*60]);//设置计时器
             $msgPush = new MsgPush('ios');
 
             if ($redis->exists('ios_push_ident')) {
@@ -1564,7 +1569,6 @@ function batchOpenJob($data) {
             if ($redis->get('ios_push_ident') < 10) {
                 $data['message']['type'] = 'other';
                 $msgPush->sendIOSBroadcast($data);//广播推送
-                $redis->expire('ios_broadcast_timer', 10 * 60);//设置计时器
             } else {
                 foreach ($iosList as $v) {
                     $data['message']['type'] = 'other';
@@ -1993,6 +1997,14 @@ function getJobs($data) {
     }
     $is_goods = isset($data['is_goods']) ? $data['is_goods'] : false;
     $filename = $conf["path"]["sign"] . $data['sign'];
+    if(!is_file($filename)){
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
     $survId = file_get_contents($filename);
     if (empty($survId)) {
         $message = array(

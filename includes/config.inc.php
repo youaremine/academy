@@ -6,10 +6,22 @@
  */
 error_reporting(E_ALL & ~E_NOTICE);
 define('SITEVESION', 201612142242);
-define('PROJECTNAME', 'academy');
+define('PROJECTNAME', 'onfire');
 session_start();
 header('content-Type: text/html; charset=utf-8');
 $conf = array();
+
+//阿里云短信配置
+$conf['ali']['ACCESSKEYID'] = "LTAI5tBD6Xq2nvzFojiMcX5s";
+$conf['ali']['ACCESSKEYSECRET'] = "6Y3PWhXLoD4q8FYCprO8IymeJRI6kE";
+$conf['ali']['signname'] = "奥世傲科技";
+
+$conf['ali']['sign_temp_id_1'] = "SMS_217960674";//國内
+$conf['ali']['sign_temp_id_2'] = "SMS_223589257";//國際
+
+
+
+
 // current path
 $conf["path"]["root"] = dirname(dirname(__FILE__)) . '/';
 $conf["path"]["access"] = $conf["path"]["root"] . "includes/access/";
@@ -93,11 +105,13 @@ $conf['page']['stat'] = true;
 $conf['page']['pagesize'] = 20;
 
 // database product
+
 $conf["dbConnectStr"]["BusSurvey"]["host"] = "localhost";
-$conf["dbConnectStr"]["BusSurvey"]["dataBase"] = "academy";
+$conf["dbConnectStr"]["BusSurvey"]["dataBase"] = "on_fire";
 $conf["dbConnectStr"]["BusSurvey"]["user"] = "gogolunadm_alex";
 $conf["dbConnectStr"]["BusSurvey"]["password"] = "stanleyalex";
 $conf["dbConnectStr"]["BusSurvey"]["characterSet"] = "latin1";
+
 
 include_once($conf["path"]["root"] . "../library/database/DataBase.php");
 include_once($conf["path"]["root"] . "../library/phplib/Template.php");

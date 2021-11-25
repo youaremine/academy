@@ -288,10 +288,12 @@ class JobsAccess {
         $where = makeSql($filter, 'where');
         $sql = "SELECT s1.mascId,s1.jobNo,s1.class_record_id,s1.jobNoNew,s1.realClass,surveyType,vehicle
                     ,surveyTimeHours,startTime_1,endTime_1,surveyLocationDistrict
-                    ,surveyLocation,plannedSurveyDate,s2.isOpen2,s3.isOpen,s1.bookLat,s1.bookLong,s1.map_address,s1.diy_name,s1.diy_value,s1.`img_url`,s1.`is_image`,s1.`amount`
+                    ,surveyLocation,plannedSurveyDate,s2.isOpen2,s3.isOpen,s1.bookLat,s1.bookLong,s1.map_address,s1.diy_name,s1.diy_value,s1.`img_url`,s1.`is_image`,s1.`amount`,s4.`assignNum`
                 FROM {$conf['table']['prefix']}MainSchedule as s1
 left join (SELECT count(*) as isOpen2,jobNoNew FROM Survey_MainScheduleOpen where delFlag='no' group by jobNoNew) as s2 on s2.jobNoNew=s1.jobNoNew
 left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFlag='no' group by jobNo) as s3 on s3.jobNo=s1.jobNo
+left join (SELECT count(*) as assignNum,jobNo FROM Survey_MainSchedule where `surveyorCode` <> '' and `surveyorName` <> '' group by jobNo) as s4 on
+s4.jobNo=s1.jobNo
                 WHERE 1=1 {$where}";
 
 
@@ -309,11 +311,11 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
 
 //            echo $sql;exit;
         $this->db->query($sql);
-
         $result = array();
         $jobNoArray = array();
         $index = 0;
         $jobNoIndex = array();
+
         while ($dr = $this->db->next_record()) {
 
 //            echo json_encode($dr);exit;
@@ -345,6 +347,8 @@ left join (SELECT count(*) as isOpen,jobNo FROM Survey_SurveyJobOpen where delFl
             $row['class_record_id'] = $dr['class_record_id'];
             $row['is_image'] = $dr['is_image'];
             $row['amount'] = $dr['amount'];
+            $row['assignNum'] = $dr['assignNum'];
+
             if (empty($dr['img_url'])) {
                 $row['img_url'] = "";
             } else {

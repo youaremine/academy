@@ -44,8 +44,10 @@ $contact = addslashes($data_info['contact']);
 $chiName = addslashes($data_info['chiName']);
 $engName = addslashes($data_info['engName']);
 $survType = addslashes($data_info['survType']);
-$avatar = addslashes($data_info['avatar']);
 
+file_put_contents('/tmp/aabbc.log','surv:'.$survType,FILE_APPEND);
+
+$avatar = addslashes($data_info['avatar']);
 $pass = addslashes($data_info['pass']);
 
 $email = addslashes($data_info['email']);//邮箱
@@ -63,6 +65,7 @@ $unimInfo = array(
     'survHome' => $survHome,
     'birthday' => $birthday,
     'dipaCode' => $dipaCode,
+    'survType' => $survType,
     'vip_level' => $vip_level
 );
 
@@ -89,6 +92,8 @@ if (!empty($info)) {
     $info = json_decode($info);//将json格式转换为对象
 }
 //file_put_contents('/tmp/bindlog.log', json_encode($_REQUEST) . "\n\r", FILE_APPEND);
+file_put_contents('/tmp/third.log', '~~~~~~~~~~~' . time() . 'Request:' . json_encode($_REQUEST) . "\n\n", FILE_APPEND);
+//
 
 
 switch ($action_type) {
@@ -139,6 +144,7 @@ switch ($action_type) {
             } else {
                 //不存在，注册账户并写入
                 $user->setUserInfo($info->chiName, $info->engName, $info->suryType, $info->avatar);
+                file_put_contents('/tmp/aabbc.log',"\n".'147$unimInfo:'.json_encode($unimInfo)."\n",FILE_APPEND);
                 $infoUser = $user->register($unimInfo);
                 if ($infoUser['state']) {
                     writeUser($user, $infoUser, $channel, $filename, $sign);
@@ -172,7 +178,12 @@ switch ($action_type) {
                     "vip_level" => "",
                     "dipaCode" => "",
                     "profilePhoto" => "",
-                    "password" => ""
+                    "password" => "",
+                    "vip_level"=> "",
+                    "vip_end_date_1"=> "",
+                    "vip_end_date_2"=> "",
+                    "vip_type_1"=> "",
+                    "vip_type_2"=> ""
                 ),
                 'state' => 'writeFailed',
                 'sign' => ''
@@ -191,6 +202,7 @@ switch ($action_type) {
             if ($channel == 2 || $channel == 3) {
                 $message['sign'] = $sign;
                 file_put_contents($filename, $user->getUserId());
+
             }
             echo json_encode($message, JSON_UNESCAPED_UNICODE);
         } else {
@@ -210,7 +222,12 @@ switch ($action_type) {
                         "vip_level" => "",
                         "dipaCode" => "",
                         "profilePhoto" => "",
-                        "password" => ""
+                        "password" => "",
+                        "vip_level"=> "",
+                        "vip_end_date_1"=> "",
+                        "vip_end_date_2"=> "",
+                        "vip_type_1"=> "",
+                        "vip_type_2"=> ""
                     ),
                     'state' => 'none',
                     'sign' => ''
@@ -219,6 +236,7 @@ switch ($action_type) {
                 exit();
             }
             $user->setPass($pass);
+            file_put_contents('/tmp/aabbc.log',"\n".'238$unimInfo:'.json_encode($unimInfo)."\n",FILE_APPEND);
             $infoUser = $user->register($unimInfo);//写入账号信息
             if ($infoUser['state']) {
                 $infoPass = $user->getPassword();//写入密码信息
@@ -248,7 +266,12 @@ switch ($action_type) {
                             "vip_level" => "",
                             "dipaCode" => "",
                             "profilePhoto" => "",
-                            "password" => ""
+                            "password" => "",
+                            "vip_level"=> "",
+                            "vip_end_date_1"=> "",
+                            "vip_end_date_2"=> "",
+                            "vip_type_1"=> "",
+                            "vip_type_2"=> ""
                         ),
                         'state' => 'writeFailed',
                         'sign' => ''
@@ -270,7 +293,12 @@ switch ($action_type) {
                         "vip_level" => "",
                         "dipaCode" => "",
                         "profilePhoto" => "",
-                        "password" => ""
+                        "password" => "",
+                        "vip_level"=> "",
+                        "vip_end_date_1"=> "",
+                        "vip_end_date_2"=> "",
+                        "vip_type_1"=> "",
+                        "vip_type_2"=> ""
                     ),
                     'state' => 'writeFailed',
                     'sign' => ''

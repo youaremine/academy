@@ -12,10 +12,10 @@ require_once(dirname(__FILE__) . '/' . 'notification/ios/IOSCustomizedcast.php')
 
 class MsgPush {
 
-    protected $android_key = '5caacd2661f564547b000d50';
-    protected $android_secret = 'bzxrxjmxgvlqtuwzrhiysniywl3k87yv';
-    protected $ios_key = '5d26d23f4ca357258a0003b7';
-    protected $ios_secret = 'qz7efzs8ku468026z9d2hhosprr6nvbh';
+    protected $android_key = '6135c5aaa8f28d032f1f38b9';
+    protected $android_secret = 'l0vcj2wpnpnfe3ijpx8kakcid5d0rrne';
+    protected $ios_key = '618104a0abbb3d51d850f7f9';
+    protected $ios_secret = 'i05cf8wbkbjw009pzca58fzbwuvqvepu';
 
     protected $appkey           = NULL;
     protected $appMasterSecret     = NULL;
@@ -81,17 +81,28 @@ class MsgPush {
             // For how to register a test device, please see the developer doc.
             $unicast->setPredefinedKeyValue("production_mode", false);
             //新增参数
-            $unicast->setPredefinedKeyValue("play_vibrate","false");
+            $unicast->setPredefinedKeyValue("play_vibrate",false);
             $unicast->setPredefinedKeyValue("play_lights", "false");
-            $unicast->setPredefinedKeyValue("play_sound", "true");
+            $unicast->setPredefinedKeyValue("play_sound", true);
             $unicast->setPredefinedKeyValue("description", $data['description']);//消息描述
             $unicast->setPredefinedKeyValue("display_type","notification");
 
   //          $unicast->setPredefinedKeyValue("mi_activity","com.ozzo.interacademy.ui.start.OzzoStartActivity");//厂商识别
-            $unicast->setPredefinedKeyValue("mi_activity","com.ozzo.interacademy.ui.push.MipushTestActivity");//厂商识别
+            $unicast->setPredefinedKeyValue("mi_activity","com.ozzo.ofaa.mfr.MfrMessageActivity");//厂商识别
             $unicast->setPredefinedKeyValue("mipush",true);
             $puth_type = $data['push_type'] == 'other'?'other':'msg';
             $unicast->setExtraField("push_type", $puth_type);
+            $unicast->setExtraField("postId", $data['message']['data'][0]['postId']);
+
+            if($data['message']['data'][0]['mode'] = 2){
+                $unicast->setExtraField("jobNo", $data['message']['data'][0]['jobNo']);
+                $unicast->setExtraField("jobNoNew", $data['message']['data'][0]['jobNoNew']);
+            }else{
+                $unicast->setExtraField("matchId", $data['message']['data'][0]['group_id']);
+            }
+
+
+
 
             // Set extra fields
 

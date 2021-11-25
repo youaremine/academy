@@ -128,49 +128,22 @@ function fileUpload() {
                                         var loaded = e.loaded;                                  //已经上传大小情况
                                         var total = e.total;                                    //附件总大小
                                         var percent = Math.floor(90 * loaded / total);      //已经上传的百分比
-                                        let n = Number($('.progress-bar').text().slice(0, -1));//显示的进度条
-                                        console.log(percent);
-                                        //第一次上传进度传回
-                                        if (percent > 0 && percent < 90 && n == 0) {
-                                            let i = 1;
-                                            var setTime1 = setInterval(function () {
-                                                $('.progress-bar').text(i + '%');
-                                                $('.progress-bar').attr('style', 'width:' + i + '%');
-                                                i++;
-                                                if (i == percent) {
-                                                    clearInterval(setTime1);
+                                        var n = Number($('.progress-bar').text().slice(0, -1));//显示的进度条
+                                        if(percent<90){
+                                            $('.progress-bar').text( percent+ '%');
+                                            $('.progress-bar').attr("style","width:"+percent+"%");
+                                        }else if(percent==90){
+                                            var sign=n;
+                                            var setTime = setInterval(function () {
+                                                $('.progress-bar').text(sign + '%');
+                                                $('.progress-bar').attr('style', 'width:' + sign + '%');
+                                                sign++;
+                                                if (sign==96) {
+                                                    clearInterval(setTime);
                                                 }
-                                            }, 350)
+                                            }, 150)
                                         }
-                                        //后续传回
-                                        if(percent > 0 && percent < 90 && n != 0){
-                                            clearInterval(setTime1);
-                                            clearInterval(setTime2);
-                                            let i = n;
-                                            var setTime2 = setInterval(function () {
-                                                $('.progress-bar').text(i + '%');
-                                                $('.progress-bar').attr('style', 'width:' + i + '%');
-                                                i++;
-                                                if (i == percent) {
-                                                    clearInterval(setTime2);
-                                                }
-                                            }, 300)
-                                        }
-                                        //最后一次传回
-                                        if(percent==90){
-                                            clearInterval(setTime1);
-                                            clearInterval(setTime2);
-                                            let i = n;
-                                            var setTime3 = setInterval(function () {
-                                                $('.progress-bar').text(i + '%');
-                                                $('.progress-bar').attr('style', 'width:' + i + '%');
-                                                i++;
-                                                if (i == 96) {
-                                                    clearInterval(setTime3);
-                                                }
-                                            }, 400)
-                                        }
-                                    }, false);
+                                       }, false);
                                 }
                                 return myXhr;
                             },
@@ -180,7 +153,7 @@ function fileUpload() {
                                 setTimeout(function () {
                                     emptyInnerHTML();
                                     alert("已成功上传")
-                                }, 1000);
+                                }, 1500);
                             }
                         });
                     }
@@ -363,4 +336,3 @@ function resetHTML(){
     formerImg(1);
     emptyInnerHTML();
 }
-

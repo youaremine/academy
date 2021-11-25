@@ -64,7 +64,7 @@ class SurveyorAccess
 					,dipaCode = '{$obj->dipaCode}',IsSupervisor = '{$obj->IsSupervisor}',personalRecord = '{$obj->personalRecord}',bank = '{$obj->bank}'
 					,accountNo = '{$obj->accountNo}',VIP = '{$obj->VIP}',whatsAPP = '{$obj->whatsAPP}',email = '{$obj->email}',fax = '{$obj->fax}'
 					,remarks = '{$obj->remarks}',birthday = '{$obj->birthday}',company = '{$obj->company}',status = '{$obj->status}',survType = '{$obj->survType}',vip_level = '{$obj->vip_level}',avatar = '{$obj->avatar}'
-					,updateUserId = '{$obj->updateUserId}',updateTime = '{$obj->updateTime}',selfBefore = '{$obj->selfBefore}',lastYearSurveyTimes = '{$obj->lastYearSurveyTimes}' WHERE 1=1  AND survId = '{$obj->survId}'";
+					,updateUserId = '{$obj->updateUserId}',updateTime = '{$obj->updateTime}',selfBefore = '{$obj->selfBefore}',lastYearSurveyTimes = '{$obj->lastYearSurveyTimes}',vip_end_date_1 = '{$obj->vip_end_date_1}',vip_end_date_2 = '{$obj->vip_end_date_2}',vip_type_1 = '{$obj->vip_type_1}',vip_type_2 = '{$obj->vip_type_2}' WHERE 1=1  AND survId = '{$obj->survId}'";
 		$this->db->query($sql);
 	}
 
@@ -196,6 +196,11 @@ class SurveyorAccess
             $obj->vip_level = $rs["vip_level"];
             $obj->class_remain = $rs["class_remain"];
             $obj->avatar = $rs["avatar"];
+            $obj->vip_end_date_1 = $rs["vip_end_date_1"];
+            $obj->vip_end_date_2 = $rs["vip_end_date_2"];
+            $obj->vip_type_1 = $rs["vip_type_1"];
+            $obj->vip_type_2 = $rs["vip_type_2"];
+            $obj->use_event = $rs["use_event"];
 			$rows[] = $obj;
 		}
 

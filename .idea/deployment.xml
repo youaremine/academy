@@ -5,7 +5,7 @@
       <paths name="正式">
         <serverdata>
           <mappings>
-            <mapping deploy="" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

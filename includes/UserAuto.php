@@ -95,6 +95,9 @@ class UserAuto {
      */
     public function register($unimInfo) {
         global $conf;
+
+        file_put_contents('/tmp/aabbc.log',"\n".'info:'.$this->surv_type."\n",FILE_APPEND);
+
         $db = new DataBase($conf["dbConnectStr"]["BusSurvey"]);
         $sql = "INSERT INTO `Survey_Surveyor`(`chiName`,`engName`,`profilePhoto`,`contact`,`email`,`whatsAPP`,`remarks`,`survHome`,`birthday`,`dipaCode`,`vip_level`) 
         VALUE ('{$this->chi_name}','{$this->eng_name}','{$this->avatar}','{$this->getContact()}','{$unimInfo->email}','{$unimInfo->whatsAPP}','{$unimInfo->remarks}','{$unimInfo->survHome}','{$unimInfo->birthday}','{$unimInfo->dipaCode}','{$unimInfo->vip_level}')";
@@ -222,7 +225,12 @@ WHERE
             $surveyor['profilePhoto'] = '';
         }
         //设置用户密码
-       $surveyor['password'] = $this->getUserPw($this->getUserId(),$surveyor['contact']);
+        $surveyor['password'] = $this->getUserPw($this->getUserId(),$surveyor['contact']);
+        $surveyor['vip_end_date_1'] = $arr[0]['vip_end_date_1'];
+        $surveyor['vip_end_date_2'] = $arr[0]['vip_end_date_2'];
+        $surveyor['vip_type_1'] = $arr[0]['vip_type_1'];
+        $surveyor['vip_type_2'] = $arr[0]['vip_type_2'];
+
         $message = array(
             'status' => 'success',
             'msg' => '',

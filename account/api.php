@@ -41,7 +41,41 @@ switch ($query)
         $v = $jobrs[0];
         if($v->realClass == 1){
 
-            $chargedLimit = 4;
+            if($s->use_event == 0){
+                $message = array (
+                    'status' => 'failed',
+                    'message' => '當前所選活動錯誤',
+                    'data' => array()
+                );
+                die(json_encode($message));
+            }else{
+                $event = $s->use_event;
+                $vip_end_date = 'vip_end_date_'.$event;
+                if(!empty($s->$vip_end_date)){
+
+                    if(strtotime($s->$vip_end_date) > time()){
+
+                    }else{
+                        $message = array (
+                            'status' => 'failed',
+                            'message' => '您的會員已過期，請聯係管理員',
+                            'data' => array()
+                        );
+                        die(json_encode($message));
+                    }
+                }else{
+                    $message = array (
+                        'status' => 'failed',
+                        'message' => '您還不是會員，請聯係管理員開通會員權限',
+                        'data' => array()
+                    );
+                    die(json_encode($message));
+                }
+            }
+
+            /*
+             * 修改会员制度，由之前的课堂数换成年度季度会员，不判断会员数
+             * $chargedLimit = 4;
 
             $sql = "SELECT sc.config_value FROM Survey_Config as sc
 WHERE 1=1 and config_name = 'chargedLimit' ";
@@ -68,7 +102,7 @@ WHERE 1=1 and config_name = 'chargedLimit' ";
                     'data' => array()
                 );
                 die(json_encode($message));
-            }
+            }*/
         }
 
 

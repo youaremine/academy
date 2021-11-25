@@ -78,6 +78,7 @@ abstract class UmengNotification {
 
         $sign = md5("POST" . $url . $postBody . $this->appMasterSecret);
         $url = $url . "?sign=" . $sign;
+        var_dump($postBody);
   		$ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);

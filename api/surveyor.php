@@ -5,7 +5,9 @@
  * @author Xiaoqiang.Wu <jamblues@gmail.com>
  * @version 1.01 , 2013-3-27
  */
+
 include_once("../includes/config.inc.php");
+
 $tmp1 = json_decode(file_get_contents('php://input', 'r'), true);
 $tmp2 = $_REQUEST;
 if (!empty($tmp1)) {//旧版本请求
@@ -26,6 +28,15 @@ if(empty($rawJson['q'])){
 
 
 switch ($data['q']) {
+
+    case 'authcode' :
+        authcode($data);
+        break;
+    case 'sendcode' :
+
+        sendcode($data);
+        break;
+
     case 'setClassPDF' :
         setClassPDF($data);
         break;
@@ -38,10 +49,19 @@ switch ($data['q']) {
     case 'editClass' :
         editClass($data);
         break;
+    case 'selectEvent' :
+
+        selectEvent($data);
+
     case 'login' :
 
         $username = $data['username'];
         $password = $data['password'];
+
+
+
+
+
         $login = new SurveyorLogin ($db);
         $res = $login->Login($username, $password);
         $res = $res?1:0;
@@ -64,6 +84,10 @@ switch ($data['q']) {
             $surveyor['survType'] = $s->survType;
             $surveyor['profilePhoto'] = $s->profilePhoto;
             $surveyor['vip_level'] = $s->vip_level;
+            $surveyor['vip_end_date_1'] = $s->vip_end_date_1;
+            $surveyor['vip_end_date_2'] = $s->vip_end_date_2;
+            $surveyor['vip_type_1'] = $s->vip_type_1;
+            $surveyor['vip_type_2'] = $s->vip_type_2;
 
             if (!empty($surveyor['profilePhoto'])) {
                 if (strpos($surveyor['profilePhoto'], 'images/profile-photo')) {
@@ -660,6 +684,186 @@ switch ($data['q']) {
         echo "Params Error";
         break;
 }
+
+
+
+/**
+ * 校驗驗證碼
+ * */
+
+function authcode($data){
+    global $db;
+
+    if(!isset($data['phone']) || !isset($data['code'])){
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'phone code required',
+            'data' => array()
+        );
+        echo (json_encode($message));exit;
+    }
+
+
+    $recordSql = "SELECT * FROM Survey_Sms where phone = '{$data['phone']}' and code = '{$data['code']}' and auth = 0";
+    $db->query($recordSql);
+
+    $res = array();
+    while ($row = $db->next_record()) {
+        $res['id'] = $row['id'];
+        $res['sendtime'] = $row['sendtime'];
+    }
+
+    if(empty($res)){
+        $message = array(
+            'status' => 'failed',
+            'msg' => '驗證碼錯誤',
+            'data' => array()
+        );
+        echo (json_encode($message));exit;
+    }else{
+        if(strtotime($res['sendtime']) - time() >= 10*60){
+            $message = array(
+                'status' => 'failed',
+                'msg' => '驗證碼超過有效時間，請重新獲取',
+                'data' => array()
+            );
+            echo (json_encode($message));exit;
+        }else{
+
+            //更新课堂记录的确认PDF
+            $sql1 = "UPDATE Survey_Sms SET auth = 1 where id={$res['id']}";
+            $updateRes1 = $db->query($sql1);
+
+
+            if($updateRes1){
+                $message = array(
+                    'status' => 'success',
+                    'msg' => '驗證成功',
+                    'data' => array()
+                );
+                echo (json_encode($message));exit;
+            }
+
+        }
+    }
+}
+
+
+/**
+ * 发送验证码
+ * */
+function sendcode($data){
+    global $db,$conf;
+
+    if(!isset($data['phone']) || !isset($data['prefix'])){
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'phone prefix required',
+            'data' => array()
+        );
+        echo (json_encode($message));exit;
+    }
+
+    $ACCESSKEYID = $conf['ali']['ACCESSKEYID'];
+    $ACCESSKEYSECRET = $conf['ali']['ACCESSKEYSECRET'];
+    $signname = $conf['ali']['signname'];
+    $temp_id = $data['prefix'] == '86'?$conf['ali']['sign_temp_id_1']:$conf['ali']['sign_temp_id_2'];
+    $code = str_pad(rand(1, 9999), 4, 0, STR_PAD_LEFT);
+
+    AlibabaCloud\Client\AlibabaCloud::accessKeyClient($ACCESSKEYID, $ACCESSKEYSECRET)
+        ->regionId('cn-shenzhen')
+        ->asDefaultClient();
+
+    try {
+        $resource = AlibabaCloud\Client\AlibabaCloud::rpc()
+            ->product('Dysmsapi')
+            ->scheme('https') // https | http
+            ->version('2017-05-25')
+            ->action('SendSms')
+            ->method('POST')
+            ->host('dysmsapi.aliyuncs.com')
+            ->options([
+                'query' => [
+                    'PhoneNumbers' => $data['prefix'].$data['phone'],
+                    'SignName' => $signname,
+                    'TemplateCode' => $temp_id,
+                    'TemplateParam' => json_encode(['code'=>$code])
+                ],
+            ])
+            ->request();
+        $resource = $resource->toArray();
+        $phone = $data['phone'];
+        $prefix = $data['prefix'];
+        $sendtime = date('Y-m-d H:i:s');
+        if($resource['Code'] == 'OK' && $resource['Message'] == 'OK'){
+            $sql = "INSERT into Survey_Sms(prefix,phone,code,sendtime,auth) values ('$prefix','$phone','$code','$sendtime',0)";
+            $res = $db->query($sql);
+            if($res){
+                $message = array(
+                    'status' => 'success',
+                    'msg' => '發送成功',
+                    'data' => array()
+                );
+                echo (json_encode($message));
+            }
+        }
+
+    } catch (ClientException $e) {
+
+        echo $e->getErrorMessage() . PHP_EOL;
+    } catch (ServerException $e) {
+
+        echo $e->getErrorMessage() . PHP_EOL;
+    }
+
+
+
+}
+
+
+/**
+ * 用户选择event
+ * 1:U12
+ * 2:女子队伍
+ * */
+function selectEvent($data) {
+    global $conf, $db;
+    if (empty($data['sign'])) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'sign is null.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+    $filename = $conf["path"]["sign"] . $data['sign'];
+    $survId = file_get_contents($filename);
+
+    if (empty($survId)) {
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Login has expired.',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+
+    $use_event = $data['use_event'];//选择活动，1：U12，2:女子队
+
+
+
+    $sql = "UPDATE Survey_Surveyor 
+					SET use_event = '{$use_event}' WHERE 1=1  AND survId = '{$survId}'";
+    $db->query($sql);
+
+    $message = array(
+        'status' => 'success',
+        'msg' => '',
+        'data' => []
+    );
+    die(json_encode($message));
+}
+
 
 
 /**
@@ -2283,7 +2487,7 @@ function getAllInfo($data) {
     $term = isset($data['term']) ? $data['term'] : '';//查询条件
     $s->term = $term;
 
-    if ($info->survType == 'teach' || $info->survType == 'admin') {
+    if (strpos($info->survType,'teach') !== false || strpos($info->survType,'admin') !== false || strpos($info->survType,'u12_teach') !== false ) {
         $s->survId = '';
         $result = $sa->GetListSearch($s);
         foreach ($result as $v) {
@@ -2317,6 +2521,11 @@ function getAllInfo($data) {
             $dr['vip_level'] = $v->vip_level;
             $dr['avatar'] = $v->avatar;
             $dr['class_remain'] = $v->class_remain;
+            $dr['vip_end_date_1'] = $v->vip_end_date_1;
+            $dr['vip_end_date_2'] = $v->vip_end_date_2;
+            $dr['vip_type_1'] = $v->vip_type_1;
+            $dr['vip_type_2'] = $v->vip_type_2;
+            $dr['use_event'] = $v->use_event;
             $rsData[] = $dr;
         }
         $num = 20;
@@ -2371,6 +2580,16 @@ function addInfo($data) {
         );
         die(json_encode($message));
     }
+
+    if(strpos(' ',$data['contact'])!==false){
+        $message = array(
+            'status' => 'failed',
+            'msg' => 'Contact 不能有空格',
+            'data' => array()
+        );
+        die(json_encode($message));
+    }
+
     $s = new Surveyor();
     $s->survId = $survId;
     $sa = new SurveyorAccess($db);
@@ -2401,7 +2620,7 @@ function addInfo($data) {
         $s->remarks = addslashes($data['remarks']);
         $s->birthday = addslashes($data['birthday']);
         $s->company = addslashes($data['company']);
-        $s->survType = empty($data['survType']) ? 'surveyor' : addslashes($data['survType']);
+        $s->survType = empty($data['survType']) ? 'aud' : addslashes($data['survType']);//默认为游客身份
         $s->status = empty($data['status']) ? 'active' : addslashes($data['status']);
         $s->selfBefore = addslashes($data['selfBefore']);
         $s->lastYearSurveyTimes = addslashes($data['lastYearSurveyTimes']);
@@ -2411,6 +2630,20 @@ function addInfo($data) {
         $s->updateTime = date('Y-m-d H:i:s');
         $s->vip_level = $data['vip_level'];
         $s->avatar = isset($data['avatar']) ? addslashes($data['avatar']) : '';
+        if(isset($data['vip_end_date_1']) && is_date($data['vip_end_date_1'])){
+            $s->vip_end_date_1 = $data['vip_end_date_1'];
+        }
+
+        if(isset($data['vip_end_date_2']) && is_date($data['vip_end_date_2'])){
+            $s->vip_end_date_2 = $data['vip_end_date_2'];
+        }
+        if(isset($data['vip_type_1']) ){
+            $s->vip_type_1 = $data['vip_type_1'];
+        }
+        if(isset($data['vip_type_2']) ){
+            $s->vip_type_2 = $data['vip_type_2'];
+        }
+
 
         if (empty($s->survId)) {
             $surveyorCheck = new Surveyor();
@@ -2468,6 +2701,16 @@ function addInfo($data) {
         );
         die(json_encode($message));
     }
+}
+
+function is_date($date){
+    $is_date=strtotime($date)?strtotime($date):false;
+
+    if($is_date===false&&$date!=""){
+       return false;
+    }
+
+    return true;
 }
 
 /**修改密码

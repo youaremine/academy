@@ -263,7 +263,7 @@ function adve($data, $ja) {
         $data['resolution']=$_POST['resolution']?$_POST['resolution']:$_GET['resolution'];
         if(empty($data['resolution'])){
             $message = array(
-                'status' => 'success',
+                'status' => 'failed',
                 'msg' => '`resolution` Data is empty',
                 'data' => ''
             );
